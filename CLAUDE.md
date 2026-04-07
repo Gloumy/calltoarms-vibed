@@ -83,7 +83,7 @@ Voir `.env.example` pour la liste complète. `DATABASE_URL`, `BETTER_AUTH_SECRET
 
 - [x] Phase 1 — Setup (Nuxt 4, Drizzle, PWA, structure)
 - [x] Phase 2 — Auth (better-auth, login/register, middleware)
-- [ ] Phase 3 — Schéma DB (triggers LISTEN/NOTIFY, seed IGDB) — migrations déjà appliquées
+- [x] Phase 3 — Schéma DB (triggers LISTEN/NOTIFY, seed IGDB, WebSocket handler, broadcast)
 - [ ] Phase 4 — Amis (demandes, liste, statuts, sidebar realtime)
 - [ ] Phase 5 — Notifications push (VAPID, service worker, subscriptions)
 - [ ] Phase 6 — Sessions (création, rejoindre, expiration, feed)
