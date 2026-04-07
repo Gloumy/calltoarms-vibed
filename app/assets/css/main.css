@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+@theme static {
+  --font-sans: 'Public Sans', sans-serif;
+
+  /* Accent principal — violet #534AB7 */
+  --color-violet-50: #f3f2fb;
+  --color-violet-100: #e9e7f8;
+  --color-violet-200: #d5d1f1;
+  --color-violet-300: #b5aee6;
+  --color-violet-400: #9088d8;
+  --color-violet-500: #534AB7;
+  --color-violet-600: #4a42a5;
+  --color-violet-700: #3d3689;
+  --color-violet-800: #332d72;
+  --color-violet-900: #2b265e;
+  --color-violet-950: #1a1739;
+}
