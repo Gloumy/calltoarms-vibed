@@ -14,6 +14,10 @@ export default defineNuxtConfig({
 
   ssr: false,
 
+  components: [
+    { path: '~/components', pathPrefix: false }
+  ],
+
   compatibilityDate: '2025-01-15',
 
   // Nitro server config

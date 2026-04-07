@@ -4,9 +4,21 @@ const peers = new Map<string, { peer: Peer; userId: string }>()
 
 export default defineWebSocketHandler({
   open(peer) {
-    const userId = peer.url?.includes('userId=')
-      ? new URL(peer.url, 'http://localhost').searchParams.get('userId')
-      : null
+    // Try multiple ways to get the userId from the connection URL
+    let userId: string | null = null
+
+    try {
+      const rawUrl = peer.request?.url || peer.url || ''
+      if (rawUrl.includes('userId=')) {
+        const url = new URL(rawUrl, 'http://localhost')
+        userId = url.searchParams.get('userId')
+      }
+    } catch {
+      // fallback: parse manually
+      const rawUrl = String(peer.request?.url || peer.url || '')
+      const match = rawUrl.match(/userId=([^&]+)/)
+      userId = match ? match[1] : null
+    }
 
     if (userId) {
       peers.set(peer.id, { peer, userId })
@@ -18,10 +30,26 @@ export default defineWebSocketHandler({
     peers.delete(peer.id)
   },
 
-  message(_peer, _message) {
-    // client → server messages if needed later
+  message(peer, message) {
+    // Handle userId sent via message as fallback
+    try {
+      const data = JSON.parse(String(message))
+      if (data.type === 'auth' && data.userId) {
+        peers.set(peer.id, { peer, userId: data.userId })
+        peer.subscribe(`user:${data.userId}`)
+      }
+    } catch {
+      // ignore
+    }
   }
 })
 
-// Export peers map for use in broadcast util
 export { peers }
+
+export function getOnlineUserIds(): Set<string> {
+  const ids = new Set<string>()
+  for (const [, { userId }] of peers) {
+    ids.add(userId)
+  }
+  return ids
+}

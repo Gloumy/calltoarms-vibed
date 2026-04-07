@@ -5,7 +5,7 @@ const { user } = useAuth()
 <template>
   <div class="flex min-h-screen">
     <!-- Sidebar gauche -->
-    <LayoutSidebarLeft />
+    <SidebarLeft />
 
     <!-- Contenu central -->
     <main class="flex-1 min-w-0 px-6 py-4">
@@ -13,6 +13,6 @@ const { user } = useAuth()
     </main>
 
     <!-- Sidebar droite -->
-    <LayoutSidebarRight />
+    <SidebarRight />
   </div>
 </template>

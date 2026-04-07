@@ -69,6 +69,7 @@ calltoarms/
 - **Layout connecté**: sidebar gauche (200px) + contenu central + sidebar droite (210px, amis)
 - **Layout auth**: centré, sans sidebars
 - **Composants Nuxt UI**: préfixés `U` (UButton, UCard, UAvatar, UIcon, etc.)
+- **Composants auto-import**: `pathPrefix: false` — pas de préfixe de dossier (ex: `FriendRow` et non `FriendFriendRow`)
 - **Icons**: collections `lucide` et `simple-icons` via Iconify (`i-lucide-*`, `i-simple-icons-*`)
 
 ## DB Schema (tables principales)
@@ -84,7 +85,7 @@ Voir `.env.example` pour la liste complète. `DATABASE_URL`, `BETTER_AUTH_SECRET
 - [x] Phase 1 — Setup (Nuxt 4, Drizzle, PWA, structure)
 - [x] Phase 2 — Auth (better-auth, login/register, middleware)
 - [x] Phase 3 — Schéma DB (triggers LISTEN/NOTIFY, seed IGDB, WebSocket handler, broadcast)
-- [ ] Phase 4 — Amis (demandes, liste, statuts, sidebar realtime)
+- [x] Phase 4 — Amis (demandes, liste, statuts, sidebar realtime)
 - [ ] Phase 5 — Notifications push (VAPID, service worker, subscriptions)
 - [ ] Phase 6 — Sessions (création, rejoindre, expiration, feed)
 - [ ] Phase 7 — Jeux (recherche IGDB, favoris)
