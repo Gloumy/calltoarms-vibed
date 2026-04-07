@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
-    '@vite-pwa/nuxt'
+    ...(process.env.NODE_ENV === 'production' ? ['@vite-pwa/nuxt'] : [])
   ],
 
   devtools: {
@@ -11,6 +11,8 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
+
+  ssr: false,
 
   compatibilityDate: '2025-01-15',
 
@@ -23,6 +25,7 @@ export default defineNuxtConfig({
 
   // Runtime config (env vars)
   runtimeConfig: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     databaseUrl: process.env.DATABASE_URL,
     twitchClientId: process.env.TWITCH_CLIENT_ID,
     twitchClientSecret: process.env.TWITCH_CLIENT_SECRET,
@@ -62,8 +65,7 @@ export default defineNuxtConfig({
       globPatterns: ['**/*.{js,css,html,png,svg,ico}']
     },
     devOptions: {
-      enabled: true,
-      type: 'module'
+      enabled: false
     }
   },
 

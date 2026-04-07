@@ -58,7 +58,11 @@ calltoarms/
 
 ## Conventions
 
+- **SSR**: désactivé (`ssr: false`), app fonctionne en mode SPA
 - **Auth**: ne jamais appeler better-auth directement, toujours passer par `useAuth()`
+- **Auth serveur**: utiliser `useServerAuth()` (lazy-init) et `useDB()` (lazy-init) — jamais d'init eagre dans server/utils
+- **Better-auth tables**: `user` (singulier), `session`, `account`, `verification` — IDs en `text`, pas uuid
+- **PWA**: module chargé uniquement en production
 - **Couleur accent**: violet `#534AB7` (primary dans app.config.ts)
 - **Langue**: interface en français
 - **TypeScript**: v5.x obligatoire (Nuxt UI incompatible avec v6)
@@ -69,17 +73,17 @@ calltoarms/
 
 ## DB Schema (tables principales)
 
-users, user_battle_tags, games, user_favorited_games, friendships, communities, community_members, game_sessions, game_session_participations, events, event_participations, event_polls, event_poll_options, event_poll_votes, event_comments, push_subscriptions, notifications
+user (better-auth), session (better-auth), account (better-auth), verification (better-auth), user_battle_tags, games, user_favorited_games, friendships, communities, community_members, game_sessions, game_session_participations, events, event_participations, event_polls, event_poll_options, event_poll_votes, event_comments, push_subscriptions, notifications
 
 ## Variables d'environnement
 
-Voir `.env.example` pour la liste complète. Seuls `DATABASE_URL` et `BETTER_AUTH_SECRET` sont nécessaires pour le dev.
+Voir `.env.example` pour la liste complète. `DATABASE_URL`, `BETTER_AUTH_SECRET` et `BASE_URL` sont nécessaires pour le dev.
 
 ## Plan d'implémentation
 
 - [x] Phase 1 — Setup (Nuxt 4, Drizzle, PWA, structure)
-- [ ] Phase 2 — Auth (better-auth, login/register, middleware)
-- [ ] Phase 3 — Schéma DB (migrations, triggers LISTEN/NOTIFY, seed IGDB)
+- [x] Phase 2 — Auth (better-auth, login/register, middleware)
+- [ ] Phase 3 — Schéma DB (triggers LISTEN/NOTIFY, seed IGDB) — migrations déjà appliquées
 - [ ] Phase 4 — Amis (demandes, liste, statuts, sidebar realtime)
 - [ ] Phase 5 — Notifications push (VAPID, service worker, subscriptions)
 - [ ] Phase 6 — Sessions (création, rejoindre, expiration, feed)

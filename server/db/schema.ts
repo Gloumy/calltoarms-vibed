@@ -1,22 +1,67 @@
-import { pgTable, uuid, text, boolean, timestamp, integer, jsonb, primaryKey } from 'drizzle-orm/pg-core'
+import { pgTable, text, boolean, timestamp, integer, jsonb, primaryKey } from 'drizzle-orm/pg-core'
 
-// ─── Users ───────────────────────────────────────────────
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  username: text('username').notNull().unique(),
+// ─── Better Auth: user ───────────────────────────────────
+export const user = pgTable('user', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
   email: text('email').notNull().unique(),
-  avatarUrl: text('avatar_url'),
+  emailVerified: boolean('email_verified').notNull().default(false),
+  image: text('image'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
+  // Custom fields
+  username: text('username').notNull().unique(),
   language: text('language').default('fr'),
   availableUntil: timestamp('available_until', { withTimezone: true }),
-  availableGameId: integer('available_game_id').references(() => games.id),
-  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
-  // password_hash and other better-auth fields are managed by better-auth
+  availableGameId: integer('available_game_id').references(() => games.id)
 })
+
+// ─── Better Auth: session ────────────────────────────────
+export const session = pgTable('session', {
+  id: text('id').primaryKey(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  token: text('token').notNull().unique(),
+  ipAddress: text('ip_address'),
+  userAgent: text('user_agent'),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+})
+
+// ─── Better Auth: account ────────────────────────────────
+export const account = pgTable('account', {
+  id: text('id').primaryKey(),
+  accountId: text('account_id').notNull(),
+  providerId: text('provider_id').notNull(),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  idToken: text('id_token'),
+  accessTokenExpiresAt: timestamp('access_token_expires_at', { withTimezone: true }),
+  refreshTokenExpiresAt: timestamp('refresh_token_expires_at', { withTimezone: true }),
+  scope: text('scope'),
+  password: text('password'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+})
+
+// ─── Better Auth: verification ───────────────────────────
+export const verification = pgTable('verification', {
+  id: text('id').primaryKey(),
+  identifier: text('identifier').notNull(),
+  value: text('value').notNull(),
+  expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true }),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+})
+
+// Alias for app code
+export const users = user
 
 // ─── User Battle Tags ────────────────────────────────────
 export const userBattleTags = pgTable('user_battle_tags', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   platform: text('platform').notNull(),
   tag: text('tag').notNull(),
   isPublic: boolean('is_public').default(true)
@@ -37,7 +82,7 @@ export const games = pgTable('games', {
 
 // ─── User Favorited Games ────────────────────────────────
 export const userFavoritedGames = pgTable('user_favorited_games', {
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   gameId: integer('game_id').notNull().references(() => games.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 }, (table) => [
@@ -46,8 +91,8 @@ export const userFavoritedGames = pgTable('user_favorited_games', {
 
 // ─── Friendships ─────────────────────────────────────────
 export const friendships = pgTable('friendships', {
-  senderId: uuid('sender_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  receiverId: uuid('receiver_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  senderId: text('sender_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  receiverId: text('receiver_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   status: text('status').notNull().default('pending'), // 'pending' | 'accepted' | 'rejected'
   notifDisabled: boolean('notif_disabled').default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
@@ -58,20 +103,20 @@ export const friendships = pgTable('friendships', {
 
 // ─── Communities ─────────────────────────────────────────
 export const communities = pgTable('communities', {
-  id: uuid('id').primaryKey().defaultRandom(),
+  id: text('id').primaryKey(),
   name: text('name').notNull(),
   slug: text('slug').notNull().unique(),
   description: text('description'),
   gameId: integer('game_id').references(() => games.id),
   isPublic: boolean('is_public').default(true),
-  createdBy: uuid('created_by').references(() => users.id),
+  createdBy: text('created_by').references(() => user.id),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 })
 
 // ─── Community Members ───────────────────────────────────
 export const communityMembers = pgTable('community_members', {
-  communityId: uuid('community_id').notNull().references(() => communities.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  communityId: text('community_id').notNull().references(() => communities.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   role: text('role').default('member'), // 'member' | 'moderator' | 'admin'
   notifPreference: text('notif_preference').default('all'), // 'all' | 'friends_only' | 'none'
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow()
@@ -81,10 +126,10 @@ export const communityMembers = pgTable('community_members', {
 
 // ─── Game Sessions ───────────────────────────────────────
 export const gameSessions = pgTable('game_sessions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  createdBy: uuid('created_by').notNull().references(() => users.id),
+  id: text('id').primaryKey(),
+  createdBy: text('created_by').notNull().references(() => user.id),
   gameId: integer('game_id').references(() => games.id),
-  communityId: uuid('community_id').references(() => communities.id),
+  communityId: text('community_id').references(() => communities.id),
   visibility: text('visibility').notNull().default('friends'), // 'friends' | 'community' | 'public'
   status: text('status').notNull().default('active'), // 'active' | 'expired' | 'closed'
   maxPlayers: integer('max_players'),
@@ -95,8 +140,8 @@ export const gameSessions = pgTable('game_sessions', {
 
 // ─── Game Session Participations ─────────────────────────
 export const gameSessionParticipations = pgTable('game_session_participations', {
-  sessionId: uuid('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  sessionId: text('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow()
 }, (table) => [
   primaryKey({ columns: [table.sessionId, table.userId] })
@@ -104,23 +149,23 @@ export const gameSessionParticipations = pgTable('game_session_participations', 
 
 // ─── Events ──────────────────────────────────────────────
 export const events = pgTable('events', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  createdBy: uuid('created_by').notNull().references(() => users.id),
-  communityId: uuid('community_id').references(() => communities.id),
+  id: text('id').primaryKey(),
+  createdBy: text('created_by').notNull().references(() => user.id),
+  communityId: text('community_id').references(() => communities.id),
   gameId: integer('game_id').references(() => games.id),
   title: text('title').notNull(),
   description: text('description'),
   visibility: text('visibility').notNull().default('friends'), // 'friends' | 'community' | 'public' | 'invite_only'
   scheduledAt: timestamp('scheduled_at', { withTimezone: true }).notNull(),
   discussion: text('discussion'),
-  sessionId: uuid('session_id').references(() => gameSessions.id),
+  sessionId: text('session_id').references(() => gameSessions.id),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 })
 
 // ─── Event Participations ────────────────────────────────
 export const eventParticipations = pgTable('event_participations', {
-  eventId: uuid('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  eventId: text('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   status: text('status').notNull().default('invited'), // 'invited' | 'accepted' | 'declined'
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 }, (table) => [
@@ -129,48 +174,48 @@ export const eventParticipations = pgTable('event_participations', {
 
 // ─── Event Polls ─────────────────────────────────────────
 export const eventPolls = pgTable('event_polls', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  eventId: uuid('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
+  id: text('id').primaryKey(),
+  eventId: text('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
   question: text('question').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 })
 
 // ─── Event Poll Options ──────────────────────────────────
 export const eventPollOptions = pgTable('event_poll_options', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  pollId: uuid('poll_id').notNull().references(() => eventPolls.id, { onDelete: 'cascade' }),
+  id: text('id').primaryKey(),
+  pollId: text('poll_id').notNull().references(() => eventPolls.id, { onDelete: 'cascade' }),
   label: text('label').notNull()
 })
 
 // ─── Event Poll Votes ────────────────────────────────────
 export const eventPollVotes = pgTable('event_poll_votes', {
-  optionId: uuid('option_id').notNull().references(() => eventPollOptions.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' })
+  optionId: text('option_id').notNull().references(() => eventPollOptions.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' })
 }, (table) => [
   primaryKey({ columns: [table.optionId, table.userId] })
 ])
 
 // ─── Event Comments ──────────────────────────────────────
 export const eventComments = pgTable('event_comments', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  eventId: uuid('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id').notNull().references(() => users.id),
+  id: text('id').primaryKey(),
+  eventId: text('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => user.id),
   content: text('content').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 })
 
 // ─── Push Subscriptions ──────────────────────────────────
 export const pushSubscriptions = pgTable('push_subscriptions', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   subscription: jsonb('subscription').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 })
 
 // ─── Notifications ───────────────────────────────────────
 export const notifications = pgTable('notifications', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   type: text('type').notNull(), // 'friend_request' | 'friend_accepted' | 'session_started' | 'event_created' | 'availability'
   payload: jsonb('payload'),
   read: boolean('read').default(false),
