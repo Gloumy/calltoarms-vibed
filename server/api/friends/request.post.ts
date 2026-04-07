@@ -49,5 +49,12 @@ export default defineEventHandler(async (event) => {
     status: 'pending'
   })
 
+  // Notify the receiver
+  await notifyUser(target.id, 'friend_request', {
+    title: 'Demande d\'ami',
+    body: `${session.user.username} veut t'ajouter en ami`,
+    url: '/'
+  }, { senderId: me, senderUsername: session.user.username })
+
   return { success: true, message: `Demande envoyée à ${target.username}` }
 })

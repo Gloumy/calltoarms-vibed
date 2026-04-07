@@ -46,5 +46,14 @@ export default defineEventHandler(async (event) => {
       )
     )
 
+  // Notify the sender if accepted
+  if (action === 'accept') {
+    await notifyUser(senderId, 'friend_accepted', {
+      title: 'Demande acceptée',
+      body: `${session.user.username} a accepté ta demande d'ami`,
+      url: '/'
+    }, { acceptedBy: me, acceptedByUsername: session.user.username })
+  }
+
   return { success: true, status: action === 'accept' ? 'accepted' : 'rejected' }
 })

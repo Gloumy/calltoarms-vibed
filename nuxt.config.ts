@@ -29,15 +29,15 @@ export default defineNuxtConfig({
 
   // Runtime config (env vars)
   runtimeConfig: {
-    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
-    databaseUrl: process.env.DATABASE_URL,
-    twitchClientId: process.env.TWITCH_CLIENT_ID,
-    twitchClientSecret: process.env.TWITCH_CLIENT_SECRET,
-    vapidPrivateKey: process.env.VAPID_PRIVATE_KEY,
-    vapidEmail: process.env.VAPID_EMAIL,
-    betterAuthSecret: process.env.BETTER_AUTH_SECRET,
+    baseUrl: '',
+    databaseUrl: '',
+    twitchClientId: '',
+    twitchClientSecret: '',
+    vapidPrivateKey: '',
+    vapidEmail: '',
+    betterAuthSecret: '',
     public: {
-      vapidPublicKey: process.env.NUXT_PUBLIC_VAPID_PUBLIC_KEY
+      vapidPublicKey: ''
     }
   },
 

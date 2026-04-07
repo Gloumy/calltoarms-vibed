@@ -1,7 +1,7 @@
 import pg from 'pg'
 import 'dotenv/config'
 
-const client = new pg.Client({ connectionString: process.env.DATABASE_URL })
+const client = new pg.Client({ connectionString: process.env.NUXT_DATABASE_URL || process.env.DATABASE_URL })
 
 let tokenCache: { value: string; expiresAt: number } | null = null
 
@@ -11,8 +11,8 @@ async function getToken() {
   const res = await fetch('https://id.twitch.tv/oauth2/token', {
     method: 'POST',
     body: new URLSearchParams({
-      client_id: process.env.TWITCH_CLIENT_ID!,
-      client_secret: process.env.TWITCH_CLIENT_SECRET!,
+      client_id: (process.env.NUXT_TWITCH_CLIENT_ID || process.env.TWITCH_CLIENT_ID)!,
+      client_secret: (process.env.NUXT_TWITCH_CLIENT_SECRET || process.env.TWITCH_CLIENT_SECRET)!,
       grant_type: 'client_credentials'
     })
   })
@@ -27,7 +27,7 @@ async function searchGames(query: string) {
   const res = await fetch('https://api.igdb.com/v4/games', {
     method: 'POST',
     headers: {
-      'Client-ID': process.env.TWITCH_CLIENT_ID!,
+      'Client-ID': (process.env.NUXT_TWITCH_CLIENT_ID || process.env.TWITCH_CLIENT_ID)!,
       'Authorization': `Bearer ${accessToken}`,
       'Content-Type': 'text/plain'
     },

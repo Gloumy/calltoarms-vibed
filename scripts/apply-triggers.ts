@@ -3,7 +3,7 @@ import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import 'dotenv/config'
 
-const client = new pg.Client({ connectionString: process.env.DATABASE_URL })
+const client = new pg.Client({ connectionString: process.env.NUXT_DATABASE_URL || process.env.DATABASE_URL })
 
 async function main() {
   await client.connect()
