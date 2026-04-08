@@ -11,10 +11,17 @@ const loadingSessions = ref(true)
 const showCreateModal = ref(false)
 
 // Availability state
-const isAvailable = computed(() =>
-  user.value?.availableUntil && new Date(user.value.availableUntil) > new Date()
-)
+const isAvailable = ref(false)
 const togglingAvailability = ref(false)
+
+async function fetchAvailability() {
+  try {
+    const data = await $fetch<any>('/api/users/availability')
+    isAvailable.value = data.available
+  } catch {
+    isAvailable.value = false
+  }
+}
 
 async function fetchSessions() {
   try {
@@ -33,9 +40,7 @@ async function toggleAvailability() {
       method: 'POST',
       body: isAvailable.value ? { clear: true } : { durationMinutes: 120 }
     })
-    // Refresh user data
-    const { fetchUser } = useAuth()
-    await fetchUser()
+    isAvailable.value = !isAvailable.value
   } catch {
     // silently handled
   } finally {
@@ -49,6 +54,7 @@ function onSessionCreated() {
 
 onMounted(() => {
   fetchSessions()
+  fetchAvailability()
 
   // Listen for realtime updates
   on('session:update', () => fetchSessions())
