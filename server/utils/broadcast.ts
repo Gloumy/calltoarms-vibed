@@ -1,5 +1,5 @@
-import { eq, or, and } from 'drizzle-orm'
-import { friendships } from '../db/schema'
+import { eq, or, and, sql } from 'drizzle-orm'
+import { friendships, gameSessionParticipations, gameSessions } from '../db/schema'
 import { peers } from '../routes/_ws'
 
 export async function getFriendIds(userId: string): Promise<string[]> {
@@ -22,13 +22,37 @@ export async function getFriendIds(userId: string): Promise<string[]> {
   )
 }
 
-export async function broadcastToFriends(userId: string, data: object) {
-  const friendIds = await getFriendIds(userId)
+export function broadcastToUserIds(userIds: string[], data: object) {
   const message = JSON.stringify(data)
-
-  for (const [, { peer, userId: peerId }] of peers) {
-    if (friendIds.includes(peerId)) {
+  for (const [, { peer, userId }] of peers) {
+    if (userIds.includes(userId)) {
       peer.send(message)
     }
   }
+}
+
+export async function broadcastToFriends(userId: string, data: object) {
+  const friendIds = await getFriendIds(userId)
+  broadcastToUserIds(friendIds, data)
+}
+
+export async function broadcastToSessionParticipants(sessionId: string, data: object, excludeUserId?: string) {
+  const db = useDB()
+  const rows = await db
+    .select({ userId: gameSessionParticipations.userId })
+    .from(gameSessionParticipations)
+    .where(eq(gameSessionParticipations.sessionId, sessionId))
+
+  // Also include the session creator (they may have left participations but still see the feed)
+  const [session] = await db
+    .select({ createdBy: gameSessions.createdBy })
+    .from(gameSessions)
+    .where(eq(gameSessions.id, sessionId))
+    .limit(1)
+
+  const userIds = new Set(rows.map(r => r.userId))
+  if (session) userIds.add(session.createdBy)
+  if (excludeUserId) userIds.delete(excludeUserId)
+
+  broadcastToUserIds([...userIds], data)
 }

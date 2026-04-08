@@ -7,9 +7,11 @@ const props = defineProps<{
     image: string | null
     isAvailable: boolean
     availableGameId: number | null
+    inSession: boolean
+    sessionGameName: string | null
     notifDisabled: boolean
   }
-  status: 'playing' | 'available' | 'online' | 'offline'
+  status: 'in_session' | 'playing' | 'available' | 'online' | 'offline'
 }>()
 
 const emit = defineEmits<{
@@ -18,6 +20,7 @@ const emit = defineEmits<{
 
 const statusDot = computed(() => {
   switch (props.status) {
+    case 'in_session': return 'bg-violet-500'
     case 'playing': return 'bg-violet-500'
     case 'available': return 'bg-teal-500'
     case 'online': return 'bg-green-500'
@@ -27,6 +30,7 @@ const statusDot = computed(() => {
 
 const statusLabel = computed(() => {
   switch (props.status) {
+    case 'in_session': return props.friend.sessionGameName ? `En session — ${props.friend.sessionGameName}` : 'En session'
     case 'playing': return 'En jeu'
     case 'available': return 'Disponible'
     case 'online': return 'En ligne'

@@ -19,10 +19,12 @@ export default defineNitroPlugin(async () => {
       const payload = JSON.parse(msg.payload ?? '{}')
 
       if (msg.channel === 'session_changes') {
-        broadcastToFriends(payload.created_by, {
-          type: 'session:update',
-          payload
-        })
+        const data = { type: 'session:update', payload }
+        // Notify both session participants and creator's friends
+        if (payload.id) {
+          broadcastToSessionParticipants(payload.id, data)
+        }
+        broadcastToFriends(payload.created_by, data)
       }
 
       if (msg.channel === 'availability_changes') {

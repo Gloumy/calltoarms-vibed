@@ -1,5 +1,5 @@
-import { eq, or, and } from 'drizzle-orm'
-import { friendships, user } from '../../db/schema'
+import { eq, or, and, gt, inArray } from 'drizzle-orm'
+import { friendships, user, gameSessions, gameSessionParticipations, games } from '../../db/schema'
 import { getOnlineUserIds } from '../../routes/_ws'
 
 export default defineEventHandler(async (event) => {
@@ -43,7 +43,29 @@ export default defineEventHandler(async (event) => {
     .from(user)
     .where(or(...friendIds.map(id => eq(user.id, id))))
 
-  // Merge online + availability info
+  // Get active session participation for each friend
+  const activeSessions = await db
+    .select({
+      userId: gameSessionParticipations.userId,
+      gameName: games.name
+    })
+    .from(gameSessionParticipations)
+    .innerJoin(gameSessions, eq(gameSessions.id, gameSessionParticipations.sessionId))
+    .leftJoin(games, eq(games.id, gameSessions.gameId))
+    .where(
+      and(
+        eq(gameSessions.status, 'active'),
+        gt(gameSessions.expiresAt, new Date()),
+        inArray(gameSessionParticipations.userId, friendIds)
+      )
+    )
+
+  const inSessionMap = new Map<string, string | null>()
+  for (const row of activeSessions) {
+    inSessionMap.set(row.userId, row.gameName ?? null)
+  }
+
+  // Merge online + availability + session info
   const onlineIds = getOnlineUserIds()
 
   return friends.map(f => {
@@ -55,6 +77,8 @@ export default defineEventHandler(async (event) => {
       ...f,
       isOnline: onlineIds.has(f.id),
       isAvailable: f.availableUntil !== null && new Date(f.availableUntil) > new Date(),
+      inSession: inSessionMap.has(f.id),
+      sessionGameName: inSessionMap.get(f.id) ?? null,
       notifDisabled: friendship?.notifDisabled ?? false
     }
   })

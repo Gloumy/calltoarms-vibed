@@ -29,6 +29,11 @@ const emit = defineEmits<{
 
 const { user } = useAuth()
 const joining = ref(false)
+const leaving = ref(false)
+const showSwitchConfirm = ref(false)
+const switchFromSession = ref<{ id: string; gameName: string | null } | null>(null)
+const showLeaveConfirm = ref(false)
+const leaveInfo = ref<{ hasOthers: boolean; nextLeader: { id: string; username: string } | null } | null>(null)
 
 const sessionStatus = computed(() => {
   const now = new Date()
@@ -65,17 +70,66 @@ const canJoin = computed(() =>
   && sessionStatus.value !== 'full'
 )
 
-async function joinSession() {
+async function joinSession(force = false) {
   joining.value = true
   try {
-    await $fetch(`/api/sessions/${props.session.id}/join`, { method: 'POST' })
+    await $fetch(`/api/sessions/${props.session.id}/join`, {
+      method: 'POST',
+      body: force ? { force: true } : {}
+    })
     emit('join', props.session.id)
+    emit('refresh')
+  } catch (e: any) {
+    // Already in another session — show confirmation
+    if (e.data?.data?.code === 'ALREADY_IN_SESSION') {
+      switchFromSession.value = {
+        id: e.data.data.currentSessionId,
+        gameName: e.data.data.currentSessionGameName
+      }
+      showSwitchConfirm.value = true
+      return
+    }
+  } finally {
+    joining.value = false
+  }
+}
+
+async function confirmSwitch() {
+  showSwitchConfirm.value = false
+  switchFromSession.value = null
+  await joinSession(true)
+}
+
+async function leaveSession(confirm = false) {
+  leaving.value = true
+  try {
+    const result = await $fetch<any>(`/api/sessions/${props.session.id}/leave`, {
+      method: 'POST',
+      body: confirm ? { confirm: true } : {}
+    })
+
+    // Server asks for confirmation (creator leaving)
+    if (result.needsConfirm) {
+      leaveInfo.value = {
+        hasOthers: result.hasOthers,
+        nextLeader: result.nextLeader
+      }
+      showLeaveConfirm.value = true
+      return
+    }
+
     emit('refresh')
   } catch {
     // handled silently
   } finally {
-    joining.value = false
+    leaving.value = false
   }
+}
+
+async function confirmLeave() {
+  showLeaveConfirm.value = false
+  leaveInfo.value = null
+  await leaveSession(true)
 }
 </script>
 
@@ -164,25 +218,95 @@ async function joinSession() {
               :loading="joining"
               @click="joinSession"
             />
-            <UBadge
+            <UButton
               v-else-if="session.has_joined && !isOwner"
-              color="primary"
-              variant="subtle"
+              label="Quitter"
+              icon="i-lucide-log-out"
+              variant="outline"
+              color="error"
               size="xs"
-            >
-              Rejoint
-            </UBadge>
-            <UBadge
+              :loading="leaving"
+              @click="leaveSession"
+            />
+            <UButton
               v-else-if="isOwner"
-              color="neutral"
-              variant="subtle"
+              label="Quitter"
+              icon="i-lucide-log-out"
+              variant="outline"
+              color="error"
               size="xs"
-            >
-              Ma session
-            </UBadge>
+              :loading="leaving"
+              @click="leaveSession()"
+            />
           </div>
         </div>
       </div>
     </div>
+    <!-- Switch session confirmation -->
+    <UModal :open="showSwitchConfirm" @update:open="showSwitchConfirm = $event">
+      <template #header>
+        <h3 class="text-lg font-semibold">
+          Changer de session
+        </h3>
+      </template>
+
+      <template #body>
+        <p class="text-sm mb-4">
+          Tu es deja dans une session<span v-if="switchFromSession?.gameName"> ({{ switchFromSession.gameName }})</span>.
+          Veux-tu la quitter pour rejoindre celle-ci ?
+        </p>
+        <div class="flex gap-2 justify-end">
+          <UButton
+            label="Annuler"
+            variant="outline"
+            color="neutral"
+            size="sm"
+            @click="showSwitchConfirm = false"
+          />
+          <UButton
+            label="Quitter et rejoindre"
+            icon="i-lucide-arrow-right-left"
+            size="sm"
+            @click="confirmSwitch"
+          />
+        </div>
+      </template>
+    </UModal>
+
+    <!-- Owner leave confirmation -->
+    <UModal :open="showLeaveConfirm" @update:open="showLeaveConfirm = $event">
+      <template #header>
+        <h3 class="text-lg font-semibold">
+          Quitter ta session
+        </h3>
+      </template>
+
+      <template #body>
+        <p v-if="leaveInfo?.hasOthers" class="text-sm mb-4">
+          Le lead sera transfere a <strong>{{ leaveInfo.nextLeader?.username }}</strong>.
+          Tu veux continuer ?
+        </p>
+        <p v-else class="text-sm mb-4">
+          Il n'y a aucun autre joueur. La session sera fermee.
+          Tu veux continuer ?
+        </p>
+        <div class="flex gap-2 justify-end">
+          <UButton
+            label="Annuler"
+            variant="outline"
+            color="neutral"
+            size="sm"
+            @click="showLeaveConfirm = false"
+          />
+          <UButton
+            :label="leaveInfo?.hasOthers ? 'Transferer et quitter' : 'Fermer la session'"
+            :icon="leaveInfo?.hasOthers ? 'i-lucide-arrow-right-left' : 'i-lucide-x'"
+            color="error"
+            size="sm"
+            @click="confirmLeave"
+          />
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>

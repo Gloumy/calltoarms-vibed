@@ -44,20 +44,24 @@ async function toggleNotif(friendId: string, disabled: boolean) {
 }
 
 // Categorize friends
+const inSessionFriends = computed(() =>
+  friends.value.filter(f => f.inSession)
+)
+
 const playingFriends = computed(() =>
-  friends.value.filter(f => f.isAvailable && f.availableGameId)
+  friends.value.filter(f => !f.inSession && f.isAvailable && f.availableGameId)
 )
 
 const availableFriends = computed(() =>
-  friends.value.filter(f => f.isAvailable && !f.availableGameId)
+  friends.value.filter(f => !f.inSession && f.isAvailable && !f.availableGameId)
 )
 
 const onlineFriends = computed(() =>
-  friends.value.filter(f => !f.isAvailable && f.isOnline)
+  friends.value.filter(f => !f.inSession && !f.isAvailable && f.isOnline)
 )
 
 const offlineFriends = computed(() =>
-  friends.value.filter(f => !f.isAvailable && !f.isOnline)
+  friends.value.filter(f => !f.inSession && !f.isAvailable && !f.isOnline)
 )
 
 // Poll friends every 30s to catch online status changes
@@ -128,6 +132,20 @@ watch(() => user.value, async (newUser) => {
           @click="respondToRequest(req.senderId, 'reject')"
         />
       </div>
+    </div>
+
+    <!-- In session -->
+    <div v-if="inSessionFriends.length > 0" class="mb-3">
+      <h4 class="px-4 text-xs font-semibold text-muted mb-1">
+        En session — {{ inSessionFriends.length }}
+      </h4>
+      <FriendRow
+        v-for="f in inSessionFriends"
+        :key="f.id"
+        :friend="f"
+        status="in_session"
+        @toggle-notif="toggleNotif"
+      />
     </div>
 
     <!-- Playing -->
