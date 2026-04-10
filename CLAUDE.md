@@ -88,7 +88,7 @@ Voir `.env.example` pour la liste complète. `DATABASE_URL`, `BETTER_AUTH_SECRET
 - [x] Phase 4 — Amis (demandes, liste, statuts, sidebar realtime)
 - [x] Phase 5 — Notifications push (VAPID, service worker, subscriptions)
 - [x] Phase 6 — Sessions (création, rejoindre, expiration, feed, disponibilité, recherche jeux)
-- [ ] Phase 7 — Jeux (page jeux, grille, favoris)
+- [x] Phase 7 — Jeux (page jeux, grille, favoris, recherche IGDB)
 - [ ] Phase 8 — Événements (CRUD, participation, sondages, commentaires)
 - [ ] Phase 9 — Communautés (CRUD, membres, préférences notif)
 - [ ] Phase 10 — Profil & Admin
