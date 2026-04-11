@@ -248,10 +248,7 @@ onMounted(() => {
               <span v-if="community.game_name" class="mx-1">&middot;</span>
               <span v-if="community.game_name">{{ community.game_name }}</span>
               <span class="mx-1">&middot;</span>
-              <span class="inline-flex items-center gap-1">
-                <UAvatar :src="community.creator_avatar ?? undefined" :alt="community.creator_name" size="3xs" />
-                {{ community.creator_name }}
-              </span>
+              <UserPopover :user-id="community.created_by" :name="community.creator_name" :avatar="community.creator_avatar" />
             </p>
           </div>
 
@@ -445,7 +442,9 @@ onMounted(() => {
               </div>
               <div class="flex-1 min-w-0">
                 <p class="text-sm">
-                  <span class="font-medium">{{ item.creator_name }}</span>
+                  <UserPopover :user-id="item.created_by" :name="item.creator_name" :avatar="null">
+                    <span class="font-medium cursor-pointer hover:underline">{{ item.creator_name }}</span>
+                  </UserPopover>
                   <template v-if="item.type === 'session'">
                     a lance une session
                     <span v-if="item.game_name" class="text-violet-500">{{ item.game_name }}</span>
@@ -478,8 +477,12 @@ onMounted(() => {
               :key="m.user_id"
               class="flex items-center gap-2 px-2 py-1.5 rounded-md group"
             >
-              <UAvatar :src="m.image ?? undefined" :alt="m.username" size="2xs" />
-              <span class="text-sm flex-1 truncate">{{ m.username }}</span>
+              <UserPopover :user-id="m.user_id" :name="m.username" :avatar="m.image">
+                <span class="inline-flex items-center gap-2 cursor-pointer">
+                  <UAvatar :src="m.image ?? undefined" :alt="m.username" size="2xs" />
+                  <span class="text-sm truncate">{{ m.username }}</span>
+                </span>
+              </UserPopover>
               <UBadge v-if="m.role === 'admin'" color="warning" variant="subtle" size="xs">
                 Admin
               </UBadge>

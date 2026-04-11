@@ -184,10 +184,7 @@ async function confirmLeave() {
 
         <!-- Creator + time -->
         <p class="text-sm text-muted mb-2">
-          <span class="inline-flex items-center gap-1">
-            <UAvatar :src="session.creator_avatar ?? undefined" :alt="session.creator_name" size="3xs" />
-            {{ session.creator_name }}
-          </span>
+          <UserPopover :user-id="session.created_by" :name="session.creator_name" :avatar="session.creator_avatar" />
           <span class="mx-1">&middot;</span>
           <span>{{ timeLeft }} restantes</span>
           <span v-if="session.community_name" class="mx-1">&middot;</span>

@@ -66,7 +66,7 @@ export default defineEventHandler(async (event) => {
   // Get recent activity (sessions + events in this community)
   const activity = await db.execute(sql`
     (
-      SELECT 'session' AS type, gs.id, gs.created_at, u.username AS creator_name,
+      SELECT 'session' AS type, gs.id, gs.created_at, gs.created_by, u.username AS creator_name,
         g.name AS game_name, NULL AS title,
         gs.status, gs.expires_at,
         (SELECT COUNT(*)::int FROM game_session_participations gsp WHERE gsp.session_id = gs.id) AS participant_count
@@ -79,7 +79,7 @@ export default defineEventHandler(async (event) => {
     )
     UNION ALL
     (
-      SELECT 'event' AS type, e.id, e.created_at, u.username AS creator_name,
+      SELECT 'event' AS type, e.id, e.created_at, e.created_by, u.username AS creator_name,
         g.name AS game_name, e.title,
         NULL AS status, e.scheduled_at AS expires_at,
         (SELECT COUNT(*)::int FROM event_participations ep WHERE ep.event_id = e.id AND ep.status = 'accepted') AS participant_count

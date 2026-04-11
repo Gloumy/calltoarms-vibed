@@ -227,10 +227,7 @@ onUnmounted(() => {
               <span v-if="eventData.game_name">{{ eventData.game_name }}</span>
             </p>
             <p class="text-sm text-muted mt-1">
-              <span class="inline-flex items-center gap-1">
-                <UAvatar :src="eventData.creator_avatar ?? undefined" :alt="eventData.creator_name" size="3xs" />
-                {{ eventData.creator_name }}
-              </span>
+              <UserPopover :user-id="eventData.created_by" :name="eventData.creator_name" :avatar="eventData.creator_avatar" />
               <span v-if="eventData.community_name" class="mx-1">&middot;</span>
               <span v-if="eventData.community_name" class="text-violet-500">{{ eventData.community_name }}</span>
             </p>
@@ -286,8 +283,12 @@ onUnmounted(() => {
             :key="p.userId"
             class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-elevated text-sm"
           >
-            <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
-            {{ p.username }}
+            <UserPopover :user-id="p.userId" :name="p.username" :avatar="p.image">
+              <span class="inline-flex items-center gap-1.5 cursor-pointer">
+                <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
+                {{ p.username }}
+              </span>
+            </UserPopover>
           </div>
           <p v-if="!eventData.participants?.some((p: any) => p.status === 'accepted')" class="text-sm text-muted">
             Aucun participant pour l'instant.
@@ -305,8 +306,12 @@ onUnmounted(() => {
               :key="p.userId"
               class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-elevated text-sm opacity-75"
             >
-              <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
-              {{ p.username }}
+              <UserPopover :user-id="p.userId" :name="p.username" :avatar="p.image">
+                <span class="inline-flex items-center gap-1.5 cursor-pointer">
+                  <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
+                  {{ p.username }}
+                </span>
+              </UserPopover>
             </div>
           </div>
         </template>
@@ -322,8 +327,12 @@ onUnmounted(() => {
               :key="p.userId"
               class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-elevated text-sm opacity-50"
             >
-              <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
-              {{ p.username }}
+              <UserPopover :user-id="p.userId" :name="p.username" :avatar="p.image">
+                <span class="inline-flex items-center gap-1.5 cursor-pointer">
+                  <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
+                  {{ p.username }}
+                </span>
+              </UserPopover>
             </div>
           </div>
         </template>
@@ -464,7 +473,9 @@ onUnmounted(() => {
             <UAvatar :src="comment.userImage ?? undefined" :alt="comment.username" size="xs" class="shrink-0 mt-0.5" />
             <div>
               <div class="flex items-baseline gap-2">
-                <span class="text-sm font-medium">{{ comment.username }}</span>
+                <UserPopover :user-id="comment.userId" :name="comment.username" :avatar="comment.userImage">
+                  <span class="text-sm font-medium cursor-pointer hover:underline">{{ comment.username }}</span>
+                </UserPopover>
                 <span class="text-xs text-muted">{{ commentTime(comment.createdAt) }}</span>
               </div>
               <p class="text-sm">

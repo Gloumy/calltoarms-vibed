@@ -85,10 +85,7 @@ const statusBadge = computed(() => {
         </p>
 
         <p class="text-sm text-muted">
-          <span class="inline-flex items-center gap-1">
-            <UAvatar :src="event.creator_avatar ?? undefined" :alt="event.creator_name" size="3xs" />
-            {{ event.creator_name }}
-          </span>
+          <UserPopover :user-id="event.created_by" :name="event.creator_name" :avatar="event.creator_avatar" />
           <span class="mx-1">&middot;</span>
           <UIcon name="i-lucide-users" class="size-3.5 inline-block mr-0.5" />
           {{ event.accepted_count }} participant{{ event.accepted_count > 1 ? 's' : '' }}

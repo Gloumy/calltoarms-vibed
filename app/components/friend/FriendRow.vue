@@ -44,22 +44,25 @@ const statusLabel = computed(() => {
     class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-elevated transition-colors"
     :class="{ 'opacity-45': status === 'offline' }"
   >
-    <div class="relative">
-      <UAvatar :src="friend.image ?? undefined" :alt="friend.username" size="xs" />
-      <span
-        class="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-default"
-        :class="statusDot"
-      />
-    </div>
-
-    <div class="flex-1 min-w-0">
-      <p class="text-sm font-medium truncate">
-        {{ friend.username }}
-      </p>
-      <p class="text-xs truncate" :class="status === 'playing' ? 'text-violet-500' : 'text-muted'">
-        {{ statusLabel }}
-      </p>
-    </div>
+    <UserPopover :user-id="friend.id" :name="friend.username" :avatar="friend.image">
+      <div class="flex items-center gap-2 cursor-pointer">
+        <div class="relative">
+          <UAvatar :src="friend.image ?? undefined" :alt="friend.username" size="xs" />
+          <span
+            class="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-default"
+            :class="statusDot"
+          />
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium truncate">
+            {{ friend.username }}
+          </p>
+          <p class="text-xs truncate" :class="status === 'playing' ? 'text-violet-500' : 'text-muted'">
+            {{ statusLabel }}
+          </p>
+        </div>
+      </div>
+    </UserPopover>
 
     <UButton
       :icon="friend.notifDisabled ? 'i-lucide-bell-off' : 'i-lucide-bell'"
