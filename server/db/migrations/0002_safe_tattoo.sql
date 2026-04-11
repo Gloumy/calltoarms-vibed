@@ -1,0 +1,1 @@
+ALTER TABLE "community_members" ADD COLUMN "status" text DEFAULT 'active' NOT NULL;

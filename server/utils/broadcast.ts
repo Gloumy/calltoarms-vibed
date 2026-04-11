@@ -1,5 +1,5 @@
 import { eq, or, and, sql } from 'drizzle-orm'
-import { friendships, gameSessionParticipations, gameSessions } from '../db/schema'
+import { friendships, gameSessionParticipations, gameSessions, communityMembers } from '../db/schema'
 import { peers } from '../routes/_ws'
 
 export async function getFriendIds(userId: string): Promise<string[]> {
@@ -55,4 +55,18 @@ export async function broadcastToSessionParticipants(sessionId: string, data: ob
   if (excludeUserId) userIds.delete(excludeUserId)
 
   broadcastToUserIds([...userIds], data)
+}
+
+export async function broadcastToCommunityMembers(communityId: string, data: object, excludeUserId?: string) {
+  const db = useDB()
+  const rows = await db
+    .select({ userId: communityMembers.userId })
+    .from(communityMembers)
+    .where(and(
+      eq(communityMembers.communityId, communityId),
+      eq(communityMembers.status, 'active')
+    ))
+
+  const userIds = rows.map(r => r.userId).filter(id => id !== excludeUserId)
+  broadcastToUserIds(userIds, data)
 }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   open: boolean
+  communityId?: string
 }>()
 
 const emit = defineEmits<{
@@ -79,7 +80,8 @@ async function createEvent() {
         title: title.value.trim(),
         description: description.value.trim() || null,
         gameId: selectedGame.value?.id ?? null,
-        visibility: visibility.value,
+        visibility: props.communityId ? 'community' : visibility.value,
+        communityId: props.communityId ?? null,
         scheduledAt: new Date(scheduledAt.value).toISOString(),
         discussion: discussion.value.trim() || null,
         invitedUserIds: visibility.value === 'invite_only' ? [...selectedFriendIds.value] : undefined
@@ -146,8 +148,8 @@ async function createEvent() {
           />
         </UFormField>
 
-        <!-- Visibility -->
-        <UFormField label="Visibilite" name="visibility">
+        <!-- Visibility (hidden when scoped to a community) -->
+        <UFormField v-if="!props.communityId" label="Visibilite" name="visibility">
           <div class="flex flex-wrap gap-2">
             <UButton
               v-for="opt in visibilityOptions"

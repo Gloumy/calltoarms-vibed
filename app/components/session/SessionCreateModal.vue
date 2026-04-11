@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   open: boolean
+  communityId?: string
 }>()
 
 const emit = defineEmits<{
@@ -37,7 +38,8 @@ async function createSession() {
       method: 'POST',
       body: {
         gameId: selectedGame.value?.id ?? null,
-        visibility: visibility.value,
+        visibility: props.communityId ? 'community' : visibility.value,
+        communityId: props.communityId ?? null,
         durationMinutes: duration.value || null,
         maxPlayers: maxPlayers.value || null,
         discussion: discussion.value.trim() || null
@@ -74,8 +76,8 @@ async function createSession() {
           <GameSearch v-model="selectedGame" />
         </UFormField>
 
-        <!-- Visibility -->
-        <UFormField label="Visibilite" name="visibility">
+        <!-- Visibility (hidden when scoped to a community) -->
+        <UFormField v-if="!props.communityId" label="Visibilite" name="visibility">
           <div class="flex gap-2">
             <UButton
               v-for="opt in visibilityOptions"

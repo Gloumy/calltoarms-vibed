@@ -90,5 +90,5 @@ Voir `.env.example` pour la liste complète. `DATABASE_URL`, `BETTER_AUTH_SECRET
 - [x] Phase 6 — Sessions (création, rejoindre, expiration, feed, disponibilité, recherche jeux)
 - [x] Phase 7 — Jeux (page jeux, grille, favoris, recherche IGDB)
 - [x] Phase 8 — Événements (CRUD, participation, sondages, commentaires)
-- [ ] Phase 9 — Communautés (CRUD, membres, préférences notif)
+- [x] Phase 9 — Communautés (CRUD, membres, préférences notif)
 - [ ] Phase 10 — Profil & Admin

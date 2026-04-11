@@ -109,6 +109,7 @@ export const communities = pgTable('communities', {
   description: text('description'),
   gameId: integer('game_id').references(() => games.id),
   isPublic: boolean('is_public').default(true),
+  inviteCode: text('invite_code').unique(),
   createdBy: text('created_by').references(() => user.id),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
 })
@@ -118,6 +119,7 @@ export const communityMembers = pgTable('community_members', {
   communityId: text('community_id').notNull().references(() => communities.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   role: text('role').default('member'), // 'member' | 'moderator' | 'admin'
+  status: text('status').notNull().default('active'), // 'active' | 'invited' | 'declined'
   notifPreference: text('notif_preference').default('all'), // 'all' | 'friends_only' | 'none'
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow()
 }, (table) => [

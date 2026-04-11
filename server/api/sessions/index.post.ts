@@ -40,10 +40,18 @@ export default defineEventHandler(async (event) => {
     userId: me
   })
 
-  // Notify friends
-  const friendIds = await getFriendIds(me)
   const username = session.user.username || session.user.name
 
+  if (communityId) {
+    // Notify community members
+    await broadcastToCommunityMembers(communityId, {
+      type: 'session:update',
+      payload: { id, createdBy: me, communityId }
+    }, me)
+  }
+
+  // Always notify friends
+  const friendIds = await getFriendIds(me)
   await Promise.all(
     friendIds.map(friendId =>
       notifyUser(friendId, 'session_started', {
@@ -54,7 +62,7 @@ export default defineEventHandler(async (event) => {
     )
   )
 
-  // Broadcast via WebSocket
+  // Broadcast via WebSocket to friends
   await broadcastToFriends(me, {
     type: 'session:update',
     payload: { id, createdBy: me }
