@@ -12,6 +12,7 @@ export const user = pgTable('user', {
   // Custom fields
   username: text('username').notNull().unique(),
   language: text('language').default('fr'),
+  isAdmin: boolean('is_admin').default(false),
   availableUntil: timestamp('available_until', { withTimezone: true }),
   availableGameId: integer('available_game_id').references(() => games.id)
 })
