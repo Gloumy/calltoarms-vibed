@@ -166,7 +166,7 @@ export const events = pgTable('events', {
 export const eventParticipations = pgTable('event_participations', {
   eventId: text('event_id').notNull().references(() => events.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
-  status: text('status').notNull().default('invited'), // 'invited' | 'accepted' | 'declined'
+  status: text('status').notNull().default('invited'), // 'invited' | 'accepted' | 'declined' | 'maybe'
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
 }, (table) => [
   primaryKey({ columns: [table.eventId, table.userId] })
