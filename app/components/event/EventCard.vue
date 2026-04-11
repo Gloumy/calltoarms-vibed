@@ -49,48 +49,48 @@ const statusBadge = computed(() => {
 <template>
   <NuxtLink
     :to="`/events/${event.id}`"
-    class="block h-full rounded-lg border border-default bg-default p-4 hover:border-violet-500/50 transition-colors"
+    class="block h-full rounded-lg border border-default bg-default overflow-hidden hover:border-violet-500/50 transition-colors"
   >
-    <div class="flex gap-3">
-      <!-- Game thumbnail -->
+    <div class="flex h-full">
+      <!-- Game thumbnail — full bleed -->
       <img
         v-if="event.game_cover_url"
         :src="event.game_cover_url"
         :alt="event.game_name ?? ''"
-        class="w-10 h-14 rounded object-cover shrink-0"
+        class="w-16 object-cover shrink-0"
       >
       <div
         v-else
-        class="w-10 h-14 rounded bg-violet-500/20 text-violet-500 flex items-center justify-center shrink-0"
+        class="w-16 bg-violet-500/20 text-violet-500 flex items-center justify-center shrink-0"
       >
         <UIcon name="i-lucide-calendar" class="size-5" />
       </div>
 
       <!-- Content -->
-      <div class="flex-1 min-w-0">
+      <div class="flex-1 min-w-0 p-4">
         <div class="flex items-center gap-2 mb-1">
-          <h3 class="text-sm font-semibold truncate">
+          <h3 class="text-base font-semibold truncate">
             {{ event.title }}
           </h3>
-          <UBadge v-if="statusBadge" :color="statusBadge.color" variant="subtle" size="xs">
+          <UBadge v-if="statusBadge" :color="statusBadge.color" variant="subtle" size="sm">
             {{ statusBadge.label }}
           </UBadge>
         </div>
 
-        <p class="text-xs text-muted mb-1">
-          <UIcon name="i-lucide-clock" class="size-3 inline-block mr-0.5" />
+        <p class="text-sm text-muted mb-1">
+          <UIcon name="i-lucide-clock" class="size-3.5 inline-block mr-0.5" />
           {{ scheduledDate }}
           <span v-if="event.game_name" class="mx-1">&middot;</span>
           <span v-if="event.game_name">{{ event.game_name }}</span>
         </p>
 
-        <p class="text-xs text-muted">
+        <p class="text-sm text-muted">
           <span class="inline-flex items-center gap-1">
             <UAvatar :src="event.creator_avatar ?? undefined" :alt="event.creator_name" size="3xs" />
             {{ event.creator_name }}
           </span>
           <span class="mx-1">&middot;</span>
-          <UIcon name="i-lucide-users" class="size-3 inline-block mr-0.5" />
+          <UIcon name="i-lucide-users" class="size-3.5 inline-block mr-0.5" />
           {{ event.accepted_count }} participant{{ event.accepted_count > 1 ? 's' : '' }}
           <template v-if="event.maybe_count > 0">
             + {{ event.maybe_count }} peut-etre

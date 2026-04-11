@@ -134,32 +134,32 @@ async function confirmLeave() {
 </script>
 
 <template>
-  <div class="rounded-lg border border-default bg-default p-4 border-l-2 border-l-violet-500">
-    <div class="flex gap-3">
-      <!-- Game thumbnail -->
+  <div class="h-full rounded-lg border border-default bg-default overflow-hidden border-l-2 border-l-violet-500">
+    <div class="flex h-full">
+      <!-- Game thumbnail — full bleed -->
       <img
         v-if="session.game_cover_url"
         :src="session.game_cover_url"
         :alt="session.game_name ?? ''"
-        class="w-12 h-16 rounded object-cover shrink-0"
+        class="w-16 object-cover shrink-0"
       >
       <div
         v-else-if="session.game_name"
-        class="w-12 h-16 rounded bg-violet-500/20 text-violet-500 flex items-center justify-center text-lg font-bold shrink-0"
+        class="w-16 bg-violet-500/20 text-violet-500 flex items-center justify-center text-lg font-bold shrink-0"
       >
         {{ session.game_name.charAt(0) }}
       </div>
       <div
         v-else
-        class="w-12 h-16 rounded bg-violet-500/20 text-violet-500 flex items-center justify-center shrink-0"
+        class="w-16 bg-violet-500/20 text-violet-500 flex items-center justify-center shrink-0"
       >
         <UIcon name="i-lucide-gamepad-2" class="size-5" />
       </div>
 
       <!-- Content -->
-      <div class="flex-1 min-w-0">
+      <div class="flex-1 min-w-0 p-4">
         <div class="flex items-center gap-2 mb-1">
-          <h3 class="text-sm font-semibold truncate">
+          <h3 class="text-base font-semibold truncate">
             {{ session.game_name || 'Session libre' }}
           </h3>
 
@@ -168,7 +168,7 @@ async function confirmLeave() {
             v-if="sessionStatus === 'full'"
             color="error"
             variant="subtle"
-            size="xs"
+            size="sm"
           >
             Complet
           </UBadge>
@@ -176,14 +176,14 @@ async function confirmLeave() {
             v-else-if="sessionStatus === 'expires_soon'"
             color="warning"
             variant="subtle"
-            size="xs"
+            size="sm"
           >
             Expire bientot
           </UBadge>
         </div>
 
         <!-- Creator + time -->
-        <p class="text-xs text-muted mb-2">
+        <p class="text-sm text-muted mb-2">
           <span class="inline-flex items-center gap-1">
             <UAvatar :src="session.creator_avatar ?? undefined" :alt="session.creator_name" size="3xs" />
             {{ session.creator_name }}
@@ -196,8 +196,8 @@ async function confirmLeave() {
 
         <!-- Players + join -->
         <div class="flex items-center justify-between">
-          <span class="text-xs text-muted">
-            <UIcon name="i-lucide-users" class="size-3.5 inline-block mr-1" />
+          <span class="text-sm text-muted">
+            <UIcon name="i-lucide-users" class="size-4 inline-block mr-1" />
             {{ playersLabel }}
           </span>
 

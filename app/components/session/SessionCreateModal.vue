@@ -11,11 +11,34 @@ const emit = defineEmits<{
 
 const selectedGame = ref<any>(null)
 const visibility = ref('friends')
+const selectedCommunityId = ref<string | null>(null)
 const duration = ref(120)
 const maxPlayers = ref<number | undefined>(undefined)
 const discussion = ref('')
 const loading = ref(false)
 const error = ref('')
+
+// Communities for community visibility
+const myCommunities = ref<any[]>([])
+const loadingCommunities = ref(false)
+
+async function fetchMyCommunities() {
+  if (myCommunities.value.length > 0) return
+  loadingCommunities.value = true
+  try {
+    const all = await $fetch<any[]>('/api/communities')
+    myCommunities.value = all.filter(c => c.is_member)
+  } catch {
+    myCommunities.value = []
+  } finally {
+    loadingCommunities.value = false
+  }
+}
+
+watch(visibility, (v) => {
+  if (v === 'community') fetchMyCommunities()
+  else selectedCommunityId.value = null
+})
 
 const visibilityOptions = [
   { label: 'Amis', value: 'friends', icon: 'i-lucide-users' },
@@ -39,7 +62,7 @@ async function createSession() {
       body: {
         gameId: selectedGame.value?.id ?? null,
         visibility: props.communityId ? 'community' : visibility.value,
-        communityId: props.communityId ?? null,
+        communityId: props.communityId ?? selectedCommunityId.value ?? null,
         durationMinutes: duration.value || null,
         maxPlayers: maxPlayers.value || null,
         discussion: discussion.value.trim() || null
@@ -48,6 +71,7 @@ async function createSession() {
     // Reset form
     selectedGame.value = null
     visibility.value = 'friends'
+    selectedCommunityId.value = null
     duration.value = 120
     maxPlayers.value = undefined
     discussion.value = ''
@@ -88,6 +112,28 @@ async function createSession() {
               :color="visibility === opt.value ? 'primary' : 'neutral'"
               size="sm"
               @click="visibility = opt.value"
+            />
+          </div>
+        </UFormField>
+
+        <!-- Community selector (when visibility = community) -->
+        <UFormField v-if="!props.communityId && visibility === 'community'" label="Communaute" name="community">
+          <div v-if="loadingCommunities" class="text-sm text-muted py-2">
+            <UIcon name="i-lucide-loader-2" class="size-4 animate-spin inline-block mr-1" />
+            Chargement...
+          </div>
+          <div v-else-if="myCommunities.length === 0" class="text-sm text-muted py-2">
+            Vous n'etes membre d'aucune communaute.
+          </div>
+          <div v-else class="flex flex-wrap gap-2">
+            <UButton
+              v-for="c in myCommunities"
+              :key="c.id"
+              :label="c.name"
+              :variant="selectedCommunityId === c.id ? 'solid' : 'outline'"
+              :color="selectedCommunityId === c.id ? 'primary' : 'neutral'"
+              size="sm"
+              @click="selectedCommunityId = c.id"
             />
           </div>
         </UFormField>

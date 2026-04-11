@@ -145,7 +145,7 @@ onMounted(() => {
         />
       </div>
 
-      <div v-else class="space-y-3">
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
         <SessionCard
           v-for="s in sessions"
           :key="s.id"
