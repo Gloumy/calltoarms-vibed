@@ -14,6 +14,8 @@ const editUsername = ref('')
 const editImage = ref('')
 const saving = ref(false)
 const editError = ref('')
+const uploadingAvatar = ref(false)
+const avatarInput = ref<HTMLInputElement | null>(null)
 
 // Battle tags
 const newPlatform = ref('')
@@ -96,6 +98,33 @@ async function removeBattleTag(id: string) {
   await fetchProfile()
 }
 
+async function uploadAvatar(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+
+  uploadingAvatar.value = true
+  try {
+    const form = new FormData()
+    form.append('avatar', file)
+    const result = await $fetch<{ url: string }>('/api/users/avatar', {
+      method: 'POST',
+      body: form
+    })
+    // Update local state
+    if (profile.value?.user) {
+      profile.value.user.image = result.url
+    }
+    editImage.value = result.url
+    await fetchUser()
+  } catch (err: any) {
+    editError.value = err.data?.statusMessage || 'Erreur lors de l\'upload'
+  } finally {
+    uploadingAvatar.value = false
+    if (input) input.value = ''
+  }
+}
+
 function platformIcon(platform: string) {
   return platformOptions.find(p => p.value === platform)?.icon ?? 'i-lucide-gamepad-2'
 }
@@ -132,7 +161,20 @@ onMounted(() => {
       <!-- Profile card -->
       <div class="rounded-lg border border-default p-6 mb-6">
         <div v-if="!editing" class="flex items-center gap-4">
-          <UAvatar :src="profile.user.image ?? undefined" :alt="profile.user.username" size="xl" />
+          <div class="relative group cursor-pointer" @click="avatarInput?.click()">
+            <UAvatar :src="profile.user.image ?? undefined" :alt="profile.user.username" size="xl" />
+            <div class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              <UIcon v-if="!uploadingAvatar" name="i-lucide-camera" class="size-5 text-white" />
+              <UIcon v-else name="i-lucide-loader-2" class="size-5 text-white animate-spin" />
+            </div>
+            <input
+              ref="avatarInput"
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              class="hidden"
+              @change="uploadAvatar"
+            >
+          </div>
           <div class="flex-1">
             <h2 class="text-xl font-bold">{{ profile.user.username }}</h2>
             <p class="text-sm text-muted">{{ profile.user.email }}</p>
@@ -153,13 +195,23 @@ onMounted(() => {
         <!-- Edit form -->
         <div v-else class="space-y-4">
           <div class="flex items-center gap-4">
-            <UAvatar :src="editImage || undefined" :alt="editUsername" size="xl" />
+            <div class="relative group cursor-pointer" @click="avatarInput?.click()">
+              <UAvatar :src="editImage || undefined" :alt="editUsername" size="xl" />
+              <div class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <UIcon v-if="!uploadingAvatar" name="i-lucide-camera" class="size-5 text-white" />
+                <UIcon v-else name="i-lucide-loader-2" class="size-5 text-white animate-spin" />
+              </div>
+              <input
+                ref="avatarInput"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                class="hidden"
+                @change="uploadAvatar"
+              >
+            </div>
             <div class="flex-1 space-y-3">
               <UFormField label="Pseudo" name="username">
                 <UInput v-model="editUsername" class="w-full" />
-              </UFormField>
-              <UFormField label="URL de l'avatar (optionnel)" name="image">
-                <UInput v-model="editImage" placeholder="https://..." class="w-full" />
               </UFormField>
             </div>
           </div>
