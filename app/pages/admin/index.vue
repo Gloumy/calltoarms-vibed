@@ -103,7 +103,7 @@ onMounted(async () => {
 
     <template v-else>
       <!-- Tabs -->
-      <div class="flex gap-2 mb-6">
+      <div class="flex gap-2 mb-6 flex-wrap">
         <UButton
           label="Utilisateurs"
           icon="i-lucide-users"
@@ -124,8 +124,8 @@ onMounted(async () => {
 
       <!-- Users tab -->
       <div v-if="activeTab === 'users'">
-        <div class="rounded-lg border border-default overflow-hidden">
-          <table class="w-full text-sm">
+        <div class="rounded-lg border border-default overflow-x-auto">
+          <table class="w-full min-w-[640px] text-sm">
             <thead class="bg-elevated">
               <tr>
                 <th class="text-left px-4 py-2 font-medium text-muted">Utilisateur</th>
@@ -174,8 +174,8 @@ onMounted(async () => {
 
       <!-- Communities tab -->
       <div v-if="activeTab === 'communities'">
-        <div class="rounded-lg border border-default overflow-hidden">
-          <table class="w-full text-sm">
+        <div class="rounded-lg border border-default overflow-x-auto">
+          <table class="w-full min-w-[640px] text-sm">
             <thead class="bg-elevated">
               <tr>
                 <th class="text-left px-4 py-2 font-medium text-muted">Communaute</th>

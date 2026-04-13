@@ -1,4 +1,10 @@
 <script setup lang="ts">
+const props = withDefaults(defineProps<{
+  variant?: 'sidebar' | 'drawer'
+}>(), {
+  variant: 'sidebar'
+})
+
 const { user } = useAuth()
 const { connect, on } = useWebSocket()
 
@@ -91,10 +97,16 @@ watch(() => user.value, async (newUser) => {
     setTimeout(() => Promise.all([fetchFriends(), fetchPending()]), 1000)
   }
 })
+
+const rootClass = computed(() =>
+  props.variant === 'drawer'
+    ? 'w-full h-full overflow-y-auto bg-default'
+    : 'w-[210px] shrink-0 border-l border-default h-screen sticky top-0 overflow-y-auto'
+)
 </script>
 
 <template>
-  <aside class="w-[210px] shrink-0 border-l border-default h-screen sticky top-0 overflow-y-auto">
+  <aside :class="rootClass">
     <div class="px-4 py-5 flex items-center justify-between">
       <h3 class="text-xs font-semibold uppercase text-muted tracking-wider">
         Amis

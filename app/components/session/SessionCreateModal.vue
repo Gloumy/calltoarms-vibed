@@ -102,7 +102,7 @@ async function createSession() {
 
         <!-- Visibility (hidden when scoped to a community) -->
         <UFormField v-if="!props.communityId" label="Visibilite" name="visibility">
-          <div class="flex gap-2">
+          <div class="flex flex-wrap gap-2">
             <UButton
               v-for="opt in visibilityOptions"
               :key="opt.value"
@@ -140,7 +140,7 @@ async function createSession() {
 
         <!-- Duration -->
         <UFormField label="Duree" name="duration">
-          <div class="flex gap-2">
+          <div class="flex flex-wrap gap-2">
             <UButton
               v-for="opt in durationOptions"
               :key="opt.value"

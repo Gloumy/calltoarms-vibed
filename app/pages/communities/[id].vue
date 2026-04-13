@@ -218,23 +218,23 @@ onMounted(() => {
       <div class="mb-6">
         <UButton label="Communautes" icon="i-lucide-arrow-left" variant="ghost" color="neutral" size="sm" to="/communities" class="mb-3" />
 
-        <div class="flex items-start gap-4">
+        <div class="flex flex-wrap items-start gap-3 sm:gap-4">
           <img
             v-if="community.game_cover_url"
             :src="community.game_cover_url"
             :alt="community.game_name"
-            class="w-16 h-20 rounded object-cover shrink-0"
+            class="w-14 h-18 sm:w-16 sm:h-20 rounded object-cover shrink-0"
           >
           <div
             v-else
-            class="w-16 h-20 rounded bg-violet-500/20 text-violet-500 flex items-center justify-center shrink-0"
+            class="w-14 h-18 sm:w-16 sm:h-20 rounded bg-violet-500/20 text-violet-500 flex items-center justify-center shrink-0"
           >
-            <UIcon name="i-lucide-users" class="size-8" />
+            <UIcon name="i-lucide-users" class="size-7 sm:size-8" />
           </div>
 
-          <div class="flex-1">
-            <div class="flex items-center gap-2 mb-1">
-              <h1 class="text-2xl font-bold">{{ community.name }}</h1>
+          <div class="flex-1 min-w-0 basis-full sm:basis-0">
+            <div class="flex items-center gap-2 mb-1 flex-wrap">
+              <h1 class="text-xl sm:text-2xl font-bold break-words">{{ community.name }}</h1>
               <UBadge v-if="!community.is_public" color="neutral" variant="subtle" size="xs">
                 Privee
               </UBadge>
@@ -253,7 +253,7 @@ onMounted(() => {
           </div>
 
           <!-- Actions -->
-          <div class="flex gap-2 shrink-0">
+          <div class="flex gap-2 shrink-0 flex-wrap">
             <template v-if="isInvited">
               <UButton
                 label="Accepter"
@@ -373,8 +373,8 @@ onMounted(() => {
               @click="getInviteLink()"
             />
           </div>
-          <div v-else class="flex items-center gap-2">
-            <code class="flex-1 text-xs bg-elevated px-3 py-2 rounded-md truncate">
+          <div v-else class="flex flex-wrap items-center gap-2">
+            <code class="flex-1 min-w-0 text-xs bg-elevated px-3 py-2 rounded-md truncate">
               {{ inviteUrl }}
             </code>
             <UButton

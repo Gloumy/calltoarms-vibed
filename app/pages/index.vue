@@ -80,12 +80,12 @@ onMounted(() => {
 <template>
   <div>
     <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
       <h1 class="text-2xl font-bold">
         Dashboard
       </h1>
 
-      <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 flex-wrap">
         <UButton
           :label="isAvailable ? 'Indisponible' : 'Disponible'"
           :icon="isAvailable ? 'i-lucide-circle-off' : 'i-lucide-circle-check'"

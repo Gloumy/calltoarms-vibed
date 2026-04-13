@@ -209,15 +209,15 @@ onUnmounted(() => {
       <div class="mb-6">
         <UButton label="Evenements" icon="i-lucide-arrow-left" variant="ghost" color="neutral" size="sm" to="/events" class="mb-3" />
 
-        <div class="flex items-start gap-4">
+        <div class="flex items-start gap-3 sm:gap-4">
           <img
             v-if="eventData.game_cover_url"
             :src="eventData.game_cover_url"
             :alt="eventData.game_name"
-            class="w-16 h-20 rounded object-cover shrink-0"
+            class="w-14 h-18 sm:w-16 sm:h-20 rounded object-cover shrink-0"
           >
-          <div>
-            <h1 class="text-2xl font-bold mb-1">
+          <div class="min-w-0 flex-1">
+            <h1 class="text-xl sm:text-2xl font-bold mb-1 break-words">
               {{ eventData.title }}
             </h1>
             <p class="text-sm text-muted">
@@ -245,7 +245,7 @@ onUnmounted(() => {
       </div>
 
       <!-- Participation buttons -->
-      <div v-if="!isOwner" class="flex gap-2 mb-6">
+      <div v-if="!isOwner" class="flex flex-wrap gap-2 mb-6">
         <UButton
           label="Participer"
           icon="i-lucide-check"

@@ -159,8 +159,8 @@ onMounted(() => {
 
     <template v-else-if="profile">
       <!-- Profile card -->
-      <div class="rounded-lg border border-default p-6 mb-6">
-        <div v-if="!editing" class="flex items-center gap-4">
+      <div class="rounded-lg border border-default p-4 sm:p-6 mb-6">
+        <div v-if="!editing" class="flex items-center gap-3 sm:gap-4 flex-wrap">
           <div class="relative group cursor-pointer" @click="avatarInput?.click()">
             <UAvatar :src="profile.user.image ?? undefined" :alt="profile.user.username" size="xl" />
             <div class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -175,9 +175,9 @@ onMounted(() => {
               @change="uploadAvatar"
             >
           </div>
-          <div class="flex-1">
-            <h2 class="text-xl font-bold">{{ profile.user.username }}</h2>
-            <p class="text-sm text-muted">{{ profile.user.email }}</p>
+          <div class="flex-1 min-w-0">
+            <h2 class="text-xl font-bold truncate">{{ profile.user.username }}</h2>
+            <p class="text-sm text-muted truncate">{{ profile.user.email }}</p>
             <p class="text-xs text-muted mt-1">
               Membre depuis {{ memberSince }}
             </p>
@@ -194,7 +194,7 @@ onMounted(() => {
 
         <!-- Edit form -->
         <div v-else class="space-y-4">
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
             <div class="relative group cursor-pointer" @click="avatarInput?.click()">
               <UAvatar :src="editImage || undefined" :alt="editUsername" size="xl" />
               <div class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -209,7 +209,7 @@ onMounted(() => {
                 @change="uploadAvatar"
               >
             </div>
-            <div class="flex-1 space-y-3">
+            <div class="flex-1 min-w-0 space-y-3 basis-full sm:basis-0">
               <UFormField label="Pseudo" name="username">
                 <UInput v-model="editUsername" class="w-full" />
               </UFormField>
@@ -255,7 +255,7 @@ onMounted(() => {
       </div>
 
       <!-- Battle tags -->
-      <div class="rounded-lg border border-default p-6">
+      <div class="rounded-lg border border-default p-4 sm:p-6">
         <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-4">
           Identifiants de jeu
         </h2>

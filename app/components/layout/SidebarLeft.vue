@@ -1,4 +1,14 @@
 <script setup lang="ts">
+const props = withDefaults(defineProps<{
+  variant?: 'sidebar' | 'drawer'
+}>(), {
+  variant: 'sidebar'
+})
+
+const emit = defineEmits<{
+  navigate: []
+}>()
+
 const { user, signOut } = useAuth()
 
 const isAdmin = ref(false)
@@ -11,6 +21,12 @@ const navigation = [
   { label: 'Profil', icon: 'i-lucide-user', to: '/profile' }
 ]
 
+const rootClass = computed(() =>
+  props.variant === 'drawer'
+    ? 'w-full h-full flex flex-col bg-default'
+    : 'w-[200px] shrink-0 border-r border-default flex flex-col h-screen sticky top-0'
+)
+
 onMounted(async () => {
   try {
     const me = await $fetch<any>('/api/users/me')
@@ -22,7 +38,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <aside class="w-[200px] shrink-0 border-r border-default flex flex-col h-screen sticky top-0">
+  <aside :class="rootClass">
     <!-- Logo -->
     <div class="px-4 py-5">
       <NuxtLink to="/" class="text-lg font-bold text-violet-500">
@@ -38,6 +54,7 @@ onMounted(async () => {
         :to="item.to"
         class="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-elevated transition-colors"
         active-class="bg-elevated text-violet-500 font-medium"
+        @click="emit('navigate')"
       >
         <UIcon :name="item.icon" class="size-4" />
         {{ item.label }}
@@ -47,6 +64,7 @@ onMounted(async () => {
         to="/admin"
         class="flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-elevated transition-colors"
         active-class="bg-elevated text-violet-500 font-medium"
+        @click="emit('navigate')"
       >
         <UIcon name="i-lucide-shield" class="size-4" />
         Admin

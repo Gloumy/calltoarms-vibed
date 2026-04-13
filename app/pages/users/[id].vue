@@ -84,11 +84,11 @@ onMounted(() => {
 
     <template v-else>
       <!-- Profile card -->
-      <div class="rounded-lg border border-default p-6 mb-6">
-        <div class="flex items-center gap-4">
+      <div class="rounded-lg border border-default p-4 sm:p-6 mb-6">
+        <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
           <UAvatar :src="profile.image ?? undefined" :alt="profile.username" size="xl" />
-          <div class="flex-1">
-            <h1 class="text-xl font-bold">{{ profile.username }}</h1>
+          <div class="flex-1 min-w-0">
+            <h1 class="text-xl font-bold truncate">{{ profile.username }}</h1>
             <p class="text-xs text-muted mt-1">
               Membre depuis {{ memberSince }}
             </p>
@@ -154,7 +154,7 @@ onMounted(() => {
       </div>
 
       <!-- Battle tags -->
-      <div v-if="profile.battleTags?.length > 0" class="rounded-lg border border-default p-6 mb-6">
+      <div v-if="profile.battleTags?.length > 0" class="rounded-lg border border-default p-4 sm:p-6 mb-6">
         <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-4">
           Identifiants de jeu
         </h2>
@@ -172,7 +172,7 @@ onMounted(() => {
       </div>
 
       <!-- Shared communities -->
-      <div v-if="profile.sharedCommunities?.length > 0" class="rounded-lg border border-default p-6">
+      <div v-if="profile.sharedCommunities?.length > 0" class="rounded-lg border border-default p-4 sm:p-6">
         <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-4">
           Communautes en commun
         </h2>
