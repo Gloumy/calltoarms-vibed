@@ -198,6 +198,16 @@ export const eventPollVotes = pgTable('event_poll_votes', {
   primaryKey({ columns: [table.optionId, table.userId] })
 ])
 
+// ─── Session Messages ────────────────────────────────────
+export const sessionMessages = pgTable('session_messages', {
+  id: text('id').primaryKey(),
+  sessionId: text('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
+  userId: text('user_id').notNull().references(() => user.id),
+  content: text('content').notNull(),
+  type: text('type').notNull().default('message'), // 'message' | 'system'
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
+})
+
 // ─── Event Comments ──────────────────────────────────────
 export const eventComments = pgTable('event_comments', {
   id: text('id').primaryKey(),

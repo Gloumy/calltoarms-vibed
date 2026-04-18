@@ -133,7 +133,8 @@ async function openInvitePanel() {
   if (friends.value.length > 0) return
   loadingFriends.value = true
   try {
-    friends.value = await $fetch<any[]>('/api/friends')
+    const data = await $fetch<{ friends: any[] }>('/api/friends')
+    friends.value = data.friends
   } catch {
     friends.value = []
   } finally {

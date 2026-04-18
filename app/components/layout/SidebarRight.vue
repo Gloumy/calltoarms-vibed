@@ -9,13 +9,16 @@ const { user } = useAuth()
 const { connect, on } = useWebSocket()
 
 const friends = ref<any[]>([])
+const mySessionId = ref<string | null>(null)
 const pendingRequests = ref<any[]>([])
 const showAddFriend = ref(false)
 
 // Fetch friends list
 async function fetchFriends() {
   try {
-    friends.value = await $fetch('/api/friends')
+    const data = await $fetch<{ friends: any[]; mySessionId: string | null }>('/api/friends')
+    friends.value = data.friends
+    mySessionId.value = data.mySessionId
   } catch {
     friends.value = []
   }
@@ -155,6 +158,7 @@ const rootClass = computed(() =>
         v-for="f in inSessionFriends"
         :key="f.id"
         :friend="f"
+        :my-session-id="mySessionId"
         status="in_session"
         @toggle-notif="toggleNotif"
       />

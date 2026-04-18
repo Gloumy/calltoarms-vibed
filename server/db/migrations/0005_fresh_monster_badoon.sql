@@ -1,0 +1,1 @@
+ALTER TABLE "session_messages" ADD COLUMN "type" text DEFAULT 'message' NOT NULL;

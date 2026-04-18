@@ -1,5 +1,5 @@
 import { eq, and, ne, asc } from 'drizzle-orm'
-import { gameSessions, gameSessionParticipations, user } from '../../../db/schema'
+import { gameSessions, gameSessionParticipations, sessionMessages, user } from '../../../db/schema'
 
 export default defineEventHandler(async (event) => {
   const session = await requireAuth(event)
@@ -22,6 +22,13 @@ export default defineEventHandler(async (event) => {
 
   const isCreator = gameSession.createdBy === me
   const sessionUpdate = { type: 'session:update', payload: { id } }
+
+  // Get leaver info for system message
+  const [leaver] = await db
+    .select({ username: user.username, image: user.image })
+    .from(user)
+    .where(eq(user.id, me))
+    .limit(1)
 
   if (isCreator) {
     // Get other participants
@@ -46,13 +53,33 @@ export default defineEventHandler(async (event) => {
       return {
         needsConfirm: true,
         hasOthers: others.length > 0,
-        nextLeader: others.length > 0 ? { id: others[0].userId, username: others[0].username } : null
+        nextLeader: others[0] ? { id: others[0].userId, username: others[0].username } : null
       }
     }
 
-    if (others.length > 0) {
+    const newLeader = others[0]
+    if (newLeader) {
       // Transfer ownership to the earliest joiner
-      const newLeader = others[0]
+      const leaverName = leaver?.username ?? 'Le createur'
+
+      // Insert system message before leaving
+      const msgId = crypto.randomUUID()
+      await db.insert(sessionMessages).values({
+        id: msgId,
+        sessionId: id,
+        userId: me,
+        content: `${leaverName} a quitte la session. ${newLeader.username} est le nouveau leader.`,
+        type: 'system'
+      })
+      await broadcastToSessionParticipants(id, {
+        type: 'session:message',
+        payload: {
+          id: msgId, sessionId: id, userId: me,
+          username: leaver?.username ?? '', userImage: leaver?.image ?? null,
+          content: `${leaverName} a quitte la session. ${newLeader.username} est le nouveau leader.`,
+          type: 'system', createdAt: new Date().toISOString()
+        }
+      })
 
       // Broadcast BEFORE removing creator, so participants list is still complete
       await broadcastToSessionParticipants(id, sessionUpdate, me)
@@ -89,7 +116,26 @@ export default defineEventHandler(async (event) => {
     }
   }
 
-  // Non-creator: broadcast BEFORE removing, so participants list is still complete
+  // Non-creator: insert system message before leaving
+  const leaveMsgId = crypto.randomUUID()
+  await db.insert(sessionMessages).values({
+    id: leaveMsgId,
+    sessionId: id,
+    userId: me,
+    content: `${leaver?.username ?? 'Quelqu\'un'} a quitte la session`,
+    type: 'system'
+  })
+  await broadcastToSessionParticipants(id, {
+    type: 'session:message',
+    payload: {
+      id: leaveMsgId, sessionId: id, userId: me,
+      username: leaver?.username ?? '', userImage: leaver?.image ?? null,
+      content: `${leaver?.username ?? 'Quelqu\'un'} a quitte la session`,
+      type: 'system', createdAt: new Date().toISOString()
+    }
+  })
+
+  // Broadcast BEFORE removing, so participants list is still complete
   await broadcastToSessionParticipants(id, sessionUpdate, me)
 
   const deleted = await db

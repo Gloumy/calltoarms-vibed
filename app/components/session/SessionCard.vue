@@ -159,9 +159,9 @@ async function confirmLeave() {
       <!-- Content -->
       <div class="flex-1 min-w-0 p-4">
         <div class="flex items-center gap-2 mb-1">
-          <h3 class="text-base font-semibold truncate">
+          <NuxtLink :to="`/sessions/${session.id}`" class="text-base font-semibold truncate hover:underline">
             {{ session.game_name || 'Session libre' }}
-          </h3>
+          </NuxtLink>
 
           <!-- Status badges -->
           <UBadge
@@ -199,6 +199,14 @@ async function confirmLeave() {
           </span>
 
           <div class="flex gap-2">
+            <UButton
+              icon="i-lucide-eye"
+              variant="ghost"
+              color="neutral"
+              size="xs"
+              :to="`/sessions/${session.id}`"
+              title="Voir la session"
+            />
             <UButton
               v-if="session.discussion"
               icon="i-lucide-message-circle"

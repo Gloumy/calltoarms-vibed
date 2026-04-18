@@ -29,7 +29,23 @@ export default defineEventHandler(async (event) => {
   // Get friend user details
   const friendIds = rows.map(r => r.senderId === me ? r.receiverId : r.senderId)
 
-  if (friendIds.length === 0) return []
+  // Get current user's active session
+  const [mySession] = await db
+    .select({ sessionId: gameSessionParticipations.sessionId })
+    .from(gameSessionParticipations)
+    .innerJoin(gameSessions, eq(gameSessions.id, gameSessionParticipations.sessionId))
+    .where(
+      and(
+        eq(gameSessionParticipations.userId, me),
+        eq(gameSessions.status, 'active'),
+        gt(gameSessions.expiresAt, new Date())
+      )
+    )
+    .limit(1)
+
+  const mySessionId = mySession?.sessionId ?? null
+
+  if (friendIds.length === 0) return { friends: [], mySessionId }
 
   const friends = await db
     .select({
@@ -47,6 +63,7 @@ export default defineEventHandler(async (event) => {
   const activeSessions = await db
     .select({
       userId: gameSessionParticipations.userId,
+      sessionId: gameSessionParticipations.sessionId,
       gameName: games.name
     })
     .from(gameSessionParticipations)
@@ -60,26 +77,30 @@ export default defineEventHandler(async (event) => {
       )
     )
 
-  const inSessionMap = new Map<string, string | null>()
+  const inSessionMap = new Map<string, { sessionId: string; gameName: string | null }>()
   for (const row of activeSessions) {
-    inSessionMap.set(row.userId, row.gameName ?? null)
+    inSessionMap.set(row.userId, { sessionId: row.sessionId, gameName: row.gameName ?? null })
   }
 
   // Merge online + availability + session info
   const onlineIds = getOnlineUserIds()
 
-  return friends.map(f => {
-    const friendship = rows.find(r =>
-      (r.senderId === me && r.receiverId === f.id) ||
-      (r.receiverId === me && r.senderId === f.id)
-    )
-    return {
-      ...f,
-      isOnline: onlineIds.has(f.id),
-      isAvailable: f.availableUntil !== null && new Date(f.availableUntil) > new Date(),
-      inSession: inSessionMap.has(f.id),
-      sessionGameName: inSessionMap.get(f.id) ?? null,
-      notifDisabled: friendship?.notifDisabled ?? false
-    }
-  })
+  return {
+    mySessionId,
+    friends: friends.map(f => {
+      const friendship = rows.find(r =>
+        (r.senderId === me && r.receiverId === f.id) ||
+        (r.receiverId === me && r.senderId === f.id)
+      )
+      return {
+        ...f,
+        isOnline: onlineIds.has(f.id),
+        isAvailable: f.availableUntil !== null && new Date(f.availableUntil) > new Date(),
+        inSession: inSessionMap.has(f.id),
+        sessionId: inSessionMap.get(f.id)?.sessionId ?? null,
+        sessionGameName: inSessionMap.get(f.id)?.gameName ?? null,
+        notifDisabled: friendship?.notifDisabled ?? false
+      }
+    })
+  }
 })

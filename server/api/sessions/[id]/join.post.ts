@@ -1,5 +1,5 @@
 import { eq, and, sql } from 'drizzle-orm'
-import { gameSessions, gameSessionParticipations } from '../../../db/schema'
+import { gameSessions, gameSessionParticipations, sessionMessages, user } from '../../../db/schema'
 
 export default defineEventHandler(async (event) => {
   const session = await requireAuth(event)
@@ -105,7 +105,36 @@ export default defineEventHandler(async (event) => {
     userId: me
   })
 
+  // Insert system message
+  const [joiner] = await db
+    .select({ username: user.username, image: user.image })
+    .from(user)
+    .where(eq(user.id, me))
+    .limit(1)
+
+  const msgId = crypto.randomUUID()
+  await db.insert(sessionMessages).values({
+    id: msgId,
+    sessionId: id,
+    userId: me,
+    content: `${joiner?.username ?? 'Quelqu\'un'} a rejoint la session`,
+    type: 'system'
+  })
+
   // Notify all participants of the joined session + friends
+  await broadcastToSessionParticipants(id, {
+    type: 'session:message',
+    payload: {
+      id: msgId,
+      sessionId: id,
+      userId: me,
+      username: joiner?.username ?? '',
+      userImage: joiner?.image ?? null,
+      content: `${joiner?.username ?? 'Quelqu\'un'} a rejoint la session`,
+      type: 'system',
+      createdAt: new Date().toISOString()
+    }
+  })
   await broadcastToSessionParticipants(id, {
     type: 'session:update',
     payload: { id }
