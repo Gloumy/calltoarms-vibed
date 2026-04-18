@@ -9,14 +9,14 @@ definePageMeta({
 const { signIn } = useAuth()
 
 const schema = z.object({
-  email: z.string().email('Email invalide'),
+  identifier: z.string().min(1, 'Email ou nom d\'utilisateur requis'),
   password: z.string().min(1, 'Mot de passe requis')
 })
 
 type Schema = z.output<typeof schema>
 
 const state = reactive<Partial<Schema>>({
-  email: '',
+  identifier: '',
   password: ''
 })
 
@@ -27,7 +27,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   error.value = ''
   loading.value = true
   try {
-    await signIn(event.data.email, event.data.password)
+    await signIn(event.data.identifier, event.data.password)
     navigateTo('/')
   } catch (e) {
     error.value = formatAuthError(e)
@@ -46,12 +46,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     </template>
 
     <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormField label="Email" name="email" required>
+      <UFormField label="Email ou nom d'utilisateur" name="identifier" required>
         <UInput
-          v-model="state.email"
-          type="email"
-          placeholder="ton@email.com"
-          icon="i-lucide-mail"
+          v-model="state.identifier"
+          placeholder="ton@email.com ou pseudo"
+          icon="i-lucide-user"
           class="w-full"
         />
       </UFormField>

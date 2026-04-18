@@ -24,10 +24,10 @@ export const useAuth = () => {
     }
   }
 
-  const signIn = async (email: string, password: string) => {
-    const data = await $fetch('/api/auth/sign-in/email', {
+  const signIn = async (identifier: string, password: string) => {
+    const data = await $fetch('/api/auth/sign-in-flexible', {
       method: 'POST',
-      body: { email, password }
+      body: { identifier, password }
     })
     if (!data?.user) {
       throw new Error('Identifiants invalides')
