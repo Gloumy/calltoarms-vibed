@@ -41,7 +41,8 @@ onMounted(async () => {
   <aside :class="rootClass">
     <!-- Logo -->
     <div class="px-4 py-5">
-      <NuxtLink to="/" class="text-lg font-bold text-violet-500">
+      <NuxtLink to="/" class="flex items-center gap-2 text-lg font-bold text-violet-500">
+        <img src="/logo.png" alt="" class="size-10 object-contain">
         Call to Arms
       </NuxtLink>
     </div>

@@ -17,7 +17,8 @@ const openRight = ref(false)
         aria-label="Ouvrir le menu"
         @click="openLeft = true"
       />
-      <NuxtLink to="/" class="text-base font-bold text-violet-500">
+      <NuxtLink to="/" class="flex items-center gap-2 text-base font-bold text-violet-500">
+        <img src="/logo.png" alt="" class="size-9 object-contain">
         Call to Arms
       </NuxtLink>
       <UButton

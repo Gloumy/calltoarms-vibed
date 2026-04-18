@@ -29,8 +29,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     await signIn(event.data.email, event.data.password)
     navigateTo('/')
-  } catch (e: any) {
-    error.value = e.message || 'Erreur de connexion'
+  } catch (e) {
+    error.value = formatAuthError(e)
   } finally {
     loading.value = false
   }
@@ -57,13 +57,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </UFormField>
 
       <UFormField label="Mot de passe" name="password" required>
-        <UInput
-          v-model="state.password"
-          type="password"
-          placeholder="••••••••"
-          icon="i-lucide-lock"
-          class="w-full"
-        />
+        <PasswordInput v-model="state.password" autocomplete="current-password" />
       </UFormField>
 
       <UAlert v-if="error" color="error" :title="error" icon="i-lucide-alert-circle" />

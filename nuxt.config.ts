@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
-    ...(process.env.NODE_ENV === 'production' ? ['@vite-pwa/nuxt'] : [])
+    '@vite-pwa/nuxt'
   ],
 
   devtools: {
@@ -69,7 +69,8 @@ export default defineNuxtConfig({
       globPatterns: ['**/*.{js,css,html,png,svg,ico}']
     },
     devOptions: {
-      enabled: false
+      enabled: true,
+      type: 'module'
     }
   },
 

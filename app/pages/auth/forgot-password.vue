@@ -26,8 +26,8 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
   try {
     // TODO: integrate better-auth forgetPassword when email provider is configured
     success.value = true
-  } catch (e: any) {
-    error.value = e.message || 'Erreur lors de l\'envoi'
+  } catch (e) {
+    error.value = formatAuthError(e)
   } finally {
     loading.value = false
   }

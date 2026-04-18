@@ -36,8 +36,8 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   try {
     await register(event.data.email, event.data.username, event.data.password)
     navigateTo('/')
-  } catch (e: any) {
-    error.value = e.message || 'Erreur lors de l\'inscription'
+  } catch (e) {
+    error.value = formatAuthError(e)
   } finally {
     loading.value = false
   }
@@ -73,23 +73,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </UFormField>
 
       <UFormField label="Mot de passe" name="password" required>
-        <UInput
-          v-model="state.password"
-          type="password"
-          placeholder="••••••••"
-          icon="i-lucide-lock"
-          class="w-full"
-        />
+        <PasswordInput v-model="state.password" autocomplete="new-password" />
       </UFormField>
 
       <UFormField label="Confirmer le mot de passe" name="confirmPassword" required>
-        <UInput
-          v-model="state.confirmPassword"
-          type="password"
-          placeholder="••••••••"
-          icon="i-lucide-lock"
-          class="w-full"
-        />
+        <PasswordInput v-model="state.confirmPassword" autocomplete="new-password" />
       </UFormField>
 
       <UAlert v-if="error" color="error" :title="error" icon="i-lucide-alert-circle" />
