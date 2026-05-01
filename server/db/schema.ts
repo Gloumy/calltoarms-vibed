@@ -1,4 +1,4 @@
-import { pgTable, text, boolean, timestamp, integer, jsonb, primaryKey } from 'drizzle-orm/pg-core'
+import { pgTable, text, boolean, timestamp, integer, jsonb, primaryKey, real, unique } from 'drizzle-orm/pg-core'
 
 // ─── Better Auth: user ───────────────────────────────────
 export const user = pgTable('user', {
@@ -67,6 +67,72 @@ export const userBattleTags = pgTable('user_battle_tags', {
   tag: text('tag').notNull(),
   isPublic: boolean('is_public').default(true)
 })
+
+// ─── User Platform Accounts ──────────────────────────────
+// Compte d'une plateforme de jeu (Steam, PSN, Xbox, ...) lié à un user.
+// Stocke les credentials et metadata utilisés pour la synchronisation de la bibliothèque.
+export const userPlatformAccounts = pgTable('user_platform_accounts', {
+  id: text('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  platform: text('platform').notNull(), // 'steam' | 'playstation' | 'xbox' | 'nintendo' | 'gog' | 'riot'
+  platformId: text('platform_id').notNull(),
+  username: text('username'),
+  displayName: text('display_name'),
+  avatarUrl: text('avatar_url'),
+  profileUrl: text('profile_url'),
+  accessToken: text('access_token'),
+  refreshToken: text('refresh_token'),
+  isActive: boolean('is_active').notNull().default(true),
+  lastSync: timestamp('last_sync', { withTimezone: true }),
+  metadata: jsonb('metadata'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+}, (table) => [
+  unique('user_platform_accounts_user_platform_unique').on(table.userId, table.platform)
+])
+
+// ─── User Platform Games ─────────────────────────────────
+// Jeu possédé par un user sur une plateforme donnée (via le platform account).
+// `gameId` (optionnel) lie au catalogue IGDB quand un match est trouvé.
+export const userPlatformGames = pgTable('user_platform_games', {
+  id: text('id').primaryKey(),
+  platformAccountId: text('platform_account_id').notNull().references(() => userPlatformAccounts.id, { onDelete: 'cascade' }),
+  platformGameId: text('platform_game_id').notNull(),
+  gameId: integer('game_id').references(() => games.id),
+  name: text('name').notNull(),
+  playtimeTotal: integer('playtime_total').notNull().default(0), // minutes
+  playtimeRecent: integer('playtime_recent'), // minutes (2 dernières semaines)
+  lastPlayed: timestamp('last_played', { withTimezone: true }),
+  iconUrl: text('icon_url'),
+  coverUrl: text('cover_url'),
+  isInstalled: boolean('is_installed').notNull().default(false),
+  isCompleted: boolean('is_completed').notNull().default(false),
+  completedAt: timestamp('completed_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+}, (table) => [
+  unique('user_platform_games_account_game_unique').on(table.platformAccountId, table.platformGameId)
+])
+
+// ─── User Platform Achievements ──────────────────────────
+// Succès / trophées obtenus (ou non) sur un jeu d'une plateforme.
+export const userPlatformAchievements = pgTable('user_platform_achievements', {
+  id: text('id').primaryKey(),
+  platformGameId: text('platform_game_id').notNull().references(() => userPlatformGames.id, { onDelete: 'cascade' }),
+  achievementId: text('achievement_id').notNull(),
+  name: text('name').notNull(),
+  description: text('description'),
+  iconUrl: text('icon_url'),
+  isUnlocked: boolean('is_unlocked').notNull().default(false),
+  unlockedAt: timestamp('unlocked_at', { withTimezone: true }),
+  earnedRate: real('earned_rate'),
+  rarity: real('rarity'),
+  points: integer('points'),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
+}, (table) => [
+  unique('user_platform_achievements_game_achievement_unique').on(table.platformGameId, table.achievementId)
+])
 
 // ─── Games ───────────────────────────────────────────────
 export const games = pgTable('games', {

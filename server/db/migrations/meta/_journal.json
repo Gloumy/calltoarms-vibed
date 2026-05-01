@@ -43,6 +43,13 @@
       "when": 1776532011055,
       "tag": "0005_fresh_monster_badoon",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1777620615734,
+      "tag": "0006_ancient_vance_astro",
+      "breakpoints": true
     }
   ]
 }
