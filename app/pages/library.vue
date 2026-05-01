@@ -1,0 +1,235 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'default'
+})
+
+interface SteamGame {
+  id: string
+  platformGameId: string
+  name: string
+  playtimeTotal: number
+  playtimeRecent: number | null
+  lastPlayed: string | null
+  iconUrl: string | null
+  coverUrl: string | null
+}
+
+interface SteamAccount {
+  id: string
+  platformId: string
+  username: string | null
+  displayName: string | null
+  avatarUrl: string | null
+  profileUrl: string | null
+  lastSync: string | null
+}
+
+interface SteamLibraryResponse {
+  success: boolean
+  account: SteamAccount | null
+  games: SteamGame[]
+  stats?: {
+    totalGames: number
+    totalPlaytime: number
+    recentlyPlayed: number
+  }
+}
+
+const route = useRoute()
+const router = useRouter()
+const toast = useToast()
+
+const data = ref<SteamLibraryResponse | null>(null)
+const loading = ref(true)
+const syncing = ref(false)
+
+async function load() {
+  loading.value = true
+  try {
+    data.value = await $fetch<SteamLibraryResponse>('/api/platforms/steam/games')
+  } catch {
+    data.value = null
+  } finally {
+    loading.value = false
+  }
+}
+
+async function sync() {
+  syncing.value = true
+  try {
+    const result = await $fetch<{ success: boolean; syncedGames: number; syncedAchievements: number; message?: string }>(
+      '/api/platforms/steam/sync',
+      { method: 'POST' }
+    )
+    toast.add({
+      title: 'Synchronisation Steam',
+      description: result.message ?? `${result.syncedGames} jeu(x), ${result.syncedAchievements} succès`,
+      color: 'success'
+    })
+    await load()
+  } catch (err: unknown) {
+    const message = (err as { data?: { statusMessage?: string }; statusMessage?: string })?.data?.statusMessage
+      ?? (err as { statusMessage?: string })?.statusMessage
+      ?? 'Erreur lors de la synchronisation'
+    toast.add({ title: 'Erreur', description: message, color: 'error' })
+  } finally {
+    syncing.value = false
+  }
+}
+
+function formatPlaytime(minutes: number): string {
+  if (minutes < 60) return `${minutes}min`
+  const h = Math.floor(minutes / 60)
+  return h < 1000 ? `${h}h` : `${(h / 1000).toFixed(1)}k h`
+}
+
+function formatLastSync(iso: string | null): string {
+  if (!iso) return 'jamais'
+  const diff = Date.now() - new Date(iso).getTime()
+  const minutes = Math.floor(diff / 60000)
+  if (minutes < 1) return 'à l\'instant'
+  if (minutes < 60) return `il y a ${minutes} min`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `il y a ${hours}h`
+  const days = Math.floor(hours / 24)
+  return `il y a ${days}j`
+}
+
+onMounted(() => {
+  if (route.query.steam_connected) {
+    toast.add({ title: 'Steam connecté', description: 'Lance une synchronisation pour récupérer ta bibliothèque.', color: 'success' })
+    router.replace({ query: {} })
+  } else if (route.query.steam_error) {
+    toast.add({ title: 'Erreur Steam', description: String(route.query.steam_error), color: 'error' })
+    router.replace({ query: {} })
+  }
+  load()
+})
+</script>
+
+<template>
+  <div>
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold">
+        Ma bibliothèque
+      </h1>
+    </div>
+
+    <div v-if="loading" class="flex items-center justify-center py-12">
+      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+    </div>
+
+    <!-- Not connected -->
+    <div v-else-if="!data?.account" class="rounded-lg border border-default bg-default p-8 text-center">
+      <UIcon name="i-simple-icons-steam" class="size-12 text-muted mx-auto mb-3" />
+      <h2 class="text-lg font-semibold mb-2">
+        Connecte ton compte Steam
+      </h2>
+      <p class="text-sm text-muted mb-6 max-w-md mx-auto">
+        Lie ton compte Steam pour synchroniser tes jeux, ton temps de jeu et tes succès.
+      </p>
+      <UButton
+        label="Connecter Steam"
+        icon="i-simple-icons-steam"
+        size="lg"
+        to="/api/platforms/steam/auth"
+        external
+      />
+    </div>
+
+    <!-- Connected -->
+    <div v-else class="space-y-6">
+      <!-- Account card -->
+      <div class="rounded-lg border border-default bg-default p-4 flex items-center gap-4">
+        <UAvatar :src="data.account.avatarUrl ?? undefined" :alt="data.account.displayName ?? 'Steam'" size="lg" />
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2">
+            <UIcon name="i-simple-icons-steam" class="size-4 text-muted" />
+            <span class="font-semibold truncate">{{ data.account.displayName ?? data.account.username ?? data.account.platformId }}</span>
+          </div>
+          <p class="text-xs text-muted">
+            Dernière sync : {{ formatLastSync(data.account.lastSync) }}
+          </p>
+        </div>
+        <UButton
+          label="Synchroniser"
+          icon="i-lucide-refresh-cw"
+          :loading="syncing"
+          @click="sync"
+        />
+      </div>
+
+      <!-- Stats -->
+      <div v-if="data.stats" class="grid grid-cols-3 gap-4">
+        <div class="rounded-lg border border-default bg-default p-4">
+          <p class="text-xs text-muted uppercase tracking-wider">
+            Jeux
+          </p>
+          <p class="text-2xl font-bold mt-1">
+            {{ data.stats.totalGames }}
+          </p>
+        </div>
+        <div class="rounded-lg border border-default bg-default p-4">
+          <p class="text-xs text-muted uppercase tracking-wider">
+            Temps de jeu
+          </p>
+          <p class="text-2xl font-bold mt-1">
+            {{ formatPlaytime(data.stats.totalPlaytime) }}
+          </p>
+        </div>
+        <div class="rounded-lg border border-default bg-default p-4">
+          <p class="text-xs text-muted uppercase tracking-wider">
+            Joués (2 sem.)
+          </p>
+          <p class="text-2xl font-bold mt-1">
+            {{ data.stats.recentlyPlayed }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Games grid -->
+      <div v-if="data.games.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+        <div
+          v-for="game in data.games"
+          :key="game.id"
+          class="group rounded-lg border border-default bg-default overflow-hidden transition-colors hover:border-violet-500/50"
+        >
+          <div class="relative aspect-[3/4] bg-elevated">
+            <img
+              v-if="game.coverUrl"
+              :src="game.coverUrl"
+              :alt="game.name"
+              class="w-full h-full object-cover"
+              loading="lazy"
+            >
+            <div
+              v-else
+              class="w-full h-full flex items-center justify-center text-3xl font-bold text-violet-500/40"
+            >
+              {{ game.name.charAt(0) }}
+            </div>
+          </div>
+          <div class="p-3">
+            <h3 class="text-sm font-semibold truncate" :title="game.name">
+              {{ game.name }}
+            </h3>
+            <p class="text-xs text-muted mt-0.5">
+              {{ formatPlaytime(game.playtimeTotal) }}
+              <template v-if="game.playtimeRecent">
+                · {{ formatPlaytime(game.playtimeRecent) }} récent
+              </template>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty (connected but no games yet) -->
+      <div v-else class="text-center py-12">
+        <UIcon name="i-lucide-gamepad-2" class="size-12 text-muted mx-auto mb-3" />
+        <p class="text-muted">
+          Aucun jeu synchronisé. Clique sur "Synchroniser" pour récupérer ta bibliothèque Steam.
+        </p>
+      </div>
+    </div>
+  </div>
+</template>

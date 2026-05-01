@@ -16,6 +16,7 @@ const isAdmin = ref(false)
 const navigation = [
   { label: 'Accueil', icon: 'i-lucide-home', to: '/' },
   { label: 'Jeux', icon: 'i-lucide-gamepad-2', to: '/games' },
+  { label: 'Bibliothèque', icon: 'i-lucide-library', to: '/library' },
   { label: 'Événements', icon: 'i-lucide-calendar', to: '/events' },
   { label: 'Communautés', icon: 'i-lucide-users', to: '/communities' },
   { label: 'Profil', icon: 'i-lucide-user', to: '/profile' }
