@@ -9,7 +9,7 @@ const REQUIRED_OPENID_FIELDS = [
 ] as const
 
 export default defineEventHandler(async (event) => {
-  const baseUrl = useRuntimeConfig().baseUrl || 'http://localhost:3000'
+  const baseUrl = requireBaseUrl()
 
   try {
     const session = await requireAuth(event)

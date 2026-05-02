@@ -4,8 +4,7 @@ import { XboxService } from '../../../services/platforms/xbox/XboxService'
 import type { XboxAccountMetadata } from '../../../services/platforms/xbox/types'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-  const baseUrl = config.baseUrl || 'http://localhost:3000'
+  const baseUrl = requireBaseUrl()
 
   const fail = (reason: string) => sendRedirect(event, `${baseUrl}/library?platform=xbox&xbox_error=${encodeURIComponent(reason)}`)
 

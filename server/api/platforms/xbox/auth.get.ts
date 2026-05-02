@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Microsoft client ID non configuré' })
   }
 
-  const baseUrl = config.baseUrl || 'http://localhost:3000'
+  const baseUrl = requireBaseUrl()
   const state = randomBytes(16).toString('hex')
   const codeVerifier = randomBytes(32).toString('base64url')
   const codeChallenge = createHash('sha256').update(codeVerifier).digest('base64url')

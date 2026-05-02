@@ -4,7 +4,7 @@
 export default defineEventHandler(async (event) => {
   await requireAuth(event)
 
-  const baseUrl = useRuntimeConfig().baseUrl || 'http://localhost:3000'
+  const baseUrl = requireBaseUrl()
 
   const params = new URLSearchParams({
     'openid.ns': 'http://specs.openid.net/auth/2.0',
