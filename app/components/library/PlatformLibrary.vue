@@ -196,10 +196,11 @@ onMounted(load)
         class="lg:flex-1 lg:overflow-y-auto lg:min-h-0 lg:pr-2 lg:pb-2"
       >
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3">
-          <div
+          <NuxtLink
             v-for="game in data.games"
             :key="game.id"
-            class="group rounded-lg border border-default bg-default overflow-hidden transition-colors hover:border-violet-500/50"
+            :to="`/library/games/${game.id}`"
+            class="group block rounded-lg border border-default bg-default overflow-hidden transition-colors hover:border-violet-500/50"
           >
             <div
               class="relative bg-elevated"
@@ -233,7 +234,7 @@ onMounted(load)
                 </template>
               </p>
             </div>
-          </div>
+          </NuxtLink>
         </div>
       </div>
 

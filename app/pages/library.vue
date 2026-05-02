@@ -3,22 +3,23 @@ definePageMeta({
   layout: 'default'
 })
 
-type PlatformTab = 'steam' | 'playstation' | 'xbox'
+type LibraryTab = 'overview' | 'steam' | 'playstation' | 'xbox'
 
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 
 const tabs = [
+  { value: 'overview', label: 'Vue d\'ensemble', icon: 'i-lucide-layout-dashboard' },
   { value: 'steam', label: 'Steam', icon: 'i-simple-icons-steam' },
   { value: 'playstation', label: 'PlayStation', icon: 'i-simple-icons-playstation' },
   { value: 'xbox', label: 'Xbox', icon: 'i-simple-icons-xbox' }
 ]
 
-const VALID_TABS: PlatformTab[] = ['steam', 'playstation', 'xbox']
+const VALID_TABS: LibraryTab[] = ['overview', 'steam', 'playstation', 'xbox']
 const queryPlatform = String(route.query.platform ?? '')
-const activeTab = ref<PlatformTab>(
-  (VALID_TABS as string[]).includes(queryPlatform) ? queryPlatform as PlatformTab : 'steam'
+const activeTab = ref<LibraryTab>(
+  (VALID_TABS as string[]).includes(queryPlatform) ? queryPlatform as LibraryTab : 'overview'
 )
 
 const psRef = ref<{ load: () => Promise<void> } | null>(null)
@@ -59,8 +60,10 @@ function onPlayStationConnected() {
       :ui="{ content: 'lg:flex-1 lg:flex lg:flex-col lg:min-h-0' }"
     >
       <template #content="{ item }">
+        <LibraryOverview v-if="item.value === 'overview'" />
+
         <PlatformLibrary
-          v-if="item.value === 'steam'"
+          v-else-if="item.value === 'steam'"
           platform="steam"
           label="Steam"
           icon="i-simple-icons-steam"
