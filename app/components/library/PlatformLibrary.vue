@@ -48,16 +48,32 @@ const data = ref<PlatformLibraryResponse | null>(null)
 const loading = ref(true)
 const syncing = ref(false)
 
+type SortValue = 'playtime-desc' | 'lastPlayed-desc' | 'name-asc' | 'name-desc'
+
+const SORT_OPTIONS: { value: SortValue, label: string, icon: string }[] = [
+  { value: 'playtime-desc', label: 'Plus joué', icon: 'i-lucide-trending-up' },
+  { value: 'lastPlayed-desc', label: 'Joué récemment', icon: 'i-lucide-clock' },
+  { value: 'name-asc', label: 'Alphabétique (A→Z)', icon: 'i-lucide-arrow-down-a-z' },
+  { value: 'name-desc', label: 'Alphabétique (Z→A)', icon: 'i-lucide-arrow-down-z-a' }
+]
+
+const sort = ref<SortValue>('playtime-desc')
+
 async function load() {
   loading.value = true
   try {
-    data.value = await $fetch<PlatformLibraryResponse>(`/api/platforms/${props.platform}/games`)
+    const [sortBy = 'playtime', sortOrder = 'desc'] = sort.value.split('-')
+    data.value = await $fetch<PlatformLibraryResponse>(`/api/platforms/${props.platform}/games`, {
+      query: { sortBy, sortOrder }
+    })
   } catch {
     data.value = null
   } finally {
     loading.value = false
   }
 }
+
+watch(sort, load)
 
 async function sync() {
   syncing.value = true
@@ -188,6 +204,23 @@ onMounted(load)
             {{ data.stats.recentlyPlayed }}
           </p>
         </div>
+      </div>
+
+      <!-- Sort -->
+      <div
+        v-if="data.games.length > 0"
+        class="flex items-center justify-between shrink-0"
+      >
+        <h2 class="text-sm font-semibold text-muted uppercase tracking-wider">
+          {{ data.games.length }} jeu{{ data.games.length > 1 ? 'x' : '' }}
+        </h2>
+        <USelect
+          v-model="sort"
+          :items="SORT_OPTIONS"
+          value-key="value"
+          size="sm"
+          class="w-56"
+        />
       </div>
 
       <!-- Games grid -->

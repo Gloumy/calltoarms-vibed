@@ -1,5 +1,24 @@
-import { and, eq, or } from 'drizzle-orm'
-import { friendships } from '../db/schema'
+import { and, asc, desc, eq, or, type SQL } from 'drizzle-orm'
+import { friendships, userPlatformGames } from '../db/schema'
+
+export type GameSortBy = 'playtime' | 'lastPlayed' | 'name'
+export type GameSortOrder = 'asc' | 'desc'
+
+// Build a Drizzle orderBy clause for the userPlatformGames table.
+// Default = playtime DESC + name ASC (matches the legacy "most played first" behavior).
+// `lastPlayed` falls back to playtime when null so freshly synced games don't bubble to the top.
+export function gamesOrderBy(sortBy?: string, sortOrder?: string): SQL[] {
+  const fn = sortOrder === 'asc' ? asc : desc
+  switch (sortBy) {
+    case 'name':
+      return [(sortOrder === 'desc' ? desc : asc)(userPlatformGames.name)]
+    case 'lastPlayed':
+      return [fn(userPlatformGames.lastPlayed), desc(userPlatformGames.playtimeTotal)]
+    case 'playtime':
+    default:
+      return [fn(userPlatformGames.playtimeTotal), asc(userPlatformGames.name)]
+  }
+}
 
 export function formatPlaytime(minutes: number): string {
   if (minutes < 60) return `${minutes}min`

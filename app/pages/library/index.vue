@@ -3,7 +3,7 @@ definePageMeta({
   layout: 'default'
 })
 
-type LibraryTab = 'overview' | 'steam' | 'playstation' | 'xbox'
+type LibraryTab = 'overview' | 'all' | 'steam' | 'playstation' | 'xbox'
 
 const route = useRoute()
 const router = useRouter()
@@ -11,12 +11,13 @@ const toast = useToast()
 
 const tabs = [
   { value: 'overview', label: 'Vue d\'ensemble', icon: 'i-lucide-layout-dashboard' },
+  { value: 'all', label: 'Tous les jeux', icon: 'i-lucide-library' },
   { value: 'steam', label: 'Steam', icon: 'i-simple-icons-steam' },
   { value: 'playstation', label: 'PlayStation', icon: 'i-simple-icons-playstation' },
   { value: 'xbox', label: 'Xbox', icon: 'i-simple-icons-xbox' }
 ]
 
-const VALID_TABS: LibraryTab[] = ['overview', 'steam', 'playstation', 'xbox']
+const VALID_TABS: LibraryTab[] = ['overview', 'all', 'steam', 'playstation', 'xbox']
 const queryPlatform = String(route.query.platform ?? '')
 const activeTab = ref<LibraryTab>(
   (VALID_TABS as string[]).includes(queryPlatform) ? queryPlatform as LibraryTab : 'overview'
@@ -61,6 +62,8 @@ function onPlayStationConnected() {
     >
       <template #content="{ item }">
         <LibraryOverview v-if="item.value === 'overview'" />
+
+        <AllGamesLibrary v-else-if="item.value === 'all'" />
 
         <PlatformLibrary
           v-else-if="item.value === 'steam'"
