@@ -37,8 +37,8 @@ export interface AchievementData {
 
 export type PlatformCredentials = Record<string, string | number | boolean>
 
-export type SyncResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: string }
+export type SyncResult<T>
+  = | { success: true, data: T }
+    | { success: false, error: string }
 
 export type PlatformAccountRow = typeof userPlatformAccounts.$inferSelect

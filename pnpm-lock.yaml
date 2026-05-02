@@ -23,6 +23,9 @@ importers:
       better-auth:
         specifier: ^1.6.0
         version: 1.6.0(@opentelemetry/api@1.9.1)(drizzle-kit@0.31.10)(drizzle-orm@0.45.2(@opentelemetry/api@1.9.1)(@types/pg@8.20.0)(kysely@0.28.15)(pg@8.20.0))(pg@8.20.0)(vue@3.5.31(typescript@5.7.3))
+      dotenv:
+        specifier: ^17.4.1
+        version: 17.4.1
       drizzle-orm:
         specifier: ^0.45.2
         version: 0.45.2(@opentelemetry/api@1.9.1)(@types/pg@8.20.0)(kysely@0.28.15)(pg@8.20.0)
@@ -32,6 +35,9 @@ importers:
       pg:
         specifier: ^8.20.0
         version: 8.20.0
+      psn-api:
+        specifier: ^2.18.0
+        version: 2.18.0
       tailwindcss:
         specifier: ^4.2.2
         version: 4.2.2
@@ -54,9 +60,6 @@ importers:
       '@vite-pwa/nuxt':
         specifier: ^1.1.1
         version: 1.1.1(magicast@0.5.2)(vite@7.3.1(@types/node@25.5.2)(jiti@2.6.1)(lightningcss@1.32.0)(terser@5.46.1)(tsx@4.21.0)(yaml@2.8.3))(workbox-build@7.4.0)(workbox-window@7.4.0)
-      dotenv:
-        specifier: ^17.4.1
-        version: 17.4.1
       drizzle-kit:
         specifier: ^0.31.10
         version: 0.31.10
@@ -4642,6 +4645,9 @@ packages:
     resolution: {integrity: sha512-FFUtZMpoZ8RqHS3XeXEmHWLA4thH+ZxCv2lOiPIn1Xc7CxrqhWzNSDzD+/chS/zbYezmiwWLdQC09JdQKmthOw==}
     engines: {node: '>=20'}
 
+  isomorphic-unfetch@3.1.0:
+    resolution: {integrity: sha512-geDJjpoZ8N0kWexiwkX8F9NkTsXhetLPVbZFQ+JTW239QNOwvB0gniuR1Wc6f0AMTn7/mFGyXvHTifrCp/GH8Q==}
+
   isomorphic.js@0.2.5:
     resolution: {integrity: sha512-PIeMbHqMt4DnUP3MA/Flc0HElYjMXArsw1qwJZcm9sqR8mq3l8NYizFMty0pWwE/tzIGH3EKK5+jes5mAr85yw==}
 
@@ -5581,6 +5587,10 @@ packages:
   prosemirror-view@1.41.7:
     resolution: {integrity: sha512-jUwKNCEIGiqdvhlS91/2QAg21e4dfU5bH2iwmSDQeosXJgKF7smG0YSplOWK0cjSNgIqXe7VXqo7EIfUFJdt3w==}
 
+  psn-api@2.18.0:
+    resolution: {integrity: sha512-SiSa7IWaEHjI4ub687xFd6wauzD65dvNdaUyoUMPJvjjvZKzhLqnXNZqVoC7Dn300RoZAWuMtoSYRMBNX9f5qg==}
+    engines: {node: '>=20', pnpm: '>=10'}
+
   punycode.js@2.3.1:
     resolution: {integrity: sha512-uxFIHU0YlHYhDQtV4R9J6a52SLx28BCjT+4ieh7IGbgwVJWO+km431c4yRlREUAsAmt/uMjQUyQHNEPf0M39CA==}
     engines: {node: '>=6'}
@@ -6191,6 +6201,9 @@ packages:
 
   unenv@2.0.0-rc.24:
     resolution: {integrity: sha512-i7qRCmY42zmCwnYlh9H2SvLEypEFGye5iRmEMKjcGi7zk9UquigRjFtTLz0TYqr0ZGLZhaMHl/foy1bZR+Cwlw==}
+
+  unfetch@4.2.0:
+    resolution: {integrity: sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==}
 
   unhead@2.1.12:
     resolution: {integrity: sha512-iTHdWD9ztTunOErtfUFk6Wr11BxvzumcYJ0CzaSCBUOEtg+DUZ9+gnE99i8QkLFT2q1rZD48BYYGXpOZVDLYkA==}
@@ -11463,6 +11476,13 @@ snapshots:
 
   isexe@4.0.0: {}
 
+  isomorphic-unfetch@3.1.0:
+    dependencies:
+      node-fetch: 2.7.0
+      unfetch: 4.2.0
+    transitivePeerDependencies:
+      - encoding
+
   isomorphic.js@0.2.5: {}
 
   jackspeak@3.4.3:
@@ -12642,6 +12662,12 @@ snapshots:
       prosemirror-state: 1.4.4
       prosemirror-transform: 1.12.0
 
+  psn-api@2.18.0:
+    dependencies:
+      isomorphic-unfetch: 3.1.0
+    transitivePeerDependencies:
+      - encoding
+
   punycode.js@2.3.1: {}
 
   punycode@2.3.1: {}
@@ -13348,6 +13374,8 @@ snapshots:
   unenv@2.0.0-rc.24:
     dependencies:
       pathe: 2.0.3
+
+  unfetch@4.2.0: {}
 
   unhead@2.1.12:
     dependencies:

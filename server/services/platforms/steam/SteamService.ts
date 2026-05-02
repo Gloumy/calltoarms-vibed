@@ -103,7 +103,7 @@ export class SteamService extends PlatformService {
     account: PlatformAccountRow,
     gameId: string,
     existingAchievements?: Set<string>
-  ): Promise<SyncResult<{ achievements: AchievementData[]; mostRecentUnlock?: Date }>> {
+  ): Promise<SyncResult<{ achievements: AchievementData[], mostRecentUnlock?: Date }>> {
     try {
       // 1) Game schema (achievement metadata: display name, icon, ...).
       const schemaUrl = `${this.baseUrl}/ISteamUserStats/GetSchemaForGame/v2/?key=${this.apiKey}&appid=${gameId}`
@@ -130,7 +130,7 @@ export class SteamService extends PlatformService {
       // 3) Merge schema + player data.
       const achievements: AchievementData[] = achievementsData.playerstats.achievements.map((achievement: SteamAchievement) => {
         const schemaAchievement = schemaData.game.availableGameStats.achievements.find(
-          (a) => a.name === achievement.apiname
+          a => a.name === achievement.apiname
         )
         return {
           achievementId: achievement.apiname,
@@ -152,11 +152,11 @@ export class SteamService extends PlatformService {
       let mostRecentUnlock: Date | undefined
       if (existingAchievements) {
         const newAchievements = achievements.filter(
-          (ach) => ach.isUnlocked && !existingAchievements.has(ach.achievementId)
+          ach => ach.isUnlocked && !existingAchievements.has(ach.achievementId)
         )
         if (newAchievements.length > 0) {
           mostRecentUnlock = newAchievements
-            .filter((ach) => ach.unlockedAt)
+            .filter(ach => ach.unlockedAt)
             .reduce<Date | undefined>((latest, current) => {
               if (!current.unlockedAt) return latest
               if (!latest) return current.unlockedAt

@@ -6,11 +6,12 @@ const TWO_WEEKS_MS = 14 * 24 * 60 * 60 * 1000
 export default defineEventHandler(async (event) => {
   const session = await requireAuth(event)
   const db = useDB()
+  const userId = session.user.id
 
   const [account] = await db
     .select()
     .from(userPlatformAccounts)
-    .where(and(eq(userPlatformAccounts.userId, session.user.id), eq(userPlatformAccounts.platform, 'steam')))
+    .where(and(eq(userPlatformAccounts.userId, userId), eq(userPlatformAccounts.platform, 'playstation')))
     .limit(1)
 
   if (!account) {
@@ -18,13 +19,23 @@ export default defineEventHandler(async (event) => {
   }
 
   const games = await db
-    .select()
+    .select({
+      id: userPlatformGames.id,
+      platformGameId: userPlatformGames.platformGameId,
+      name: userPlatformGames.name,
+      playtimeTotal: userPlatformGames.playtimeTotal,
+      playtimeRecent: userPlatformGames.playtimeRecent,
+      lastPlayed: userPlatformGames.lastPlayed,
+      iconUrl: userPlatformGames.iconUrl,
+      coverUrl: userPlatformGames.coverUrl
+    })
     .from(userPlatformGames)
     .where(eq(userPlatformGames.platformAccountId, account.id))
     .orderBy(desc(userPlatformGames.playtimeTotal), asc(userPlatformGames.name))
 
-  const totalPlaytime = games.reduce((sum, g) => sum + g.playtimeTotal, 0)
-  const recentlyPlayed = games.filter(g => g.lastPlayed && g.lastPlayed.getTime() > Date.now() - TWO_WEEKS_MS).length
+  const totalPlaytime = games.reduce((sum, game) => sum + game.playtimeTotal, 0)
+  const cutoff = Date.now() - TWO_WEEKS_MS
+  const recentlyPlayed = games.filter(game => game.lastPlayed && game.lastPlayed.getTime() > cutoff).length
 
   return {
     success: true,

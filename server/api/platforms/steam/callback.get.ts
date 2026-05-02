@@ -32,8 +32,8 @@ export default defineEventHandler(async (event) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Origin: 'https://steamcommunity.com',
-        Referer: 'https://steamcommunity.com/'
+        'Origin': 'https://steamcommunity.com',
+        'Referer': 'https://steamcommunity.com/'
       },
       body: verificationParams
     })
