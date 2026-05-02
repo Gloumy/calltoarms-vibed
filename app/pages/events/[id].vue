@@ -192,23 +192,46 @@ onUnmounted(() => {
 <template>
   <div>
     <!-- Loading -->
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="size-6 animate-spin text-muted"
+      />
     </div>
 
     <!-- Not found -->
-    <div v-else-if="!eventData" class="text-center py-12">
+    <div
+      v-else-if="!eventData"
+      class="text-center py-12"
+    >
       <p class="text-muted">
         Evenement introuvable.
       </p>
-      <UButton label="Retour" icon="i-lucide-arrow-left" variant="outline" class="mt-4" to="/events" />
+      <UButton
+        label="Retour"
+        icon="i-lucide-arrow-left"
+        variant="outline"
+        class="mt-4"
+        to="/events"
+      />
     </div>
 
     <!-- Event detail -->
     <template v-else>
       <!-- Back + title -->
       <div class="mb-6">
-        <UButton label="Evenements" icon="i-lucide-arrow-left" variant="ghost" color="neutral" size="sm" to="/events" class="mb-3" />
+        <UButton
+          label="Evenements"
+          icon="i-lucide-arrow-left"
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          to="/events"
+          class="mb-3"
+        />
 
         <div class="flex items-start gap-3 sm:gap-4">
           <img
@@ -222,31 +245,59 @@ onUnmounted(() => {
               {{ eventData.title }}
             </h1>
             <p class="text-sm text-muted">
-              <UIcon name="i-lucide-clock" class="size-3.5 inline-block mr-1" />
+              <UIcon
+                name="i-lucide-clock"
+                class="size-3.5 inline-block mr-1"
+              />
               {{ scheduledDate }}
-              <span v-if="eventData.game_name" class="mx-1">&middot;</span>
+              <span
+                v-if="eventData.game_name"
+                class="mx-1"
+              >&middot;</span>
               <span v-if="eventData.game_name">{{ eventData.game_name }}</span>
             </p>
             <p class="text-sm text-muted mt-1">
-              <UserPopover :user-id="eventData.created_by" :name="eventData.creator_name" :avatar="eventData.creator_avatar" />
-              <span v-if="eventData.community_name" class="mx-1">&middot;</span>
-              <span v-if="eventData.community_name" class="text-violet-500">{{ eventData.community_name }}</span>
+              <UserPopover
+                :user-id="eventData.created_by"
+                :name="eventData.creator_name"
+                :avatar="eventData.creator_avatar"
+              />
+              <span
+                v-if="eventData.community_name"
+                class="mx-1"
+              >&middot;</span>
+              <span
+                v-if="eventData.community_name"
+                class="text-violet-500"
+              >{{ eventData.community_name }}</span>
             </p>
           </div>
         </div>
 
-        <p v-if="eventData.description" class="mt-3 text-sm">
+        <p
+          v-if="eventData.description"
+          class="mt-3 text-sm"
+        >
           {{ eventData.description }}
         </p>
 
-        <p v-if="eventData.discussion" class="mt-2 text-xs text-muted">
-          <UIcon name="i-lucide-message-circle" class="size-3.5 inline-block mr-1" />
+        <p
+          v-if="eventData.discussion"
+          class="mt-2 text-xs text-muted"
+        >
+          <UIcon
+            name="i-lucide-message-circle"
+            class="size-3.5 inline-block mr-1"
+          />
           {{ eventData.discussion }}
         </p>
       </div>
 
       <!-- Participation buttons -->
-      <div v-if="!isOwner" class="flex flex-wrap gap-2 mb-6">
+      <div
+        v-if="!isOwner"
+        class="flex flex-wrap gap-2 mb-6"
+      >
         <UButton
           label="Participer"
           icon="i-lucide-check"
@@ -284,14 +335,25 @@ onUnmounted(() => {
             :key="p.userId"
             class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-elevated text-sm"
           >
-            <UserPopover :user-id="p.userId" :name="p.username" :avatar="p.image">
+            <UserPopover
+              :user-id="p.userId"
+              :name="p.username"
+              :avatar="p.image"
+            >
               <span class="inline-flex items-center gap-1.5 cursor-pointer">
-                <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
+                <UAvatar
+                  :src="p.image ?? undefined"
+                  :alt="p.username"
+                  size="2xs"
+                />
                 {{ p.username }}
               </span>
             </UserPopover>
           </div>
-          <p v-if="!eventData.participants?.some((p: any) => p.status === 'accepted')" class="text-sm text-muted">
+          <p
+            v-if="!eventData.participants?.some((p: any) => p.status === 'accepted')"
+            class="text-sm text-muted"
+          >
             Aucun participant pour l'instant.
           </p>
         </div>
@@ -307,9 +369,17 @@ onUnmounted(() => {
               :key="p.userId"
               class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-elevated text-sm opacity-75"
             >
-              <UserPopover :user-id="p.userId" :name="p.username" :avatar="p.image">
+              <UserPopover
+                :user-id="p.userId"
+                :name="p.username"
+                :avatar="p.image"
+              >
                 <span class="inline-flex items-center gap-1.5 cursor-pointer">
-                  <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
+                  <UAvatar
+                    :src="p.image ?? undefined"
+                    :alt="p.username"
+                    size="2xs"
+                  />
                   {{ p.username }}
                 </span>
               </UserPopover>
@@ -328,9 +398,17 @@ onUnmounted(() => {
               :key="p.userId"
               class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-elevated text-sm opacity-50"
             >
-              <UserPopover :user-id="p.userId" :name="p.username" :avatar="p.image">
+              <UserPopover
+                :user-id="p.userId"
+                :name="p.username"
+                :avatar="p.image"
+              >
                 <span class="inline-flex items-center gap-1.5 cursor-pointer">
-                  <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
+                  <UAvatar
+                    :src="p.image ?? undefined"
+                    :alt="p.username"
+                    size="2xs"
+                  />
                   {{ p.username }}
                 </span>
               </UserPopover>
@@ -339,7 +417,10 @@ onUnmounted(() => {
         </template>
 
         <!-- Invite button (owner only) -->
-        <div v-if="isOwner" class="mt-4">
+        <div
+          v-if="isOwner"
+          class="mt-4"
+        >
           <UButton
             v-if="!showInvitePanel"
             label="Inviter des amis"
@@ -349,25 +430,50 @@ onUnmounted(() => {
             size="sm"
             @click="openInvitePanel"
           />
-          <div v-else class="rounded-lg border border-default p-3">
+          <div
+            v-else
+            class="rounded-lg border border-default p-3"
+          >
             <div class="flex items-center justify-between mb-2">
               <span class="text-sm font-medium">Inviter un ami</span>
-              <UButton icon="i-lucide-x" variant="ghost" color="neutral" size="xs" @click="showInvitePanel = false" />
+              <UButton
+                icon="i-lucide-x"
+                variant="ghost"
+                color="neutral"
+                size="xs"
+                @click="showInvitePanel = false"
+              />
             </div>
-            <div v-if="loadingFriends" class="text-sm text-muted py-2">
-              <UIcon name="i-lucide-loader-2" class="size-4 animate-spin inline-block mr-1" />
+            <div
+              v-if="loadingFriends"
+              class="text-sm text-muted py-2"
+            >
+              <UIcon
+                name="i-lucide-loader-2"
+                class="size-4 animate-spin inline-block mr-1"
+              />
               Chargement...
             </div>
-            <div v-else-if="invitableFriends.length === 0" class="text-sm text-muted py-2">
+            <div
+              v-else-if="invitableFriends.length === 0"
+              class="text-sm text-muted py-2"
+            >
               Tous vos amis sont deja invites.
             </div>
-            <div v-else class="max-h-48 overflow-y-auto space-y-1">
+            <div
+              v-else
+              class="max-h-48 overflow-y-auto space-y-1"
+            >
               <div
                 v-for="f in invitableFriends"
                 :key="f.id"
                 class="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-elevated"
               >
-                <UAvatar :src="f.image ?? undefined" :alt="f.username" size="2xs" />
+                <UAvatar
+                  :src="f.image ?? undefined"
+                  :alt="f.username"
+                  size="2xs"
+                />
                 <span class="flex-1 text-sm truncate">{{ f.username }}</span>
                 <UButton
                   label="Inviter"
@@ -384,7 +490,10 @@ onUnmounted(() => {
       </div>
 
       <!-- Polls -->
-      <div v-if="eventData.polls?.length > 0 || isOwner" class="mb-6">
+      <div
+        v-if="eventData.polls?.length > 0 || isOwner"
+        class="mb-6"
+      >
         <div class="flex items-center justify-between mb-3">
           <h2 class="text-sm font-semibold text-muted uppercase tracking-wider">
             Sondages
@@ -401,7 +510,11 @@ onUnmounted(() => {
         </div>
 
         <!-- Existing polls -->
-        <div v-for="poll in eventData.polls" :key="poll.id" class="mb-4 rounded-lg border border-default p-4">
+        <div
+          v-for="poll in eventData.polls"
+          :key="poll.id"
+          class="mb-4 rounded-lg border border-default p-4"
+        >
           <h3 class="text-sm font-medium mb-3">
             {{ poll.question }}
           </h3>
@@ -425,12 +538,30 @@ onUnmounted(() => {
         </div>
 
         <!-- New poll form -->
-        <div v-if="showPollForm" class="rounded-lg border border-default p-4">
-          <UFormField label="Question" class="mb-3">
-            <UInput v-model="pollQuestion" placeholder="Quel jeu on fait ?" class="w-full" />
+        <div
+          v-if="showPollForm"
+          class="rounded-lg border border-default p-4"
+        >
+          <UFormField
+            label="Question"
+            class="mb-3"
+          >
+            <UInput
+              v-model="pollQuestion"
+              placeholder="Quel jeu on fait ?"
+              class="w-full"
+            />
           </UFormField>
-          <div v-for="(_, i) in pollOptions" :key="i" class="flex gap-2 mb-2">
-            <UInput v-model="pollOptions[i]" :placeholder="`Option ${i + 1}`" class="flex-1" />
+          <div
+            v-for="(_, i) in pollOptions"
+            :key="i"
+            class="flex gap-2 mb-2"
+          >
+            <UInput
+              v-model="pollOptions[i]"
+              :placeholder="`Option ${i + 1}`"
+              class="flex-1"
+            />
             <UButton
               v-if="pollOptions.length > 2"
               icon="i-lucide-x"
@@ -441,10 +572,29 @@ onUnmounted(() => {
             />
           </div>
           <div class="flex gap-2 mt-3">
-            <UButton label="Ajouter une option" icon="i-lucide-plus" variant="ghost" color="neutral" size="xs" @click="addPollOption" />
+            <UButton
+              label="Ajouter une option"
+              icon="i-lucide-plus"
+              variant="ghost"
+              color="neutral"
+              size="xs"
+              @click="addPollOption"
+            />
             <div class="flex-1" />
-            <UButton label="Annuler" variant="ghost" color="neutral" size="xs" @click="showPollForm = false" />
-            <UButton label="Creer" icon="i-lucide-check" size="xs" :loading="creatingPoll" @click="createPoll" />
+            <UButton
+              label="Annuler"
+              variant="ghost"
+              color="neutral"
+              size="xs"
+              @click="showPollForm = false"
+            />
+            <UButton
+              label="Creer"
+              icon="i-lucide-check"
+              size="xs"
+              :loading="creatingPoll"
+              @click="createPoll"
+            />
           </div>
         </div>
       </div>
@@ -471,10 +621,19 @@ onUnmounted(() => {
             :key="comment.id"
             class="flex gap-2"
           >
-            <UAvatar :src="comment.userImage ?? undefined" :alt="comment.username" size="xs" class="shrink-0 mt-0.5" />
+            <UAvatar
+              :src="comment.userImage ?? undefined"
+              :alt="comment.username"
+              size="xs"
+              class="shrink-0 mt-0.5"
+            />
             <div>
               <div class="flex items-baseline gap-2">
-                <UserPopover :user-id="comment.userId" :name="comment.username" :avatar="comment.userImage">
+                <UserPopover
+                  :user-id="comment.userId"
+                  :name="comment.username"
+                  :avatar="comment.userImage"
+                >
                   <span class="text-sm font-medium cursor-pointer hover:underline">{{ comment.username }}</span>
                 </UserPopover>
                 <span class="text-xs text-muted">{{ commentTime(comment.createdAt) }}</span>
@@ -484,13 +643,19 @@ onUnmounted(() => {
               </p>
             </div>
           </div>
-          <p v-if="!eventData.comments?.length" class="text-sm text-muted">
+          <p
+            v-if="!eventData.comments?.length"
+            class="text-sm text-muted"
+          >
             Aucun commentaire.
           </p>
         </div>
 
         <!-- Post comment -->
-        <form class="flex gap-2" @submit.prevent="postComment">
+        <form
+          class="flex gap-2"
+          @submit.prevent="postComment"
+        >
           <UInput
             v-model="newComment"
             placeholder="Ecrire un commentaire..."

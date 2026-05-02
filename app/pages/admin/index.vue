@@ -90,12 +90,24 @@ onMounted(async () => {
       Administration
     </h1>
 
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="size-6 animate-spin text-muted"
+      />
     </div>
 
-    <div v-else-if="!isAdmin" class="text-center py-12">
-      <UIcon name="i-lucide-shield-x" class="size-12 text-red-500 mx-auto mb-3" />
+    <div
+      v-else-if="!isAdmin"
+      class="text-center py-12"
+    >
+      <UIcon
+        name="i-lucide-shield-x"
+        class="size-12 text-red-500 mx-auto mb-3"
+      />
       <p class="text-muted">
         Acces reserve aux administrateurs.
       </p>
@@ -128,11 +140,21 @@ onMounted(async () => {
           <table class="w-full min-w-[640px] text-sm">
             <thead class="bg-elevated">
               <tr>
-                <th class="text-left px-4 py-2 font-medium text-muted">Utilisateur</th>
-                <th class="text-left px-4 py-2 font-medium text-muted">Email</th>
-                <th class="text-center px-4 py-2 font-medium text-muted">Amis</th>
-                <th class="text-center px-4 py-2 font-medium text-muted">Sessions</th>
-                <th class="text-left px-4 py-2 font-medium text-muted">Inscrit le</th>
+                <th class="text-left px-4 py-2 font-medium text-muted">
+                  Utilisateur
+                </th>
+                <th class="text-left px-4 py-2 font-medium text-muted">
+                  Email
+                </th>
+                <th class="text-center px-4 py-2 font-medium text-muted">
+                  Amis
+                </th>
+                <th class="text-center px-4 py-2 font-medium text-muted">
+                  Sessions
+                </th>
+                <th class="text-left px-4 py-2 font-medium text-muted">
+                  Inscrit le
+                </th>
                 <th class="px-4 py-2" />
               </tr>
             </thead>
@@ -144,17 +166,34 @@ onMounted(async () => {
               >
                 <td class="px-4 py-2">
                   <div class="flex items-center gap-2">
-                    <UAvatar :src="u.image ?? undefined" :alt="u.username" size="2xs" />
+                    <UAvatar
+                      :src="u.image ?? undefined"
+                      :alt="u.username"
+                      size="2xs"
+                    />
                     <span>{{ u.username }}</span>
-                    <UBadge v-if="u.is_admin" color="warning" variant="subtle" size="xs">
+                    <UBadge
+                      v-if="u.is_admin"
+                      color="warning"
+                      variant="subtle"
+                      size="xs"
+                    >
                       Admin
                     </UBadge>
                   </div>
                 </td>
-                <td class="px-4 py-2 text-muted">{{ u.email }}</td>
-                <td class="px-4 py-2 text-center">{{ u.friend_count }}</td>
-                <td class="px-4 py-2 text-center">{{ u.session_count }}</td>
-                <td class="px-4 py-2 text-muted">{{ formatDate(u.created_at) }}</td>
+                <td class="px-4 py-2 text-muted">
+                  {{ u.email }}
+                </td>
+                <td class="px-4 py-2 text-center">
+                  {{ u.friend_count }}
+                </td>
+                <td class="px-4 py-2 text-center">
+                  {{ u.session_count }}
+                </td>
+                <td class="px-4 py-2 text-muted">
+                  {{ formatDate(u.created_at) }}
+                </td>
                 <td class="px-4 py-2 text-right">
                   <UButton
                     v-if="!u.is_admin"
@@ -178,11 +217,21 @@ onMounted(async () => {
           <table class="w-full min-w-[640px] text-sm">
             <thead class="bg-elevated">
               <tr>
-                <th class="text-left px-4 py-2 font-medium text-muted">Communaute</th>
-                <th class="text-left px-4 py-2 font-medium text-muted">Createur</th>
-                <th class="text-center px-4 py-2 font-medium text-muted">Membres</th>
-                <th class="text-center px-4 py-2 font-medium text-muted">Publique</th>
-                <th class="text-left px-4 py-2 font-medium text-muted">Creee le</th>
+                <th class="text-left px-4 py-2 font-medium text-muted">
+                  Communaute
+                </th>
+                <th class="text-left px-4 py-2 font-medium text-muted">
+                  Createur
+                </th>
+                <th class="text-center px-4 py-2 font-medium text-muted">
+                  Membres
+                </th>
+                <th class="text-center px-4 py-2 font-medium text-muted">
+                  Publique
+                </th>
+                <th class="text-left px-4 py-2 font-medium text-muted">
+                  Creee le
+                </th>
                 <th class="px-4 py-2" />
               </tr>
             </thead>
@@ -193,12 +242,19 @@ onMounted(async () => {
                 class="border-t border-default"
               >
                 <td class="px-4 py-2 font-medium">
-                  <NuxtLink :to="`/communities/${c.id}`" class="hover:text-violet-500">
+                  <NuxtLink
+                    :to="`/communities/${c.id}`"
+                    class="hover:text-violet-500"
+                  >
                     {{ c.name }}
                   </NuxtLink>
                 </td>
-                <td class="px-4 py-2 text-muted">{{ c.creator_name }}</td>
-                <td class="px-4 py-2 text-center">{{ c.member_count }}</td>
+                <td class="px-4 py-2 text-muted">
+                  {{ c.creator_name }}
+                </td>
+                <td class="px-4 py-2 text-center">
+                  {{ c.member_count }}
+                </td>
                 <td class="px-4 py-2 text-center">
                   <UIcon
                     :name="c.is_public ? 'i-lucide-check' : 'i-lucide-x'"
@@ -206,7 +262,9 @@ onMounted(async () => {
                     class="size-4"
                   />
                 </td>
-                <td class="px-4 py-2 text-muted">{{ formatDate(c.created_at) }}</td>
+                <td class="px-4 py-2 text-muted">
+                  {{ formatDate(c.created_at) }}
+                </td>
                 <td class="px-4 py-2 text-right">
                   <UButton
                     icon="i-lucide-trash-2"

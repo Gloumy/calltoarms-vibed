@@ -84,12 +84,21 @@ const releaseYear = computed(() => {
 
     <!-- Info -->
     <div class="p-3">
-      <h3 class="text-sm font-semibold truncate" :title="game.name">
+      <h3
+        class="text-sm font-semibold truncate"
+        :title="game.name"
+      >
         {{ game.name }}
       </h3>
-      <p v-if="game.genres?.length || releaseYear" class="text-xs text-muted truncate mt-0.5">
+      <p
+        v-if="game.genres?.length || releaseYear"
+        class="text-xs text-muted truncate mt-0.5"
+      >
         <span v-if="releaseYear">{{ releaseYear }}</span>
-        <span v-if="releaseYear && game.genres?.length" class="mx-1">&middot;</span>
+        <span
+          v-if="releaseYear && game.genres?.length"
+          class="mx-1"
+        >&middot;</span>
         <span v-if="game.genres?.length">{{ game.genres.slice(0, 2).join(', ') }}</span>
       </p>
     </div>

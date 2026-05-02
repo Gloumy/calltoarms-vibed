@@ -1,6 +1,6 @@
 import type { Peer } from 'crossws'
 
-const peers = new Map<string, { peer: Peer; userId: string }>()
+const peers = new Map<string, { peer: Peer, userId: string }>()
 
 export default defineWebSocketHandler({
   open(peer) {

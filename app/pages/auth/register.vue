@@ -52,8 +52,17 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </h2>
     </template>
 
-    <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormField label="Nom d'utilisateur" name="username" required>
+    <UForm
+      :schema="schema"
+      :state="state"
+      class="space-y-4"
+      @submit="onSubmit"
+    >
+      <UFormField
+        label="Nom d'utilisateur"
+        name="username"
+        required
+      >
         <UInput
           v-model="state.username"
           placeholder="pseudo"
@@ -62,7 +71,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         />
       </UFormField>
 
-      <UFormField label="Email" name="email" required>
+      <UFormField
+        label="Email"
+        name="email"
+        required
+      >
         <UInput
           v-model="state.email"
           type="email"
@@ -72,15 +85,34 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         />
       </UFormField>
 
-      <UFormField label="Mot de passe" name="password" required>
-        <PasswordInput v-model="state.password" autocomplete="new-password" />
+      <UFormField
+        label="Mot de passe"
+        name="password"
+        required
+      >
+        <PasswordInput
+          v-model="state.password"
+          autocomplete="new-password"
+        />
       </UFormField>
 
-      <UFormField label="Confirmer le mot de passe" name="confirmPassword" required>
-        <PasswordInput v-model="state.confirmPassword" autocomplete="new-password" />
+      <UFormField
+        label="Confirmer le mot de passe"
+        name="confirmPassword"
+        required
+      >
+        <PasswordInput
+          v-model="state.confirmPassword"
+          autocomplete="new-password"
+        />
       </UFormField>
 
-      <UAlert v-if="error" color="error" :title="error" icon="i-lucide-alert-circle" />
+      <UAlert
+        v-if="error"
+        color="error"
+        :title="error"
+        icon="i-lucide-alert-circle"
+      />
 
       <UButton
         type="submit"
@@ -94,7 +126,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
     <template #footer>
       <p class="text-sm text-center">
         Déjà un compte ?
-        <NuxtLink to="/auth/login" class="text-violet-500 hover:underline">
+        <NuxtLink
+          to="/auth/login"
+          class="text-violet-500 hover:underline"
+        >
           Se connecter
         </NuxtLink>
       </p>

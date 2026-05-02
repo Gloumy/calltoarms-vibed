@@ -40,13 +40,22 @@ onMounted(() => {
       />
     </div>
 
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="size-6 animate-spin text-muted"
+      />
     </div>
 
     <template v-else-if="communities.length === 0">
       <div class="text-center py-12">
-        <UIcon name="i-lucide-users" class="size-12 text-muted mx-auto mb-3" />
+        <UIcon
+          name="i-lucide-users"
+          class="size-12 text-muted mx-auto mb-3"
+        />
         <p class="text-muted mb-4">
           Aucune communaute disponible.
         </p>
@@ -60,7 +69,10 @@ onMounted(() => {
 
     <template v-else>
       <!-- Pending invitations -->
-      <div v-if="invitedCommunities.length > 0" class="mb-8">
+      <div
+        v-if="invitedCommunities.length > 0"
+        class="mb-8"
+      >
         <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
           Invitations en attente
         </h2>
@@ -75,7 +87,10 @@ onMounted(() => {
       </div>
 
       <!-- My communities -->
-      <div v-if="myCommunities.length > 0" class="mb-8">
+      <div
+        v-if="myCommunities.length > 0"
+        class="mb-8"
+      >
         <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
           Mes communautes
         </h2>

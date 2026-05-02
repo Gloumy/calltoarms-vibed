@@ -16,7 +16,7 @@ const showAddFriend = ref(false)
 // Fetch friends list
 async function fetchFriends() {
   try {
-    const data = await $fetch<{ friends: any[]; mySessionId: string | null }>('/api/friends')
+    const data = await $fetch<{ friends: any[], mySessionId: string | null }>('/api/friends')
     friends.value = data.friends
     mySessionId.value = data.mySessionId
   } catch {
@@ -125,12 +125,23 @@ const rootClass = computed(() =>
     </div>
 
     <!-- Pending requests -->
-    <div v-if="pendingRequests.length > 0" class="px-4 mb-4">
+    <div
+      v-if="pendingRequests.length > 0"
+      class="px-4 mb-4"
+    >
       <h4 class="text-xs font-semibold text-muted mb-2">
         Demandes ({{ pendingRequests.length }})
       </h4>
-      <div v-for="req in pendingRequests" :key="req.senderId" class="flex items-center gap-2 py-1.5">
-        <UAvatar :src="req.senderImage ?? undefined" :alt="req.senderUsername" size="xs" />
+      <div
+        v-for="req in pendingRequests"
+        :key="req.senderId"
+        class="flex items-center gap-2 py-1.5"
+      >
+        <UAvatar
+          :src="req.senderImage ?? undefined"
+          :alt="req.senderUsername"
+          size="xs"
+        />
         <span class="text-sm flex-1 truncate">{{ req.senderUsername }}</span>
         <UButton
           icon="i-lucide-check"
@@ -150,7 +161,10 @@ const rootClass = computed(() =>
     </div>
 
     <!-- In session -->
-    <div v-if="inSessionFriends.length > 0" class="mb-3">
+    <div
+      v-if="inSessionFriends.length > 0"
+      class="mb-3"
+    >
       <h4 class="px-4 text-xs font-semibold text-muted mb-1">
         En session — {{ inSessionFriends.length }}
       </h4>
@@ -165,7 +179,10 @@ const rootClass = computed(() =>
     </div>
 
     <!-- Playing -->
-    <div v-if="playingFriends.length > 0" class="mb-3">
+    <div
+      v-if="playingFriends.length > 0"
+      class="mb-3"
+    >
       <h4 class="px-4 text-xs font-semibold text-muted mb-1">
         En jeu — {{ playingFriends.length }}
       </h4>
@@ -179,7 +196,10 @@ const rootClass = computed(() =>
     </div>
 
     <!-- Available -->
-    <div v-if="availableFriends.length > 0" class="mb-3">
+    <div
+      v-if="availableFriends.length > 0"
+      class="mb-3"
+    >
       <h4 class="px-4 text-xs font-semibold text-muted mb-1">
         Disponibles — {{ availableFriends.length }}
       </h4>
@@ -193,7 +213,10 @@ const rootClass = computed(() =>
     </div>
 
     <!-- Online -->
-    <div v-if="onlineFriends.length > 0" class="mb-3">
+    <div
+      v-if="onlineFriends.length > 0"
+      class="mb-3"
+    >
       <h4 class="px-4 text-xs font-semibold text-muted mb-1">
         En ligne — {{ onlineFriends.length }}
       </h4>
@@ -207,7 +230,10 @@ const rootClass = computed(() =>
     </div>
 
     <!-- Offline -->
-    <div v-if="offlineFriends.length > 0" class="mb-3">
+    <div
+      v-if="offlineFriends.length > 0"
+      class="mb-3"
+    >
       <h4 class="px-4 text-xs font-semibold text-muted mb-1">
         Hors ligne — {{ offlineFriends.length }}
       </h4>
@@ -221,7 +247,10 @@ const rootClass = computed(() =>
     </div>
 
     <!-- Empty state -->
-    <div v-if="friends.length === 0 && pendingRequests.length === 0" class="px-4 text-sm text-muted">
+    <div
+      v-if="friends.length === 0 && pendingRequests.length === 0"
+      class="px-4 text-sm text-muted"
+    >
       <p>Aucun ami pour l'instant.</p>
       <UButton
         label="Ajouter un ami"

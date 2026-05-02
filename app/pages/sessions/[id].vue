@@ -17,9 +17,9 @@ const chatContainer = ref<HTMLElement | null>(null)
 const joining = ref(false)
 const leaving = ref(false)
 const showSwitchConfirm = ref(false)
-const switchFromSession = ref<{ id: string; gameName: string | null } | null>(null)
+const switchFromSession = ref<{ id: string, gameName: string | null } | null>(null)
 const showLeaveConfirm = ref(false)
-const leaveInfo = ref<{ hasOthers: boolean; nextLeader: { id: string; username: string } | null } | null>(null)
+const leaveInfo = ref<{ hasOthers: boolean, nextLeader: { id: string, username: string } | null } | null>(null)
 
 async function fetchSession() {
   try {
@@ -261,23 +261,46 @@ onUnmounted(() => {
 <template>
   <div>
     <!-- Loading -->
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="size-6 animate-spin text-muted"
+      />
     </div>
 
     <!-- Not found -->
-    <div v-else-if="!sessionData" class="text-center py-12">
+    <div
+      v-else-if="!sessionData"
+      class="text-center py-12"
+    >
       <p class="text-muted">
         Session introuvable.
       </p>
-      <UButton label="Retour" icon="i-lucide-arrow-left" variant="outline" class="mt-4" to="/" />
+      <UButton
+        label="Retour"
+        icon="i-lucide-arrow-left"
+        variant="outline"
+        class="mt-4"
+        to="/"
+      />
     </div>
 
     <!-- Session detail -->
     <template v-else>
       <!-- Back + header -->
       <div class="mb-6">
-        <UButton label="Sessions" icon="i-lucide-arrow-left" variant="ghost" color="neutral" size="sm" to="/" class="mb-3" />
+        <UButton
+          label="Sessions"
+          icon="i-lucide-arrow-left"
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          to="/"
+          class="mb-3"
+        />
 
         <div class="flex items-start gap-3 sm:gap-4">
           <img
@@ -296,7 +319,10 @@ onUnmounted(() => {
             v-else
             class="w-14 h-18 sm:w-16 sm:h-20 rounded bg-violet-500/20 text-violet-500 flex items-center justify-center shrink-0"
           >
-            <UIcon name="i-lucide-gamepad-2" class="size-6" />
+            <UIcon
+              name="i-lucide-gamepad-2"
+              class="size-6"
+            />
           </div>
 
           <div class="min-w-0 flex-1">
@@ -304,30 +330,62 @@ onUnmounted(() => {
               <h1 class="text-xl sm:text-2xl font-bold break-words">
                 {{ sessionData.game_name || 'Session libre' }}
               </h1>
-              <UBadge v-if="sessionStatus === 'full'" color="error" variant="subtle" size="sm">
+              <UBadge
+                v-if="sessionStatus === 'full'"
+                color="error"
+                variant="subtle"
+                size="sm"
+              >
                 Complet
               </UBadge>
-              <UBadge v-else-if="sessionStatus === 'expires_soon'" color="warning" variant="subtle" size="sm">
+              <UBadge
+                v-else-if="sessionStatus === 'expires_soon'"
+                color="warning"
+                variant="subtle"
+                size="sm"
+              >
                 Expire bientot
               </UBadge>
             </div>
             <p class="text-sm text-muted">
-              <UIcon name="i-lucide-clock" class="size-3.5 inline-block mr-1" />
+              <UIcon
+                name="i-lucide-clock"
+                class="size-3.5 inline-block mr-1"
+              />
               {{ timeLeft }} restantes
               <span class="mx-1">&middot;</span>
-              <UIcon name="i-lucide-users" class="size-3.5 inline-block mr-1" />
+              <UIcon
+                name="i-lucide-users"
+                class="size-3.5 inline-block mr-1"
+              />
               {{ playersLabel }}
             </p>
             <p class="text-sm text-muted mt-1">
-              <UserPopover :user-id="sessionData.created_by" :name="sessionData.creator_name" :avatar="sessionData.creator_avatar" />
-              <span v-if="sessionData.community_name" class="mx-1">&middot;</span>
-              <span v-if="sessionData.community_name" class="text-violet-500">via {{ sessionData.community_name }}</span>
+              <UserPopover
+                :user-id="sessionData.created_by"
+                :name="sessionData.creator_name"
+                :avatar="sessionData.creator_avatar"
+              />
+              <span
+                v-if="sessionData.community_name"
+                class="mx-1"
+              >&middot;</span>
+              <span
+                v-if="sessionData.community_name"
+                class="text-violet-500"
+              >via {{ sessionData.community_name }}</span>
             </p>
           </div>
         </div>
 
-        <p v-if="sessionData.discussion" class="mt-3 text-sm text-muted">
-          <UIcon name="i-lucide-message-circle" class="size-3.5 inline-block mr-1" />
+        <p
+          v-if="sessionData.discussion"
+          class="mt-3 text-sm text-muted"
+        >
+          <UIcon
+            name="i-lucide-message-circle"
+            class="size-3.5 inline-block mr-1"
+          />
           {{ sessionData.discussion }}
         </p>
       </div>
@@ -375,17 +433,33 @@ onUnmounted(() => {
             :key="p.userId"
             class="flex items-center gap-1.5 px-2 py-1 rounded-md bg-elevated text-sm"
           >
-            <UserPopover :user-id="p.userId" :name="p.username" :avatar="p.image">
+            <UserPopover
+              :user-id="p.userId"
+              :name="p.username"
+              :avatar="p.image"
+            >
               <span class="inline-flex items-center gap-1.5 cursor-pointer">
-                <UAvatar :src="p.image ?? undefined" :alt="p.username" size="2xs" />
+                <UAvatar
+                  :src="p.image ?? undefined"
+                  :alt="p.username"
+                  size="2xs"
+                />
                 {{ p.username }}
               </span>
             </UserPopover>
-            <UBadge v-if="p.userId === sessionData.created_by" color="primary" variant="subtle" size="xs">
+            <UBadge
+              v-if="p.userId === sessionData.created_by"
+              color="primary"
+              variant="subtle"
+              size="xs"
+            >
               Createur
             </UBadge>
           </div>
-          <p v-if="!sessionData.participants?.length" class="text-sm text-muted">
+          <p
+            v-if="!sessionData.participants?.length"
+            class="text-sm text-muted"
+          >
             Aucun participant.
           </p>
         </div>
@@ -401,9 +475,15 @@ onUnmounted(() => {
           ref="chatContainer"
           class="max-h-96 overflow-y-auto space-y-3 mb-4 rounded-lg border border-default p-4"
         >
-          <template v-for="msg in messages" :key="msg.id">
+          <template
+            v-for="msg in messages"
+            :key="msg.id"
+          >
             <!-- System message -->
-            <div v-if="msg.type === 'system'" class="flex items-center gap-2 py-1">
+            <div
+              v-if="msg.type === 'system'"
+              class="flex items-center gap-2 py-1"
+            >
               <div class="flex-1 h-px bg-muted/30" />
               <span class="text-xs text-muted italic whitespace-nowrap">
                 {{ msg.content }}
@@ -411,11 +491,23 @@ onUnmounted(() => {
               <div class="flex-1 h-px bg-muted/30" />
             </div>
             <!-- User message -->
-            <div v-else class="flex gap-2">
-              <UAvatar :src="msg.userImage ?? undefined" :alt="msg.username" size="xs" class="shrink-0 mt-0.5" />
+            <div
+              v-else
+              class="flex gap-2"
+            >
+              <UAvatar
+                :src="msg.userImage ?? undefined"
+                :alt="msg.username"
+                size="xs"
+                class="shrink-0 mt-0.5"
+              />
               <div>
                 <div class="flex items-baseline gap-2">
-                  <UserPopover :user-id="msg.userId" :name="msg.username" :avatar="msg.userImage">
+                  <UserPopover
+                    :user-id="msg.userId"
+                    :name="msg.username"
+                    :avatar="msg.userImage"
+                  >
                     <span class="text-sm font-medium cursor-pointer hover:underline">{{ msg.username }}</span>
                   </UserPopover>
                   <span class="text-xs text-muted">{{ messageTime(msg.createdAt) }}</span>
@@ -426,13 +518,19 @@ onUnmounted(() => {
               </div>
             </div>
           </template>
-          <p v-if="!messages.length" class="text-sm text-muted text-center py-4">
+          <p
+            v-if="!messages.length"
+            class="text-sm text-muted text-center py-4"
+          >
             Aucun message. Lancez la conversation !
           </p>
         </div>
 
         <!-- Post message -->
-        <form class="flex gap-2" @submit.prevent="postMessage">
+        <form
+          class="flex gap-2"
+          @submit.prevent="postMessage"
+        >
           <UInput
             v-model="newMessage"
             placeholder="Ecrire un message..."
@@ -450,8 +548,14 @@ onUnmounted(() => {
       </div>
 
       <!-- Chat locked for non-participants -->
-      <div v-else class="rounded-lg border border-default p-6 text-center">
-        <UIcon name="i-lucide-message-circle" class="size-8 text-muted mb-2" />
+      <div
+        v-else
+        class="rounded-lg border border-default p-6 text-center"
+      >
+        <UIcon
+          name="i-lucide-message-circle"
+          class="size-8 text-muted mb-2"
+        />
         <p class="text-sm text-muted">
           Rejoins la session pour acceder au chat.
         </p>
@@ -459,7 +563,10 @@ onUnmounted(() => {
     </template>
 
     <!-- Switch session confirmation -->
-    <UModal :open="showSwitchConfirm" @update:open="showSwitchConfirm = $event">
+    <UModal
+      :open="showSwitchConfirm"
+      @update:open="showSwitchConfirm = $event"
+    >
       <template #header>
         <h3 class="text-lg font-semibold">
           Changer de session
@@ -471,30 +578,56 @@ onUnmounted(() => {
           Veux-tu la quitter pour rejoindre celle-ci ?
         </p>
         <div class="flex gap-2 justify-end">
-          <UButton label="Annuler" variant="outline" color="neutral" size="sm" @click="showSwitchConfirm = false" />
-          <UButton label="Quitter et rejoindre" icon="i-lucide-arrow-right-left" size="sm" @click="confirmSwitch" />
+          <UButton
+            label="Annuler"
+            variant="outline"
+            color="neutral"
+            size="sm"
+            @click="showSwitchConfirm = false"
+          />
+          <UButton
+            label="Quitter et rejoindre"
+            icon="i-lucide-arrow-right-left"
+            size="sm"
+            @click="confirmSwitch"
+          />
         </div>
       </template>
     </UModal>
 
     <!-- Owner leave confirmation -->
-    <UModal :open="showLeaveConfirm" @update:open="showLeaveConfirm = $event">
+    <UModal
+      :open="showLeaveConfirm"
+      @update:open="showLeaveConfirm = $event"
+    >
       <template #header>
         <h3 class="text-lg font-semibold">
           Quitter ta session
         </h3>
       </template>
       <template #body>
-        <p v-if="leaveInfo?.hasOthers" class="text-sm mb-4">
+        <p
+          v-if="leaveInfo?.hasOthers"
+          class="text-sm mb-4"
+        >
           Le lead sera transfere a <strong>{{ leaveInfo.nextLeader?.username }}</strong>.
           Tu veux continuer ?
         </p>
-        <p v-else class="text-sm mb-4">
+        <p
+          v-else
+          class="text-sm mb-4"
+        >
           Il n'y a aucun autre joueur. La session sera fermee.
           Tu veux continuer ?
         </p>
         <div class="flex gap-2 justify-end">
-          <UButton label="Annuler" variant="outline" color="neutral" size="sm" @click="showLeaveConfirm = false" />
+          <UButton
+            label="Annuler"
+            variant="outline"
+            color="neutral"
+            size="sm"
+            @click="showLeaveConfirm = false"
+          />
           <UButton
             :label="leaveInfo?.hasOthers ? 'Transferer et quitter' : 'Fermer la session'"
             :icon="leaveInfo?.hasOthers ? 'i-lucide-arrow-right-left' : 'i-lucide-x'"

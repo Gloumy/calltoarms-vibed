@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     .from(communityMembers)
     .where(and(
       eq(communityMembers.communityId, id),
-      eq(communityMembers.userId, me),
+      eq(communityMembers.userId, me)
     ))
     .limit(1)
 
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
     .from(communityMembers)
     .where(and(
       eq(communityMembers.communityId, id),
-      eq(communityMembers.userId, userId),
+      eq(communityMembers.userId, userId)
     ))
     .limit(1)
 

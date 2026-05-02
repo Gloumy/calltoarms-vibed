@@ -3,7 +3,7 @@ import 'dotenv/config'
 
 const client = new pg.Client({ connectionString: process.env.NUXT_DATABASE_URL || process.env.DATABASE_URL })
 
-let tokenCache: { value: string; expiresAt: number } | null = null
+let tokenCache: { value: string, expiresAt: number } | null = null
 
 async function getToken() {
   if (tokenCache && tokenCache.expiresAt > Date.now()) return tokenCache.value
@@ -80,7 +80,7 @@ async function main() {
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
              ON CONFLICT (id) DO NOTHING`,
             [g.id, g.name, g.slug ?? null, coverUrl, g.summary ?? null,
-             JSON.stringify(genres), JSON.stringify(platforms), g.first_release_date ?? null]
+              JSON.stringify(genres), JSON.stringify(platforms), g.first_release_date ?? null]
           )
           inserted++
         } catch (err: any) {

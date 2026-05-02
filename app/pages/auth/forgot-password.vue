@@ -42,7 +42,10 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
       </h2>
     </template>
 
-    <div v-if="success" class="space-y-4">
+    <div
+      v-if="success"
+      class="space-y-4"
+    >
       <UAlert
         color="success"
         title="Email envoyé"
@@ -57,8 +60,18 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
       />
     </div>
 
-    <UForm v-else :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormField label="Email" name="email" required>
+    <UForm
+      v-else
+      :schema="schema"
+      :state="state"
+      class="space-y-4"
+      @submit="onSubmit"
+    >
+      <UFormField
+        label="Email"
+        name="email"
+        required
+      >
         <UInput
           v-model="state.email"
           type="email"
@@ -68,7 +81,12 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
         />
       </UFormField>
 
-      <UAlert v-if="error" color="error" :title="error" icon="i-lucide-alert-circle" />
+      <UAlert
+        v-if="error"
+        color="error"
+        :title="error"
+        icon="i-lucide-alert-circle"
+      />
 
       <UButton
         type="submit"
@@ -81,7 +99,10 @@ async function onSubmit(_event: FormSubmitEvent<Schema>) {
 
     <template #footer>
       <p class="text-sm text-center">
-        <NuxtLink to="/auth/login" class="text-violet-500 hover:underline">
+        <NuxtLink
+          to="/auth/login"
+          class="text-violet-500 hover:underline"
+        >
           Retour à la connexion
         </NuxtLink>
       </p>

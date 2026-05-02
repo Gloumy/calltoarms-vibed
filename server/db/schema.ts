@@ -87,7 +87,7 @@ export const userPlatformAccounts = pgTable('user_platform_accounts', {
   metadata: jsonb('metadata'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => [
+}, table => [
   unique('user_platform_accounts_user_platform_unique').on(table.userId, table.platform)
 ])
 
@@ -110,7 +110,7 @@ export const userPlatformGames = pgTable('user_platform_games', {
   completedAt: timestamp('completed_at', { withTimezone: true }),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => [
+}, table => [
   unique('user_platform_games_account_game_unique').on(table.platformAccountId, table.platformGameId)
 ])
 
@@ -130,7 +130,7 @@ export const userPlatformAchievements = pgTable('user_platform_achievements', {
   points: integer('points'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow()
-}, (table) => [
+}, table => [
   unique('user_platform_achievements_game_achievement_unique').on(table.platformGameId, table.achievementId)
 ])
 
@@ -152,7 +152,7 @@ export const userFavoritedGames = pgTable('user_favorited_games', {
   userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   gameId: integer('game_id').notNull().references(() => games.id, { onDelete: 'cascade' }),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow()
-}, (table) => [
+}, table => [
   primaryKey({ columns: [table.userId, table.gameId] })
 ])
 
@@ -164,7 +164,7 @@ export const friendships = pgTable('friendships', {
   notifDisabled: boolean('notif_disabled').default(false),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
-}, (table) => [
+}, table => [
   primaryKey({ columns: [table.senderId, table.receiverId] })
 ])
 
@@ -189,7 +189,7 @@ export const communityMembers = pgTable('community_members', {
   status: text('status').notNull().default('active'), // 'active' | 'invited' | 'declined'
   notifPreference: text('notif_preference').default('all'), // 'all' | 'friends_only' | 'none'
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow()
-}, (table) => [
+}, table => [
   primaryKey({ columns: [table.communityId, table.userId] })
 ])
 
@@ -212,7 +212,7 @@ export const gameSessionParticipations = pgTable('game_session_participations', 
   sessionId: text('session_id').notNull().references(() => gameSessions.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   joinedAt: timestamp('joined_at', { withTimezone: true }).defaultNow()
-}, (table) => [
+}, table => [
   primaryKey({ columns: [table.sessionId, table.userId] })
 ])
 
@@ -237,7 +237,7 @@ export const eventParticipations = pgTable('event_participations', {
   userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
   status: text('status').notNull().default('invited'), // 'invited' | 'accepted' | 'declined' | 'maybe'
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow()
-}, (table) => [
+}, table => [
   primaryKey({ columns: [table.eventId, table.userId] })
 ])
 
@@ -260,7 +260,7 @@ export const eventPollOptions = pgTable('event_poll_options', {
 export const eventPollVotes = pgTable('event_poll_votes', {
   optionId: text('option_id').notNull().references(() => eventPollOptions.id, { onDelete: 'cascade' }),
   userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' })
-}, (table) => [
+}, table => [
   primaryKey({ columns: [table.optionId, table.userId] })
 ])
 

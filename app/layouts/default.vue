@@ -17,8 +17,15 @@ const openRight = ref(false)
         aria-label="Ouvrir le menu"
         @click="openLeft = true"
       />
-      <NuxtLink to="/" class="flex items-center gap-2 text-base font-bold text-violet-500">
-        <img src="/logo.png" alt="" class="size-9 object-contain">
+      <NuxtLink
+        to="/"
+        class="flex items-center gap-2 text-base font-bold text-violet-500"
+      >
+        <img
+          src="/logo.png"
+          alt=""
+          class="size-9 object-contain"
+        >
         Call to Arms
       </NuxtLink>
       <UButton
@@ -49,7 +56,10 @@ const openRight = ref(false)
       :ui="{ content: 'w-[260px] max-w-[85vw]', body: 'p-0 sm:p-0' }"
     >
       <template #body>
-        <SidebarLeft variant="drawer" @navigate="openLeft = false" />
+        <SidebarLeft
+          variant="drawer"
+          @navigate="openLeft = false"
+        />
       </template>
     </USlideover>
 

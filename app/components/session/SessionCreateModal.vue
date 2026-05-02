@@ -6,7 +6,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:open': [value: boolean]
-  created: [sessionId: string]
+  'created': [sessionId: string]
 }>()
 
 const selectedGame = ref<any>(null)
@@ -86,7 +86,10 @@ async function createSession() {
 </script>
 
 <template>
-  <UModal :open="props.open" @update:open="emit('update:open', $event)">
+  <UModal
+    :open="props.open"
+    @update:open="emit('update:open', $event)"
+  >
     <template #header>
       <h3 class="text-lg font-semibold">
         Lancer une session
@@ -94,14 +97,24 @@ async function createSession() {
     </template>
 
     <template #body>
-      <form class="space-y-4" @submit.prevent="createSession">
+      <form
+        class="space-y-4"
+        @submit.prevent="createSession"
+      >
         <!-- Game -->
-        <UFormField label="Jeu" name="game">
+        <UFormField
+          label="Jeu"
+          name="game"
+        >
           <GameSearch v-model="selectedGame" />
         </UFormField>
 
         <!-- Visibility (hidden when scoped to a community) -->
-        <UFormField v-if="!props.communityId" label="Visibilite" name="visibility">
+        <UFormField
+          v-if="!props.communityId"
+          label="Visibilite"
+          name="visibility"
+        >
           <div class="flex flex-wrap gap-2">
             <UButton
               v-for="opt in visibilityOptions"
@@ -117,15 +130,31 @@ async function createSession() {
         </UFormField>
 
         <!-- Community selector (when visibility = community) -->
-        <UFormField v-if="!props.communityId && visibility === 'community'" label="Communaute" name="community">
-          <div v-if="loadingCommunities" class="text-sm text-muted py-2">
-            <UIcon name="i-lucide-loader-2" class="size-4 animate-spin inline-block mr-1" />
+        <UFormField
+          v-if="!props.communityId && visibility === 'community'"
+          label="Communaute"
+          name="community"
+        >
+          <div
+            v-if="loadingCommunities"
+            class="text-sm text-muted py-2"
+          >
+            <UIcon
+              name="i-lucide-loader-2"
+              class="size-4 animate-spin inline-block mr-1"
+            />
             Chargement...
           </div>
-          <div v-else-if="myCommunities.length === 0" class="text-sm text-muted py-2">
+          <div
+            v-else-if="myCommunities.length === 0"
+            class="text-sm text-muted py-2"
+          >
             Vous n'etes membre d'aucune communaute.
           </div>
-          <div v-else class="flex flex-wrap gap-2">
+          <div
+            v-else
+            class="flex flex-wrap gap-2"
+          >
             <UButton
               v-for="c in myCommunities"
               :key="c.id"
@@ -139,7 +168,10 @@ async function createSession() {
         </UFormField>
 
         <!-- Duration -->
-        <UFormField label="Duree" name="duration">
+        <UFormField
+          label="Duree"
+          name="duration"
+        >
           <div class="flex flex-wrap gap-2">
             <UButton
               v-for="opt in durationOptions"
@@ -154,7 +186,10 @@ async function createSession() {
         </UFormField>
 
         <!-- Max players -->
-        <UFormField label="Joueurs max (optionnel)" name="maxPlayers">
+        <UFormField
+          label="Joueurs max (optionnel)"
+          name="maxPlayers"
+        >
           <UInput
             v-model.number="maxPlayers"
             type="number"
@@ -166,7 +201,10 @@ async function createSession() {
         </UFormField>
 
         <!-- Discussion -->
-        <UFormField label="Info discussion (optionnel)" name="discussion">
+        <UFormField
+          label="Info discussion (optionnel)"
+          name="discussion"
+        >
           <UInput
             v-model="discussion"
             placeholder="Discord #channel, IP serveur..."
@@ -175,7 +213,12 @@ async function createSession() {
           />
         </UFormField>
 
-        <UAlert v-if="error" color="error" :title="error" icon="i-lucide-alert-circle" />
+        <UAlert
+          v-if="error"
+          color="error"
+          :title="error"
+          icon="i-lucide-alert-circle"
+        />
 
         <UButton
           type="submit"

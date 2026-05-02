@@ -6,26 +6,17 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt'
   ],
 
-  devtools: {
-    enabled: true
-  },
-
-  css: ['~/assets/css/main.css'],
-
   ssr: false,
 
   components: [
     { path: '~/components', pathPrefix: false }
   ],
 
-  compatibilityDate: '2025-01-15',
-
-  // Nitro server config
-  nitro: {
-    experimental: {
-      websocket: true
-    }
+  devtools: {
+    enabled: true
   },
+
+  css: ['~/assets/css/main.css'],
 
   // Runtime config (env vars)
   runtimeConfig: {
@@ -39,6 +30,24 @@ export default defineNuxtConfig({
     steamApiKey: '',
     public: {
       vapidPublicKey: ''
+    }
+  },
+
+  compatibilityDate: '2025-01-15',
+
+  // Nitro server config
+  nitro: {
+    experimental: {
+      websocket: true
+    }
+  },
+
+  eslint: {
+    config: {
+      stylistic: {
+        commaDangle: 'never',
+        braceStyle: '1tbs'
+      }
     }
   },
 
@@ -72,15 +81,6 @@ export default defineNuxtConfig({
     devOptions: {
       enabled: true,
       type: 'module'
-    }
-  },
-
-  eslint: {
-    config: {
-      stylistic: {
-        commaDangle: 'never',
-        braceStyle: '1tbs'
-      }
     }
   }
 })

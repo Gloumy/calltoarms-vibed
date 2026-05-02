@@ -153,19 +153,43 @@ onMounted(() => {
       Profil
     </h1>
 
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="size-6 animate-spin text-muted"
+      />
     </div>
 
     <template v-else-if="profile">
       <!-- Profile card -->
       <div class="rounded-lg border border-default p-4 sm:p-6 mb-6">
-        <div v-if="!editing" class="flex items-center gap-3 sm:gap-4 flex-wrap">
-          <div class="relative group cursor-pointer" @click="avatarInput?.click()">
-            <UAvatar :src="profile.user.image ?? undefined" :alt="profile.user.username" size="xl" />
+        <div
+          v-if="!editing"
+          class="flex items-center gap-3 sm:gap-4 flex-wrap"
+        >
+          <div
+            class="relative group cursor-pointer"
+            @click="avatarInput?.click()"
+          >
+            <UAvatar
+              :src="profile.user.image ?? undefined"
+              :alt="profile.user.username"
+              size="xl"
+            />
             <div class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-              <UIcon v-if="!uploadingAvatar" name="i-lucide-camera" class="size-5 text-white" />
-              <UIcon v-else name="i-lucide-loader-2" class="size-5 text-white animate-spin" />
+              <UIcon
+                v-if="!uploadingAvatar"
+                name="i-lucide-camera"
+                class="size-5 text-white"
+              />
+              <UIcon
+                v-else
+                name="i-lucide-loader-2"
+                class="size-5 text-white animate-spin"
+              />
             </div>
             <input
               ref="avatarInput"
@@ -176,8 +200,12 @@ onMounted(() => {
             >
           </div>
           <div class="flex-1 min-w-0">
-            <h2 class="text-xl font-bold truncate">{{ profile.user.username }}</h2>
-            <p class="text-sm text-muted truncate">{{ profile.user.email }}</p>
+            <h2 class="text-xl font-bold truncate">
+              {{ profile.user.username }}
+            </h2>
+            <p class="text-sm text-muted truncate">
+              {{ profile.user.email }}
+            </p>
             <p class="text-xs text-muted mt-1">
               Membre depuis {{ memberSince }}
             </p>
@@ -193,13 +221,31 @@ onMounted(() => {
         </div>
 
         <!-- Edit form -->
-        <div v-else class="space-y-4">
+        <div
+          v-else
+          class="space-y-4"
+        >
           <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
-            <div class="relative group cursor-pointer" @click="avatarInput?.click()">
-              <UAvatar :src="editImage || undefined" :alt="editUsername" size="xl" />
+            <div
+              class="relative group cursor-pointer"
+              @click="avatarInput?.click()"
+            >
+              <UAvatar
+                :src="editImage || undefined"
+                :alt="editUsername"
+                size="xl"
+              />
               <div class="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <UIcon v-if="!uploadingAvatar" name="i-lucide-camera" class="size-5 text-white" />
-                <UIcon v-else name="i-lucide-loader-2" class="size-5 text-white animate-spin" />
+                <UIcon
+                  v-if="!uploadingAvatar"
+                  name="i-lucide-camera"
+                  class="size-5 text-white"
+                />
+                <UIcon
+                  v-else
+                  name="i-lucide-loader-2"
+                  class="size-5 text-white animate-spin"
+                />
               </div>
               <input
                 ref="avatarInput"
@@ -210,14 +256,31 @@ onMounted(() => {
               >
             </div>
             <div class="flex-1 min-w-0 space-y-3 basis-full sm:basis-0">
-              <UFormField label="Pseudo" name="username">
-                <UInput v-model="editUsername" class="w-full" />
+              <UFormField
+                label="Pseudo"
+                name="username"
+              >
+                <UInput
+                  v-model="editUsername"
+                  class="w-full"
+                />
               </UFormField>
             </div>
           </div>
-          <UAlert v-if="editError" color="error" :title="editError" icon="i-lucide-alert-circle" />
+          <UAlert
+            v-if="editError"
+            color="error"
+            :title="editError"
+            icon="i-lucide-alert-circle"
+          />
           <div class="flex gap-2 justify-end">
-            <UButton label="Annuler" variant="ghost" color="neutral" size="sm" @click="editing = false" />
+            <UButton
+              label="Annuler"
+              variant="ghost"
+              color="neutral"
+              size="sm"
+              @click="editing = false"
+            />
             <UButton
               label="Sauvegarder"
               icon="i-lucide-check"
@@ -233,24 +296,44 @@ onMounted(() => {
       <!-- Stats -->
       <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
         <div class="rounded-lg border border-default p-4 text-center">
-          <p class="text-2xl font-bold text-violet-500">{{ profile.stats.friend_count }}</p>
-          <p class="text-xs text-muted">Amis</p>
+          <p class="text-2xl font-bold text-violet-500">
+            {{ profile.stats.friend_count }}
+          </p>
+          <p class="text-xs text-muted">
+            Amis
+          </p>
         </div>
         <div class="rounded-lg border border-default p-4 text-center">
-          <p class="text-2xl font-bold text-violet-500">{{ profile.stats.community_count }}</p>
-          <p class="text-xs text-muted">Communautes</p>
+          <p class="text-2xl font-bold text-violet-500">
+            {{ profile.stats.community_count }}
+          </p>
+          <p class="text-xs text-muted">
+            Communautes
+          </p>
         </div>
         <div class="rounded-lg border border-default p-4 text-center">
-          <p class="text-2xl font-bold text-violet-500">{{ profile.stats.session_count }}</p>
-          <p class="text-xs text-muted">Sessions</p>
+          <p class="text-2xl font-bold text-violet-500">
+            {{ profile.stats.session_count }}
+          </p>
+          <p class="text-xs text-muted">
+            Sessions
+          </p>
         </div>
         <div class="rounded-lg border border-default p-4 text-center">
-          <p class="text-2xl font-bold text-violet-500">{{ profile.stats.event_count }}</p>
-          <p class="text-xs text-muted">Evenements</p>
+          <p class="text-2xl font-bold text-violet-500">
+            {{ profile.stats.event_count }}
+          </p>
+          <p class="text-xs text-muted">
+            Evenements
+          </p>
         </div>
         <div class="rounded-lg border border-default p-4 text-center">
-          <p class="text-2xl font-bold text-violet-500">{{ profile.stats.favorite_game_count }}</p>
-          <p class="text-xs text-muted">Jeux favoris</p>
+          <p class="text-2xl font-bold text-violet-500">
+            {{ profile.stats.favorite_game_count }}
+          </p>
+          <p class="text-xs text-muted">
+            Jeux favoris
+          </p>
         </div>
       </div>
 
@@ -260,16 +343,27 @@ onMounted(() => {
           Identifiants de jeu
         </h2>
 
-        <div v-if="profile.battleTags.length > 0" class="space-y-2 mb-4">
+        <div
+          v-if="profile.battleTags.length > 0"
+          class="space-y-2 mb-4"
+        >
           <div
             v-for="bt in profile.battleTags"
             :key="bt.id"
             class="flex items-center gap-3 px-3 py-2 rounded-md bg-elevated group"
           >
-            <UIcon :name="platformIcon(bt.platform)" class="size-5 shrink-0" />
+            <UIcon
+              :name="platformIcon(bt.platform)"
+              class="size-5 shrink-0"
+            />
             <span class="text-sm font-medium">{{ platformLabel(bt.platform) }}</span>
             <span class="text-sm text-muted flex-1">{{ bt.tag }}</span>
-            <UBadge v-if="!bt.is_public" color="neutral" variant="subtle" size="xs">
+            <UBadge
+              v-if="!bt.is_public"
+              color="neutral"
+              variant="subtle"
+              size="xs"
+            >
               Prive
             </UBadge>
             <UButton
@@ -283,7 +377,10 @@ onMounted(() => {
           </div>
         </div>
 
-        <div v-else class="text-sm text-muted mb-4">
+        <div
+          v-else
+          class="text-sm text-muted mb-4"
+        >
           Aucun identifiant ajoute.
         </div>
 
@@ -293,8 +390,17 @@ onMounted(() => {
             v-model="newPlatform"
             class="rounded-md border border-default bg-default px-3 py-1.5 text-sm"
           >
-            <option value="" disabled>Plateforme</option>
-            <option v-for="p in platformOptions" :key="p.value" :value="p.value">
+            <option
+              value=""
+              disabled
+            >
+              Plateforme
+            </option>
+            <option
+              v-for="p in platformOptions"
+              :key="p.value"
+              :value="p.value"
+            >
               {{ p.label }}
             </option>
           </select>

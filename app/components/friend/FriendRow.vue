@@ -67,10 +67,18 @@ const statusLabel = computed(() => {
     class="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-elevated transition-colors"
     :class="{ 'opacity-45': status === 'offline' }"
   >
-    <UserPopover :user-id="friend.id" :name="friend.username" :avatar="friend.image">
+    <UserPopover
+      :user-id="friend.id"
+      :name="friend.username"
+      :avatar="friend.image"
+    >
       <div class="flex items-center gap-2 cursor-pointer min-w-0 flex-1">
         <div class="relative shrink-0">
-          <UAvatar :src="friend.image ?? undefined" :alt="friend.username" size="xs" />
+          <UAvatar
+            :src="friend.image ?? undefined"
+            :alt="friend.username"
+            size="xs"
+          />
           <span
             class="absolute -bottom-0.5 -right-0.5 size-2.5 rounded-full border-2 border-default"
             :class="statusDot"
@@ -80,7 +88,10 @@ const statusLabel = computed(() => {
           <p class="text-sm font-medium truncate">
             {{ friend.username }}
           </p>
-          <p class="text-xs truncate" :class="status === 'playing' ? 'text-violet-500' : 'text-muted'">
+          <p
+            class="text-xs truncate"
+            :class="status === 'playing' ? 'text-violet-500' : 'text-muted'"
+          >
             {{ statusLabel }}
           </p>
         </div>

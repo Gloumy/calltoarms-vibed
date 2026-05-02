@@ -31,9 +31,9 @@ const { user } = useAuth()
 const joining = ref(false)
 const leaving = ref(false)
 const showSwitchConfirm = ref(false)
-const switchFromSession = ref<{ id: string; gameName: string | null } | null>(null)
+const switchFromSession = ref<{ id: string, gameName: string | null } | null>(null)
 const showLeaveConfirm = ref(false)
-const leaveInfo = ref<{ hasOthers: boolean; nextLeader: { id: string; username: string } | null } | null>(null)
+const leaveInfo = ref<{ hasOthers: boolean, nextLeader: { id: string, username: string } | null } | null>(null)
 
 const sessionStatus = computed(() => {
   const now = new Date()
@@ -153,13 +153,19 @@ async function confirmLeave() {
         v-else
         class="w-16 bg-violet-500/20 text-violet-500 flex items-center justify-center shrink-0"
       >
-        <UIcon name="i-lucide-gamepad-2" class="size-5" />
+        <UIcon
+          name="i-lucide-gamepad-2"
+          class="size-5"
+        />
       </div>
 
       <!-- Content -->
       <div class="flex-1 min-w-0 p-4">
         <div class="flex items-center gap-2 mb-1">
-          <NuxtLink :to="`/sessions/${session.id}`" class="text-base font-semibold truncate hover:underline">
+          <NuxtLink
+            :to="`/sessions/${session.id}`"
+            class="text-base font-semibold truncate hover:underline"
+          >
             {{ session.game_name || 'Session libre' }}
           </NuxtLink>
 
@@ -184,17 +190,30 @@ async function confirmLeave() {
 
         <!-- Creator + time -->
         <p class="text-sm text-muted mb-2">
-          <UserPopover :user-id="session.created_by" :name="session.creator_name" :avatar="session.creator_avatar" />
+          <UserPopover
+            :user-id="session.created_by"
+            :name="session.creator_name"
+            :avatar="session.creator_avatar"
+          />
           <span class="mx-1">&middot;</span>
           <span>{{ timeLeft }} restantes</span>
-          <span v-if="session.community_name" class="mx-1">&middot;</span>
-          <span v-if="session.community_name" class="text-violet-500">via {{ session.community_name }}</span>
+          <span
+            v-if="session.community_name"
+            class="mx-1"
+          >&middot;</span>
+          <span
+            v-if="session.community_name"
+            class="text-violet-500"
+          >via {{ session.community_name }}</span>
         </p>
 
         <!-- Players + join -->
         <div class="flex items-center justify-between">
           <span class="text-sm text-muted">
-            <UIcon name="i-lucide-users" class="size-4 inline-block mr-1" />
+            <UIcon
+              name="i-lucide-users"
+              class="size-4 inline-block mr-1"
+            />
             {{ playersLabel }}
           </span>
 
@@ -248,7 +267,10 @@ async function confirmLeave() {
       </div>
     </div>
     <!-- Switch session confirmation -->
-    <UModal :open="showSwitchConfirm" @update:open="showSwitchConfirm = $event">
+    <UModal
+      :open="showSwitchConfirm"
+      @update:open="showSwitchConfirm = $event"
+    >
       <template #header>
         <h3 class="text-lg font-semibold">
           Changer de session
@@ -279,7 +301,10 @@ async function confirmLeave() {
     </UModal>
 
     <!-- Owner leave confirmation -->
-    <UModal :open="showLeaveConfirm" @update:open="showLeaveConfirm = $event">
+    <UModal
+      :open="showLeaveConfirm"
+      @update:open="showLeaveConfirm = $event"
+    >
       <template #header>
         <h3 class="text-lg font-semibold">
           Quitter ta session
@@ -287,11 +312,17 @@ async function confirmLeave() {
       </template>
 
       <template #body>
-        <p v-if="leaveInfo?.hasOthers" class="text-sm mb-4">
+        <p
+          v-if="leaveInfo?.hasOthers"
+          class="text-sm mb-4"
+        >
           Le lead sera transfere a <strong>{{ leaveInfo.nextLeader?.username }}</strong>.
           Tu veux continuer ?
         </p>
-        <p v-else class="text-sm mb-4">
+        <p
+          v-else
+          class="text-sm mb-4"
+        >
           Il n'y a aucun autre joueur. La session sera fermee.
           Tu veux continuer ?
         </p>

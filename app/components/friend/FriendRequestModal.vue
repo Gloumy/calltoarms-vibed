@@ -5,7 +5,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:open': [value: boolean]
-  sent: []
+  'sent': []
 }>()
 
 const username = ref('')
@@ -34,7 +34,10 @@ async function sendRequest() {
 </script>
 
 <template>
-  <UModal :open="props.open" @update:open="emit('update:open', $event)">
+  <UModal
+    :open="props.open"
+    @update:open="emit('update:open', $event)"
+  >
     <template #header>
       <h3 class="text-lg font-semibold">
         Ajouter un ami
@@ -42,8 +45,14 @@ async function sendRequest() {
     </template>
 
     <template #body>
-      <form class="space-y-4" @submit.prevent="sendRequest">
-        <UFormField label="Nom d'utilisateur" name="username">
+      <form
+        class="space-y-4"
+        @submit.prevent="sendRequest"
+      >
+        <UFormField
+          label="Nom d'utilisateur"
+          name="username"
+        >
           <UInput
             v-model="username"
             placeholder="Entrer un pseudo"
@@ -53,7 +62,12 @@ async function sendRequest() {
           />
         </UFormField>
 
-        <UAlert v-if="error" color="error" :title="error" icon="i-lucide-alert-circle" />
+        <UAlert
+          v-if="error"
+          color="error"
+          :title="error"
+          icon="i-lucide-alert-circle"
+        />
 
         <UButton
           type="submit"

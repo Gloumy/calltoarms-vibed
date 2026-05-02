@@ -42,8 +42,15 @@ onMounted(async () => {
   <aside :class="rootClass">
     <!-- Logo -->
     <div class="px-4 py-5">
-      <NuxtLink to="/" class="flex items-center gap-2 text-lg font-bold text-violet-500">
-        <img src="/logo.png" alt="" class="size-10 object-contain">
+      <NuxtLink
+        to="/"
+        class="flex items-center gap-2 text-lg font-bold text-violet-500"
+      >
+        <img
+          src="/logo.png"
+          alt=""
+          class="size-10 object-contain"
+        >
         Call to Arms
       </NuxtLink>
     </div>
@@ -58,7 +65,10 @@ onMounted(async () => {
         active-class="bg-elevated text-violet-500 font-medium"
         @click="emit('navigate')"
       >
-        <UIcon :name="item.icon" class="size-4" />
+        <UIcon
+          :name="item.icon"
+          class="size-4"
+        />
         {{ item.label }}
       </NuxtLink>
       <NuxtLink
@@ -68,15 +78,25 @@ onMounted(async () => {
         active-class="bg-elevated text-violet-500 font-medium"
         @click="emit('navigate')"
       >
-        <UIcon name="i-lucide-shield" class="size-4" />
+        <UIcon
+          name="i-lucide-shield"
+          class="size-4"
+        />
         Admin
       </NuxtLink>
     </nav>
 
     <!-- User info -->
-    <div v-if="user" class="p-4 border-t border-default">
+    <div
+      v-if="user"
+      class="p-4 border-t border-default"
+    >
       <div class="flex items-center gap-2">
-        <UAvatar :src="user.avatarUrl" :alt="user.username" size="sm" />
+        <UAvatar
+          :src="user.avatarUrl"
+          :alt="user.username"
+          size="sm"
+        />
         <span class="text-sm font-medium truncate">{{ user.username }}</span>
       </div>
       <UButton

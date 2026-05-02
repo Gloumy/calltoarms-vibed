@@ -89,8 +89,14 @@ onMounted(() => {
     </div>
 
     <!-- Loading -->
-    <div v-if="loadingGames && !isSearching" class="flex items-center justify-center py-12">
-      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+    <div
+      v-if="loadingGames && !isSearching"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="size-6 animate-spin text-muted"
+      />
     </div>
 
     <!-- Search results -->
@@ -108,8 +114,14 @@ onMounted(() => {
         />
       </div>
 
-      <div v-else-if="!searching" class="text-center py-12">
-        <UIcon name="i-lucide-search-x" class="size-12 text-muted mx-auto mb-3" />
+      <div
+        v-else-if="!searching"
+        class="text-center py-12"
+      >
+        <UIcon
+          name="i-lucide-search-x"
+          class="size-12 text-muted mx-auto mb-3"
+        />
         <p class="text-muted">
           Aucun jeu trouve pour "{{ query }}"
         </p>
@@ -119,7 +131,10 @@ onMounted(() => {
     <!-- Browse mode -->
     <template v-else-if="!loadingGames">
       <!-- Favorites section -->
-      <div v-if="favoriteGames.length > 0" class="mb-6">
+      <div
+        v-if="favoriteGames.length > 0"
+        class="mb-6"
+      >
         <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
           Mes favoris
         </h2>
@@ -154,8 +169,14 @@ onMounted(() => {
       </div>
 
       <!-- Empty state -->
-      <div v-if="allGames.length === 0" class="text-center py-12">
-        <UIcon name="i-lucide-gamepad-2" class="size-12 text-muted mx-auto mb-3" />
+      <div
+        v-if="allGames.length === 0"
+        class="text-center py-12"
+      >
+        <UIcon
+          name="i-lucide-gamepad-2"
+          class="size-12 text-muted mx-auto mb-3"
+        />
         <p class="text-muted">
           Aucun jeu en base. Recherche un jeu pour l'ajouter depuis IGDB.
         </p>

@@ -5,7 +5,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:open': [value: boolean]
-  created: [id: string]
+  'created': [id: string]
 }>()
 
 const name = ref('')
@@ -44,7 +44,10 @@ async function createCommunity() {
 </script>
 
 <template>
-  <UModal :open="props.open" @update:open="emit('update:open', $event)">
+  <UModal
+    :open="props.open"
+    @update:open="emit('update:open', $event)"
+  >
     <template #header>
       <h3 class="text-lg font-semibold">
         Creer une communaute
@@ -52,8 +55,14 @@ async function createCommunity() {
     </template>
 
     <template #body>
-      <form class="space-y-4" @submit.prevent="createCommunity">
-        <UFormField label="Nom" name="name">
+      <form
+        class="space-y-4"
+        @submit.prevent="createCommunity"
+      >
+        <UFormField
+          label="Nom"
+          name="name"
+        >
           <UInput
             v-model="name"
             placeholder="Ma communaute..."
@@ -62,7 +71,10 @@ async function createCommunity() {
           />
         </UFormField>
 
-        <UFormField label="Description (optionnel)" name="description">
+        <UFormField
+          label="Description (optionnel)"
+          name="description"
+        >
           <UTextarea
             v-model="description"
             placeholder="De quoi parle cette communaute..."
@@ -71,11 +83,17 @@ async function createCommunity() {
           />
         </UFormField>
 
-        <UFormField label="Jeu associe (optionnel)" name="game">
+        <UFormField
+          label="Jeu associe (optionnel)"
+          name="game"
+        >
           <GameSearch v-model="selectedGame" />
         </UFormField>
 
-        <UFormField label="Visibilite" name="visibility">
+        <UFormField
+          label="Visibilite"
+          name="visibility"
+        >
           <div class="flex gap-2">
             <UButton
               label="Publique"
@@ -96,7 +114,12 @@ async function createCommunity() {
           </div>
         </UFormField>
 
-        <UAlert v-if="error" color="error" :title="error" icon="i-lucide-alert-circle" />
+        <UAlert
+          v-if="error"
+          color="error"
+          :title="error"
+          icon="i-lucide-alert-circle"
+        />
 
         <UButton
           type="submit"

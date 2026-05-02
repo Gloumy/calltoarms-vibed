@@ -39,7 +39,7 @@ async function sendFriendRequest() {
   }
 }
 
-const platformOptions: Record<string, { label: string; icon: string }> = {
+const platformOptions: Record<string, { label: string, icon: string }> = {
   steam: { label: 'Steam', icon: 'i-simple-icons-steam' },
   discord: { label: 'Discord', icon: 'i-simple-icons-discord' },
   battlenet: { label: 'Battle.net', icon: 'i-simple-icons-battledotnet' },
@@ -70,13 +70,30 @@ onMounted(() => {
 
 <template>
   <div>
-    <UButton label="Retour" icon="i-lucide-arrow-left" variant="ghost" color="neutral" size="sm" class="mb-4" @click="$router.back()" />
+    <UButton
+      label="Retour"
+      icon="i-lucide-arrow-left"
+      variant="ghost"
+      color="neutral"
+      size="sm"
+      class="mb-4"
+      @click="$router.back()"
+    />
 
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="size-6 animate-spin text-muted"
+      />
     </div>
 
-    <div v-else-if="!profile" class="text-center py-12">
+    <div
+      v-else-if="!profile"
+      class="text-center py-12"
+    >
       <p class="text-muted">
         Utilisateur introuvable.
       </p>
@@ -86,9 +103,15 @@ onMounted(() => {
       <!-- Profile card -->
       <div class="rounded-lg border border-default p-4 sm:p-6 mb-6">
         <div class="flex items-center gap-3 sm:gap-4 flex-wrap">
-          <UAvatar :src="profile.image ?? undefined" :alt="profile.username" size="xl" />
+          <UAvatar
+            :src="profile.image ?? undefined"
+            :alt="profile.username"
+            size="xl"
+          />
           <div class="flex-1 min-w-0">
-            <h1 class="text-xl font-bold truncate">{{ profile.username }}</h1>
+            <h1 class="text-xl font-bold truncate">
+              {{ profile.username }}
+            </h1>
             <p class="text-xs text-muted mt-1">
               Membre depuis {{ memberSince }}
             </p>
@@ -109,7 +132,10 @@ onMounted(() => {
             variant="subtle"
             size="md"
           >
-            <UIcon name="i-lucide-check" class="size-3.5 mr-1" />
+            <UIcon
+              name="i-lucide-check"
+              class="size-3.5 mr-1"
+            />
             Ami
           </UBadge>
           <UBadge
@@ -118,7 +144,10 @@ onMounted(() => {
             variant="subtle"
             size="md"
           >
-            <UIcon name="i-lucide-clock" class="size-3.5 mr-1" />
+            <UIcon
+              name="i-lucide-clock"
+              class="size-3.5 mr-1"
+            />
             Demande envoyee
           </UBadge>
           <UBadge
@@ -127,7 +156,10 @@ onMounted(() => {
             variant="subtle"
             size="md"
           >
-            <UIcon name="i-lucide-mail" class="size-3.5 mr-1" />
+            <UIcon
+              name="i-lucide-mail"
+              class="size-3.5 mr-1"
+            />
             T'a envoye une demande
           </UBadge>
         </div>
@@ -136,25 +168,44 @@ onMounted(() => {
       <!-- Stats -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         <div class="rounded-lg border border-default p-4 text-center">
-          <p class="text-2xl font-bold text-violet-500">{{ profile.stats.friend_count }}</p>
-          <p class="text-xs text-muted">Amis</p>
+          <p class="text-2xl font-bold text-violet-500">
+            {{ profile.stats.friend_count }}
+          </p>
+          <p class="text-xs text-muted">
+            Amis
+          </p>
         </div>
         <div class="rounded-lg border border-default p-4 text-center">
-          <p class="text-2xl font-bold text-violet-500">{{ profile.stats.community_count }}</p>
-          <p class="text-xs text-muted">Communautes</p>
+          <p class="text-2xl font-bold text-violet-500">
+            {{ profile.stats.community_count }}
+          </p>
+          <p class="text-xs text-muted">
+            Communautes
+          </p>
         </div>
         <div class="rounded-lg border border-default p-4 text-center">
-          <p class="text-2xl font-bold text-violet-500">{{ profile.stats.session_count }}</p>
-          <p class="text-xs text-muted">Sessions</p>
+          <p class="text-2xl font-bold text-violet-500">
+            {{ profile.stats.session_count }}
+          </p>
+          <p class="text-xs text-muted">
+            Sessions
+          </p>
         </div>
         <div class="rounded-lg border border-default p-4 text-center">
-          <p class="text-2xl font-bold text-violet-500">{{ profile.stats.event_count }}</p>
-          <p class="text-xs text-muted">Evenements</p>
+          <p class="text-2xl font-bold text-violet-500">
+            {{ profile.stats.event_count }}
+          </p>
+          <p class="text-xs text-muted">
+            Evenements
+          </p>
         </div>
       </div>
 
       <!-- Battle tags -->
-      <div v-if="profile.battleTags?.length > 0" class="rounded-lg border border-default p-4 sm:p-6 mb-6">
+      <div
+        v-if="profile.battleTags?.length > 0"
+        class="rounded-lg border border-default p-4 sm:p-6 mb-6"
+      >
         <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-4">
           Identifiants de jeu
         </h2>
@@ -164,7 +215,10 @@ onMounted(() => {
             :key="i"
             class="flex items-center gap-3 px-3 py-2 rounded-md bg-elevated"
           >
-            <UIcon :name="platformOptions[bt.platform]?.icon ?? 'i-lucide-gamepad-2'" class="size-5 shrink-0" />
+            <UIcon
+              :name="platformOptions[bt.platform]?.icon ?? 'i-lucide-gamepad-2'"
+              class="size-5 shrink-0"
+            />
             <span class="text-sm font-medium">{{ platformOptions[bt.platform]?.label ?? bt.platform }}</span>
             <span class="text-sm text-muted flex-1">{{ bt.tag }}</span>
           </div>
@@ -172,7 +226,10 @@ onMounted(() => {
       </div>
 
       <!-- Shared communities -->
-      <div v-if="profile.sharedCommunities?.length > 0" class="rounded-lg border border-default p-4 sm:p-6">
+      <div
+        v-if="profile.sharedCommunities?.length > 0"
+        class="rounded-lg border border-default p-4 sm:p-6"
+      >
         <h2 class="text-sm font-semibold text-muted uppercase tracking-wider mb-4">
           Communautes en commun
         </h2>
@@ -183,7 +240,10 @@ onMounted(() => {
             :to="`/communities/${c.id}`"
             class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-elevated text-sm hover:bg-violet-500/10 transition-colors"
           >
-            <UIcon name="i-lucide-users" class="size-3.5" />
+            <UIcon
+              name="i-lucide-users"
+              class="size-3.5"
+            />
             {{ c.name }}
           </NuxtLink>
         </div>

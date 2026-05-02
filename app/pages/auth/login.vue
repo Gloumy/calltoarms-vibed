@@ -45,8 +45,17 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       </h2>
     </template>
 
-    <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">
-      <UFormField label="Email ou nom d'utilisateur" name="identifier" required>
+    <UForm
+      :schema="schema"
+      :state="state"
+      class="space-y-4"
+      @submit="onSubmit"
+    >
+      <UFormField
+        label="Email ou nom d'utilisateur"
+        name="identifier"
+        required
+      >
         <UInput
           v-model="state.identifier"
           placeholder="ton@email.com ou pseudo"
@@ -55,11 +64,23 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
         />
       </UFormField>
 
-      <UFormField label="Mot de passe" name="password" required>
-        <PasswordInput v-model="state.password" autocomplete="current-password" />
+      <UFormField
+        label="Mot de passe"
+        name="password"
+        required
+      >
+        <PasswordInput
+          v-model="state.password"
+          autocomplete="current-password"
+        />
       </UFormField>
 
-      <UAlert v-if="error" color="error" :title="error" icon="i-lucide-alert-circle" />
+      <UAlert
+        v-if="error"
+        color="error"
+        :title="error"
+        icon="i-lucide-alert-circle"
+      />
 
       <UButton
         type="submit"
@@ -74,12 +95,18 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
       <div class="text-sm text-center space-y-2">
         <p>
           Pas encore de compte ?
-          <NuxtLink to="/auth/register" class="text-violet-500 hover:underline">
+          <NuxtLink
+            to="/auth/register"
+            class="text-violet-500 hover:underline"
+          >
             Créer un compte
           </NuxtLink>
         </p>
         <p>
-          <NuxtLink to="/auth/forgot-password" class="text-violet-500 hover:underline">
+          <NuxtLink
+            to="/auth/forgot-password"
+            class="text-violet-500 hover:underline"
+          >
             Mot de passe oublié ?
           </NuxtLink>
         </p>

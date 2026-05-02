@@ -64,7 +64,10 @@ function onBlur() {
       type="button"
       @click="clearSelection"
     >
-      <UIcon name="i-lucide-x" class="size-4" />
+      <UIcon
+        name="i-lucide-x"
+        class="size-4"
+      />
     </button>
 
     <!-- Dropdown results -->
@@ -95,7 +98,10 @@ function onBlur() {
           <p class="text-sm font-medium truncate">
             {{ game.name }}
           </p>
-          <p v-if="game.genres?.length" class="text-xs text-muted truncate">
+          <p
+            v-if="game.genres?.length"
+            class="text-xs text-muted truncate"
+          >
             {{ game.genres.slice(0, 3).join(', ') }}
           </p>
         </div>

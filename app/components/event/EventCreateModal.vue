@@ -6,7 +6,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   'update:open': [value: boolean]
-  created: [eventId: string]
+  'created': [eventId: string]
 }>()
 
 const title = ref('')
@@ -106,7 +106,10 @@ async function createEvent() {
 </script>
 
 <template>
-  <UModal :open="props.open" @update:open="emit('update:open', $event)">
+  <UModal
+    :open="props.open"
+    @update:open="emit('update:open', $event)"
+  >
     <template #header>
       <h3 class="text-lg font-semibold">
         Creer un evenement
@@ -114,9 +117,15 @@ async function createEvent() {
     </template>
 
     <template #body>
-      <form class="space-y-4" @submit.prevent="createEvent">
+      <form
+        class="space-y-4"
+        @submit.prevent="createEvent"
+      >
         <!-- Title -->
-        <UFormField label="Titre" name="title">
+        <UFormField
+          label="Titre"
+          name="title"
+        >
           <UInput
             v-model="title"
             placeholder="Soiree ranked, tournoi..."
@@ -126,7 +135,10 @@ async function createEvent() {
         </UFormField>
 
         <!-- Description -->
-        <UFormField label="Description (optionnel)" name="description">
+        <UFormField
+          label="Description (optionnel)"
+          name="description"
+        >
           <UTextarea
             v-model="description"
             placeholder="Details de l'evenement..."
@@ -136,12 +148,18 @@ async function createEvent() {
         </UFormField>
 
         <!-- Game -->
-        <UFormField label="Jeu (optionnel)" name="game">
+        <UFormField
+          label="Jeu (optionnel)"
+          name="game"
+        >
           <GameSearch v-model="selectedGame" />
         </UFormField>
 
         <!-- Date / time -->
-        <UFormField label="Date et heure" name="scheduledAt">
+        <UFormField
+          label="Date et heure"
+          name="scheduledAt"
+        >
           <UInput
             v-model="scheduledAt"
             type="datetime-local"
@@ -150,7 +168,11 @@ async function createEvent() {
         </UFormField>
 
         <!-- Visibility (hidden when scoped to a community) -->
-        <UFormField v-if="!props.communityId" label="Visibilite" name="visibility">
+        <UFormField
+          v-if="!props.communityId"
+          label="Visibilite"
+          name="visibility"
+        >
           <div class="flex flex-wrap gap-2">
             <UButton
               v-for="opt in visibilityOptions"
@@ -167,18 +189,42 @@ async function createEvent() {
 
         <!-- Friend picker (invite_only) -->
         <div v-if="visibility === 'invite_only'">
-          <UFormField label="Inviter des amis" name="invites">
-            <div v-if="loadingFriends" class="flex items-center gap-2 py-2 text-sm text-muted">
-              <UIcon name="i-lucide-loader-2" class="size-4 animate-spin" />
+          <UFormField
+            label="Inviter des amis"
+            name="invites"
+          >
+            <div
+              v-if="loadingFriends"
+              class="flex items-center gap-2 py-2 text-sm text-muted"
+            >
+              <UIcon
+                name="i-lucide-loader-2"
+                class="size-4 animate-spin"
+              />
               Chargement...
             </div>
-            <div v-else-if="friends.length === 0" class="text-sm text-muted py-2">
+            <div
+              v-else-if="friends.length === 0"
+              class="text-sm text-muted py-2"
+            >
               Aucun ami a inviter.
             </div>
             <template v-else>
               <div class="flex gap-2 mb-2">
-                <UButton label="Tous" variant="ghost" color="neutral" size="xs" @click="selectAllFriends" />
-                <UButton label="Aucun" variant="ghost" color="neutral" size="xs" @click="deselectAllFriends" />
+                <UButton
+                  label="Tous"
+                  variant="ghost"
+                  color="neutral"
+                  size="xs"
+                  @click="selectAllFriends"
+                />
+                <UButton
+                  label="Aucun"
+                  variant="ghost"
+                  color="neutral"
+                  size="xs"
+                  @click="deselectAllFriends"
+                />
                 <span class="text-xs text-muted self-center ml-auto">{{ selectedFriendIds.size }} selectionne{{ selectedFriendIds.size > 1 ? 's' : '' }}</span>
               </div>
               <div class="max-h-40 overflow-y-auto space-y-1 rounded-md border border-default p-2">
@@ -190,7 +236,11 @@ async function createEvent() {
                   :class="selectedFriendIds.has(f.id) ? 'bg-violet-500/10 text-violet-500' : 'hover:bg-elevated'"
                   @click="toggleFriend(f.id)"
                 >
-                  <UAvatar :src="f.image ?? undefined" :alt="f.username" size="2xs" />
+                  <UAvatar
+                    :src="f.image ?? undefined"
+                    :alt="f.username"
+                    size="2xs"
+                  />
                   <span class="flex-1 text-left truncate">{{ f.username }}</span>
                   <UIcon
                     :name="selectedFriendIds.has(f.id) ? 'i-lucide-check-circle' : 'i-lucide-circle'"
@@ -203,7 +253,10 @@ async function createEvent() {
         </div>
 
         <!-- Discussion -->
-        <UFormField label="Info discussion (optionnel)" name="discussion">
+        <UFormField
+          label="Info discussion (optionnel)"
+          name="discussion"
+        >
           <UInput
             v-model="discussion"
             placeholder="Discord #channel, lien vocal..."
@@ -212,7 +265,12 @@ async function createEvent() {
           />
         </UFormField>
 
-        <UAlert v-if="error" color="error" :title="error" icon="i-lucide-alert-circle" />
+        <UAlert
+          v-if="error"
+          color="error"
+          :title="error"
+          icon="i-lucide-alert-circle"
+        />
 
         <UButton
           type="submit"

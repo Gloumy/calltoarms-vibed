@@ -63,7 +63,10 @@ const statusBadge = computed(() => {
         v-else
         class="w-16 bg-violet-500/20 text-violet-500 flex items-center justify-center shrink-0"
       >
-        <UIcon name="i-lucide-calendar" class="size-5" />
+        <UIcon
+          name="i-lucide-calendar"
+          class="size-5"
+        />
       </div>
 
       <!-- Content -->
@@ -72,28 +75,52 @@ const statusBadge = computed(() => {
           <h3 class="text-base font-semibold truncate">
             {{ event.title }}
           </h3>
-          <UBadge v-if="statusBadge" :color="statusBadge.color" variant="subtle" size="sm">
+          <UBadge
+            v-if="statusBadge"
+            :color="statusBadge.color"
+            variant="subtle"
+            size="sm"
+          >
             {{ statusBadge.label }}
           </UBadge>
         </div>
 
         <p class="text-sm text-muted mb-1">
-          <UIcon name="i-lucide-clock" class="size-3.5 inline-block mr-0.5" />
+          <UIcon
+            name="i-lucide-clock"
+            class="size-3.5 inline-block mr-0.5"
+          />
           {{ scheduledDate }}
-          <span v-if="event.game_name" class="mx-1">&middot;</span>
+          <span
+            v-if="event.game_name"
+            class="mx-1"
+          >&middot;</span>
           <span v-if="event.game_name">{{ event.game_name }}</span>
         </p>
 
         <p class="text-sm text-muted">
-          <UserPopover :user-id="event.created_by" :name="event.creator_name" :avatar="event.creator_avatar" />
+          <UserPopover
+            :user-id="event.created_by"
+            :name="event.creator_name"
+            :avatar="event.creator_avatar"
+          />
           <span class="mx-1">&middot;</span>
-          <UIcon name="i-lucide-users" class="size-3.5 inline-block mr-0.5" />
+          <UIcon
+            name="i-lucide-users"
+            class="size-3.5 inline-block mr-0.5"
+          />
           {{ event.accepted_count }} participant{{ event.accepted_count > 1 ? 's' : '' }}
           <template v-if="event.maybe_count > 0">
             + {{ event.maybe_count }} peut-etre
           </template>
-          <span v-if="event.community_name" class="mx-1">&middot;</span>
-          <span v-if="event.community_name" class="text-violet-500">{{ event.community_name }}</span>
+          <span
+            v-if="event.community_name"
+            class="mx-1"
+          >&middot;</span>
+          <span
+            v-if="event.community_name"
+            class="text-violet-500"
+          >{{ event.community_name }}</span>
         </p>
       </div>
     </div>

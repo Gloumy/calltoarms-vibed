@@ -105,12 +105,18 @@ onMounted(() => {
     </div>
 
     <!-- Upcoming events -->
-    <div v-if="!loadingEvents && upcomingEvents.length > 0" class="mb-8">
+    <div
+      v-if="!loadingEvents && upcomingEvents.length > 0"
+      class="mb-8"
+    >
       <div class="flex items-center justify-between mb-3">
         <h2 class="text-sm font-semibold text-muted uppercase tracking-wider">
           Evenements a venir
         </h2>
-        <NuxtLink to="/events" class="text-xs text-violet-500 hover:underline">
+        <NuxtLink
+          to="/events"
+          class="text-xs text-violet-500 hover:underline"
+        >
           Voir tout
         </NuxtLink>
       </div>
@@ -125,16 +131,31 @@ onMounted(() => {
 
     <!-- Sessions -->
     <div>
-      <h2 v-if="upcomingEvents.length > 0" class="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
+      <h2
+        v-if="upcomingEvents.length > 0"
+        class="text-sm font-semibold text-muted uppercase tracking-wider mb-3"
+      >
         Sessions actives
       </h2>
 
-      <div v-if="loadingSessions" class="flex items-center justify-center py-12">
-        <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+      <div
+        v-if="loadingSessions"
+        class="flex items-center justify-center py-12"
+      >
+        <UIcon
+          name="i-lucide-loader-2"
+          class="size-6 animate-spin text-muted"
+        />
       </div>
 
-      <div v-else-if="sessions.length === 0" class="text-center py-12">
-        <UIcon name="i-lucide-gamepad-2" class="size-12 text-muted mx-auto mb-3" />
+      <div
+        v-else-if="sessions.length === 0"
+        class="text-center py-12"
+      >
+        <UIcon
+          name="i-lucide-gamepad-2"
+          class="size-12 text-muted mx-auto mb-3"
+        />
         <p class="text-muted mb-4">
           Aucune session active pour le moment.
         </p>
@@ -145,7 +166,10 @@ onMounted(() => {
         />
       </div>
 
-      <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
+      <div
+        v-else
+        class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3"
+      >
         <SessionCard
           v-for="s in sessions"
           :key="s.id"

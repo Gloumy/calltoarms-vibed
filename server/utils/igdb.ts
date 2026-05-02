@@ -1,4 +1,4 @@
-let token: { value: string; expiresAt: number } | null = null
+let token: { value: string, expiresAt: number } | null = null
 
 async function getIGDBToken() {
   if (token && token.expiresAt > Date.now()) return token.value

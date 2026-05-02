@@ -36,12 +36,24 @@ onMounted(() => {
       />
     </div>
 
-    <div v-if="loading" class="flex items-center justify-center py-12">
-      <UIcon name="i-lucide-loader-2" class="size-6 animate-spin text-muted" />
+    <div
+      v-if="loading"
+      class="flex items-center justify-center py-12"
+    >
+      <UIcon
+        name="i-lucide-loader-2"
+        class="size-6 animate-spin text-muted"
+      />
     </div>
 
-    <div v-else-if="events.length === 0" class="text-center py-12">
-      <UIcon name="i-lucide-calendar" class="size-12 text-muted mx-auto mb-3" />
+    <div
+      v-else-if="events.length === 0"
+      class="text-center py-12"
+    >
+      <UIcon
+        name="i-lucide-calendar"
+        class="size-12 text-muted mx-auto mb-3"
+      />
       <p class="text-muted mb-4">
         Aucun evenement a venir.
       </p>
@@ -52,7 +64,10 @@ onMounted(() => {
       />
     </div>
 
-    <div v-else class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
+    <div
+      v-else
+      class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3"
+    >
       <EventCard
         v-for="e in events"
         :key="e.id"

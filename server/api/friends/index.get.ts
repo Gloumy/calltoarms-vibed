@@ -77,7 +77,7 @@ export default defineEventHandler(async (event) => {
       )
     )
 
-  const inSessionMap = new Map<string, { sessionId: string; gameName: string | null }>()
+  const inSessionMap = new Map<string, { sessionId: string, gameName: string | null }>()
   for (const row of activeSessions) {
     inSessionMap.set(row.userId, { sessionId: row.sessionId, gameName: row.gameName ?? null })
   }
@@ -87,10 +87,10 @@ export default defineEventHandler(async (event) => {
 
   return {
     mySessionId,
-    friends: friends.map(f => {
+    friends: friends.map((f) => {
       const friendship = rows.find(r =>
-        (r.senderId === me && r.receiverId === f.id) ||
-        (r.receiverId === me && r.senderId === f.id)
+        (r.senderId === me && r.receiverId === f.id)
+        || (r.receiverId === me && r.senderId === f.id)
       )
       return {
         ...f,
