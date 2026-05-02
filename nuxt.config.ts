@@ -28,6 +28,7 @@ export default defineNuxtConfig({
     vapidEmail: '',
     betterAuthSecret: '',
     steamApiKey: '',
+    microsoftClientId: '',
     public: {
       vapidPublicKey: ''
     }

@@ -32,7 +32,7 @@ interface PlatformLibraryResponse {
 }
 
 const props = defineProps<{
-  platform: 'steam' | 'playstation'
+  platform: 'steam' | 'playstation' | 'xbox'
   label: string
   icon: string
   // Aspect ratio for the cover art tile (Steam = 460/215 paysage, PSN = 1/1 icon).
