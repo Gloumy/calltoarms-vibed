@@ -144,7 +144,9 @@ const filteredAchievements = computed(() => {
   })
 })
 
-onMounted(load)
+// Vue Router reuses the same component when navigating between /library/games/X → /Y,
+// so onMounted only fires once. Watch the route params + query directly to refetch.
+watch([gameId, friendUserId], load, { immediate: true })
 </script>
 
 <template>
