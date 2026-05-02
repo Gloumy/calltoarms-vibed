@@ -1,6 +1,9 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'default'
+  layout: 'default',
+  // Force a fresh component instance on every URL change so the page state
+  // (data, loading, filters) doesn't leak from one game to the next.
+  key: route => route.fullPath
 })
 
 interface Achievement {
