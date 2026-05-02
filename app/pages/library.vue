@@ -108,8 +108,8 @@ onMounted(() => {
 </script>
 
 <template>
-  <div>
-    <div class="flex items-center justify-between mb-6">
+  <div class="lg:h-[calc(100vh-2rem)] lg:flex lg:flex-col">
+    <div class="flex items-center justify-between mb-6 shrink-0">
       <h1 class="text-2xl font-bold">
         Ma bibliothèque
       </h1>
@@ -138,9 +138,9 @@ onMounted(() => {
     </div>
 
     <!-- Connected -->
-    <div v-else class="space-y-6">
+    <div v-else class="lg:flex-1 lg:flex lg:flex-col lg:min-h-0 space-y-6 lg:space-y-0 lg:gap-6">
       <!-- Account card -->
-      <div class="rounded-lg border border-default bg-default p-4 flex items-center gap-4">
+      <div class="rounded-lg border border-default bg-default p-4 flex items-center gap-4 shrink-0">
         <UAvatar :src="data.account.avatarUrl ?? undefined" :alt="data.account.displayName ?? 'Steam'" size="lg" />
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
@@ -160,7 +160,7 @@ onMounted(() => {
       </div>
 
       <!-- Stats -->
-      <div v-if="data.stats" class="grid grid-cols-3 gap-4">
+      <div v-if="data.stats" class="grid grid-cols-3 gap-4 shrink-0">
         <div class="rounded-lg border border-default bg-default p-4">
           <p class="text-xs text-muted uppercase tracking-wider">
             Jeux
@@ -188,37 +188,42 @@ onMounted(() => {
       </div>
 
       <!-- Games grid -->
-      <div v-if="data.games.length > 0" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-        <div
-          v-for="game in data.games"
-          :key="game.id"
-          class="group rounded-lg border border-default bg-default overflow-hidden transition-colors hover:border-violet-500/50"
-        >
-          <div class="relative aspect-[3/4] bg-elevated">
-            <img
-              v-if="game.coverUrl"
-              :src="game.coverUrl"
-              :alt="game.name"
-              class="w-full h-full object-cover"
-              loading="lazy"
-            >
-            <div
-              v-else
-              class="w-full h-full flex items-center justify-center text-3xl font-bold text-violet-500/40"
-            >
-              {{ game.name.charAt(0) }}
+      <div
+        v-if="data.games.length > 0"
+        class="lg:flex-1 lg:overflow-y-auto lg:min-h-0 lg:pr-2 lg:pb-2"
+      >
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3">
+          <div
+            v-for="game in data.games"
+            :key="game.id"
+            class="group rounded-lg border border-default bg-default overflow-hidden transition-colors hover:border-violet-500/50"
+          >
+            <div class="relative aspect-[460/215] bg-elevated">
+              <img
+                v-if="game.coverUrl"
+                :src="game.coverUrl"
+                :alt="game.name"
+                class="w-full h-full object-cover"
+                loading="lazy"
+              >
+              <div
+                v-else
+                class="w-full h-full flex items-center justify-center text-2xl font-bold text-violet-500/40"
+              >
+                {{ game.name.charAt(0) }}
+              </div>
             </div>
-          </div>
-          <div class="p-3">
-            <h3 class="text-sm font-semibold truncate" :title="game.name">
-              {{ game.name }}
-            </h3>
-            <p class="text-xs text-muted mt-0.5">
-              {{ formatPlaytime(game.playtimeTotal) }}
-              <template v-if="game.playtimeRecent">
-                · {{ formatPlaytime(game.playtimeRecent) }} récent
-              </template>
-            </p>
+            <div class="p-2">
+              <h3 class="text-xs font-semibold truncate" :title="game.name">
+                {{ game.name }}
+              </h3>
+              <p class="text-[11px] text-muted mt-0.5 truncate">
+                {{ formatPlaytime(game.playtimeTotal) }}
+                <template v-if="game.playtimeRecent">
+                  · {{ formatPlaytime(game.playtimeRecent) }} récent
+                </template>
+              </p>
+            </div>
           </div>
         </div>
       </div>
