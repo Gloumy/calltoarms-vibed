@@ -18,7 +18,7 @@ async function fetchSummary() {
   if (fetched.value || loading.value) return
   loading.value = true
   try {
-    summary.value = await $fetch(`/api/users/${props.userId}/summary`)
+    summary.value = await $fetch<typeof summary.value>(`/api/users/${props.userId}/summary`)
   } catch {
     summary.value = null
   } finally {

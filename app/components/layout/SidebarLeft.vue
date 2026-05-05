@@ -94,7 +94,7 @@ onMounted(async () => {
     >
       <div class="flex items-center gap-2">
         <UAvatar
-          :src="user.avatarUrl"
+          :src="user.avatarUrl ?? undefined"
           :alt="user.username"
           size="sm"
         />

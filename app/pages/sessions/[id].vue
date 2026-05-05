@@ -23,7 +23,7 @@ const leaveInfo = ref<{ hasOthers: boolean, nextLeader: { id: string, username: 
 
 async function fetchSession() {
   try {
-    sessionData.value = await $fetch(`/api/sessions/${sessionId}`)
+    sessionData.value = await $fetch<typeof sessionData.value>(`/api/sessions/${sessionId}`)
   } catch {
     sessionData.value = null
   } finally {
@@ -33,7 +33,7 @@ async function fetchSession() {
 
 async function fetchMessages() {
   try {
-    messages.value = await $fetch(`/api/sessions/${sessionId}/messages`)
+    messages.value = await $fetch<typeof messages.value>(`/api/sessions/${sessionId}/messages`)
     await nextTick()
     scrollToBottom()
   } catch {

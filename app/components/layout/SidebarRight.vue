@@ -27,7 +27,7 @@ async function fetchFriends() {
 // Fetch pending requests
 async function fetchPending() {
   try {
-    pendingRequests.value = await $fetch('/api/friends/pending')
+    pendingRequests.value = await $fetch<unknown[]>('/api/friends/pending') as typeof pendingRequests.value
   } catch {
     pendingRequests.value = []
   }

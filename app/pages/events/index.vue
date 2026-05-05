@@ -9,7 +9,7 @@ const showCreateModal = ref(false)
 
 async function fetchEvents() {
   try {
-    events.value = await $fetch('/api/events')
+    events.value = await $fetch<unknown[]>('/api/events') as typeof events.value
   } catch {
     events.value = []
   } finally {

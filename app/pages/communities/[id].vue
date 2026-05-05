@@ -26,7 +26,7 @@ const copiedLink = ref(false)
 
 async function fetchCommunity() {
   try {
-    community.value = await $fetch(`/api/communities/${communityId}`)
+    community.value = await $fetch<typeof community.value>(`/api/communities/${communityId}`)
   } catch {
     community.value = null
   } finally {

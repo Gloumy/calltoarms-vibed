@@ -28,7 +28,7 @@ async function fetchAvailability() {
 
 async function fetchSessions() {
   try {
-    sessions.value = await $fetch('/api/sessions')
+    sessions.value = await $fetch<unknown[]>('/api/sessions') as typeof sessions.value
   } catch {
     sessions.value = []
   } finally {

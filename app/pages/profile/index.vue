@@ -35,7 +35,7 @@ const platformOptions = [
 
 async function fetchProfile() {
   try {
-    profile.value = await $fetch('/api/users/profile')
+    profile.value = await $fetch<typeof profile.value>('/api/users/profile')
   } catch {
     profile.value = null
   } finally {

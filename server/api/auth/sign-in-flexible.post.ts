@@ -14,11 +14,11 @@ export default defineEventHandler(async (event) => {
   // If the identifier doesn't look like an email, treat it as a username
   if (!identifier.includes('@')) {
     const db = useDB()
-    const found = await db.select({ email: user.email }).from(user).where(eq(user.username, identifier)).limit(1)
-    if (!found.length) {
+    const [found] = await db.select({ email: user.email }).from(user).where(eq(user.username, identifier)).limit(1)
+    if (!found) {
       throw createError({ statusCode: 401, statusMessage: 'Identifiants invalides' })
     }
-    email = found[0].email
+    email = found.email
   }
 
   // Forward to better-auth's sign-in endpoint

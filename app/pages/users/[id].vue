@@ -15,7 +15,7 @@ const isSelf = computed(() => authUser.value?.id === userId)
 
 async function fetchProfile() {
   try {
-    profile.value = await $fetch(`/api/users/${userId}/summary`)
+    profile.value = await $fetch<typeof profile.value>(`/api/users/${userId}/summary`)
   } catch {
     profile.value = null
   } finally {

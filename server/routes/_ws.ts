@@ -8,16 +8,16 @@ export default defineWebSocketHandler({
     let userId: string | null = null
 
     try {
-      const rawUrl = peer.request?.url || peer.url || ''
+      const rawUrl = peer.request?.url ?? ''
       if (rawUrl.includes('userId=')) {
         const url = new URL(rawUrl, 'http://localhost')
         userId = url.searchParams.get('userId')
       }
     } catch {
       // fallback: parse manually
-      const rawUrl = String(peer.request?.url || peer.url || '')
+      const rawUrl = String(peer.request?.url ?? '')
       const match = rawUrl.match(/userId=([^&]+)/)
-      userId = match ? match[1] : null
+      userId = match?.[1] ?? null
     }
 
     if (userId) {

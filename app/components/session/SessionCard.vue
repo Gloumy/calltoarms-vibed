@@ -240,7 +240,7 @@ async function confirmLeave() {
               icon="i-lucide-log-in"
               size="xs"
               :loading="joining"
-              @click="joinSession"
+              @click="joinSession()"
             />
             <UButton
               v-else-if="session.has_joined && !isOwner"
@@ -250,7 +250,7 @@ async function confirmLeave() {
               color="error"
               size="xs"
               :loading="leaving"
-              @click="leaveSession"
+              @click="leaveSession()"
             />
             <UButton
               v-else-if="isOwner"

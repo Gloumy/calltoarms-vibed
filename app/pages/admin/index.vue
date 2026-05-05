@@ -27,7 +27,7 @@ async function checkAdmin() {
 
 async function fetchUsers() {
   try {
-    users.value = await $fetch('/api/admin/users')
+    users.value = await $fetch<unknown[]>('/api/admin/users') as typeof users.value
   } catch {
     users.value = []
   }
@@ -35,7 +35,7 @@ async function fetchUsers() {
 
 async function fetchCommunities() {
   try {
-    commus.value = await $fetch('/api/admin/communities')
+    commus.value = await $fetch<unknown[]>('/api/admin/communities') as typeof commus.value
   } catch {
     commus.value = []
   }

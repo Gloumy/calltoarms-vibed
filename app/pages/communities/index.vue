@@ -9,7 +9,7 @@ const showCreateModal = ref(false)
 
 async function fetchCommunities() {
   try {
-    communities.value = await $fetch('/api/communities')
+    communities.value = await $fetch<unknown[]>('/api/communities') as typeof communities.value
   } catch {
     communities.value = []
   } finally {

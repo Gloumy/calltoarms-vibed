@@ -28,7 +28,7 @@ const creatingPoll = ref(false)
 
 async function fetchEvent() {
   try {
-    eventData.value = await $fetch(`/api/events/${eventId}`)
+    eventData.value = await $fetch<typeof eventData.value>(`/api/events/${eventId}`)
   } catch {
     eventData.value = null
   } finally {
