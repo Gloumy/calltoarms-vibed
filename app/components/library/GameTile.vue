@@ -14,11 +14,19 @@ interface Game {
   achievementPercentage?: number
 }
 
-defineProps<{
+const props = defineProps<{
   game: Game
   // Override the secondary line (default = playtime).
   caption?: string
+  // When viewing a friend's library, append ?userId= so the detail page knows.
+  friendUserId?: string
 }>()
+
+const detailLink = computed(() =>
+  props.friendUserId
+    ? `/library/games/${props.game.id}?userId=${props.friendUserId}`
+    : `/library/games/${props.game.id}`
+)
 
 const PLATFORM_ICONS: Record<string, string> = {
   steam: 'i-simple-icons-steam',
@@ -42,7 +50,7 @@ function formatPlaytime(minutes: number): string {
 
 <template>
   <NuxtLink
-    :to="`/library/games/${game.id}`"
+    :to="detailLink"
     class="group block rounded-lg border border-default bg-default overflow-hidden transition-colors hover:border-violet-500/50"
   >
     <div

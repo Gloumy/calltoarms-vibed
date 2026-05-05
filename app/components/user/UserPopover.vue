@@ -244,6 +244,15 @@ const memberSince = computed(() => {
           >
             Voir le profil complet
           </NuxtLink>
+
+          <!-- Library link (friends only) -->
+          <NuxtLink
+            v-if="summary.friendshipStatus === 'friends'"
+            :to="`/library/friend/${summary.id}`"
+            class="block text-center text-xs text-violet-500 hover:underline mt-1"
+          >
+            Voir la bibliothèque
+          </NuxtLink>
         </template>
 
         <!-- Error -->

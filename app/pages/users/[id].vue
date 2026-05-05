@@ -117,6 +117,17 @@ onMounted(() => {
             </p>
           </div>
 
+          <!-- Library link (friends only) -->
+          <UButton
+            v-if="profile.friendshipStatus === 'friends'"
+            :to="`/library/friend/${profile.id}`"
+            label="Voir la bibliothèque"
+            icon="i-lucide-library"
+            size="sm"
+            variant="outline"
+            color="neutral"
+          />
+
           <!-- Friendship action -->
           <UButton
             v-if="profile.friendshipStatus === 'none'"

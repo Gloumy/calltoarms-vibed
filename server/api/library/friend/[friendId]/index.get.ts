@@ -1,8 +1,8 @@
-import { and, asc, count, desc, eq, ilike, sql } from 'drizzle-orm'
-import { userPlatformAccounts, userPlatformAchievements, userPlatformGames } from '../../../../db/schema'
+import { and, asc, count, desc, eq, ilike, sql, sum } from 'drizzle-orm'
+import { user as userTable, userPlatformAccounts, userPlatformAchievements, userPlatformGames } from '../../../../db/schema'
 import { requireFriendship } from '../../../../utils/library'
 
-const SUPPORTED_PLATFORMS = ['steam', 'playstation', 'xbox'] as const
+const SUPPORTED_PLATFORMS = ['steam', 'playstation', 'xbox', 'manual'] as const
 type SupportedPlatform = typeof SUPPORTED_PLATFORMS[number]
 
 export default defineEventHandler(async (event) => {
@@ -15,6 +15,22 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'friendId manquant' })
   }
   await requireFriendship(userId, friendId)
+
+  // Friend profile (header) — sanitized to public-safe fields only.
+  const [friend] = await db
+    .select({
+      id: userTable.id,
+      username: userTable.username,
+      name: userTable.name,
+      image: userTable.image
+    })
+    .from(userTable)
+    .where(eq(userTable.id, friendId))
+    .limit(1)
+
+  if (!friend) {
+    throw createError({ statusCode: 404, statusMessage: 'Utilisateur introuvable' })
+  }
 
   const query = getQuery(event)
   const platform = typeof query.platform === 'string' && (SUPPORTED_PLATFORMS as readonly string[]).includes(query.platform)
@@ -90,9 +106,37 @@ export default defineEventHandler(async (event) => {
     .limit(limit)
     .offset(offset)
 
+  // Aggregated stats — same shape as /api/library so the friend page can mirror the overview.
+  const [totals] = await db
+    .select({
+      totalGames: count(userPlatformGames.id),
+      totalPlaytime: sum(userPlatformGames.playtimeTotal).mapWith(Number)
+    })
+    .from(userPlatformGames)
+    .innerJoin(userPlatformAccounts, eq(userPlatformAccounts.id, userPlatformGames.platformAccountId))
+    .where(eq(userPlatformAccounts.userId, friendId))
+
+  const [achievementTotals] = await db
+    .select({
+      totalAchievements: count(userPlatformAchievements.id),
+      unlockedAchievements: sql<number>`count(*) filter (where ${userPlatformAchievements.isUnlocked})`.mapWith(Number)
+    })
+    .from(userPlatformAchievements)
+    .innerJoin(userPlatformGames, eq(userPlatformGames.id, userPlatformAchievements.platformGameId))
+    .innerJoin(userPlatformAccounts, eq(userPlatformAccounts.id, userPlatformGames.platformAccountId))
+    .where(eq(userPlatformAccounts.userId, friendId))
+
   return {
     success: true,
+    friend,
     accounts,
+    stats: {
+      totalConnectedPlatforms: accounts.length,
+      totalGames: totals?.totalGames ?? 0,
+      totalPlaytime: totals?.totalPlaytime ?? 0,
+      totalAchievements: achievementTotals?.totalAchievements ?? 0,
+      unlockedAchievements: achievementTotals?.unlockedAchievements ?? 0
+    },
     games: games.map(g => ({
       ...g,
       achievementPercentage: g.totalAchievements > 0
