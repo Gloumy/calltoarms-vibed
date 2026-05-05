@@ -10,7 +10,7 @@ interface Game {
   lastPlayed: string | null
   isCompleted: boolean
   completedAt: string | null
-  platform: 'steam' | 'playstation' | 'xbox'
+  platform: 'steam' | 'playstation' | 'xbox' | 'manual'
   totalAchievements: number
   unlockedAchievements: number
   achievementPercentage: number
@@ -23,7 +23,7 @@ interface GamesResponse {
 }
 
 type SortValue = 'playtime-desc' | 'lastPlayed-desc' | 'name-asc' | 'name-desc'
-type PlatformValue = 'all' | 'steam' | 'playstation' | 'xbox'
+type PlatformValue = 'all' | 'steam' | 'playstation' | 'xbox' | 'manual'
 
 const SORT_OPTIONS: { value: SortValue, label: string }[] = [
   { value: 'playtime-desc', label: 'Plus joué' },
@@ -36,7 +36,8 @@ const PLATFORM_OPTIONS: { value: PlatformValue, label: string }[] = [
   { value: 'all', label: 'Toutes les plateformes' },
   { value: 'steam', label: 'Steam' },
   { value: 'playstation', label: 'PlayStation' },
-  { value: 'xbox', label: 'Xbox' }
+  { value: 'xbox', label: 'Xbox' },
+  { value: 'manual', label: 'Manuel' }
 ]
 
 const sort = ref<SortValue>('playtime-desc')
@@ -68,6 +69,8 @@ watch(search, () => {
   if (searchTimer) clearTimeout(searchTimer)
   searchTimer = setTimeout(load, 250)
 })
+
+defineExpose({ load })
 
 onMounted(load)
 </script>

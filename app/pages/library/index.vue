@@ -24,6 +24,16 @@ const activeTab = ref<LibraryTab>(
 )
 
 const psRef = ref<{ load: () => Promise<void> } | null>(null)
+const overviewRef = ref<{ load: () => Promise<void> } | null>(null)
+const allGamesRef = ref<{ load: () => Promise<void> } | null>(null)
+
+const showAddManualModal = ref(false)
+
+// Refresh whichever tab is showing data backed by the manual platform.
+async function onManualGameCreated() {
+  if (activeTab.value === 'overview') await overviewRef.value?.load()
+  else if (activeTab.value === 'all') await allGamesRef.value?.load()
+}
 
 onMounted(() => {
   if (route.query.steam_connected) {
@@ -52,6 +62,12 @@ function onPlayStationConnected() {
       <h1 class="text-2xl font-bold">
         Ma bibliothèque
       </h1>
+      <UButton
+        label="Ajouter un jeu"
+        icon="i-lucide-plus"
+        size="sm"
+        @click="showAddManualModal = true"
+      />
     </div>
 
     <UTabs
@@ -61,9 +77,15 @@ function onPlayStationConnected() {
       :ui="{ content: 'lg:flex-1 lg:flex lg:flex-col lg:min-h-0' }"
     >
       <template #content="{ item }">
-        <LibraryOverview v-if="item.value === 'overview'" />
+        <LibraryOverview
+          v-if="item.value === 'overview'"
+          ref="overviewRef"
+        />
 
-        <AllGamesLibrary v-else-if="item.value === 'all'" />
+        <AllGamesLibrary
+          v-else-if="item.value === 'all'"
+          ref="allGamesRef"
+        />
 
         <PlatformLibrary
           v-else-if="item.value === 'steam'"
@@ -139,5 +161,10 @@ function onPlayStationConnected() {
         </PlatformLibrary>
       </template>
     </UTabs>
+
+    <AddManualGameModal
+      v-model:open="showAddManualModal"
+      @created="onManualGameCreated"
+    />
   </div>
 </template>

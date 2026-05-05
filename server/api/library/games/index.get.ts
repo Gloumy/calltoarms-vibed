@@ -1,7 +1,7 @@
 import { and, asc, desc, eq, ilike, isNotNull, sql } from 'drizzle-orm'
 import { userPlatformAccounts, userPlatformAchievements, userPlatformGames } from '../../../db/schema'
 
-const SUPPORTED_PLATFORMS = ['steam', 'playstation', 'xbox'] as const
+const SUPPORTED_PLATFORMS = ['steam', 'playstation', 'xbox', 'manual'] as const
 type SupportedPlatform = typeof SUPPORTED_PLATFORMS[number]
 
 export default defineEventHandler(async (event) => {

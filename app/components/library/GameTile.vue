@@ -8,7 +8,7 @@ interface Game {
   lastPlayed?: string | Date | null
   completedAt?: string | Date | null
   isCompleted?: boolean
-  platform: 'steam' | 'playstation' | 'xbox'
+  platform: 'steam' | 'playstation' | 'xbox' | 'manual'
   totalAchievements?: number
   unlockedAchievements?: number
   achievementPercentage?: number
@@ -23,16 +23,15 @@ defineProps<{
 const PLATFORM_ICONS: Record<string, string> = {
   steam: 'i-simple-icons-steam',
   playstation: 'i-simple-icons-playstation',
-  xbox: 'i-simple-icons-xbox'
+  xbox: 'i-simple-icons-xbox',
+  manual: 'i-lucide-pencil'
 }
 
-// Steam covers (header.jpg) are 460×215 paysage, PSN icons are 1:1, Xbox displayImage is ~16:9.
-// One ratio doesn't fit all — use platform to pick.
-const PLATFORM_ASPECT: Record<string, string> = {
-  steam: '460/215',
-  playstation: '1/1',
-  xbox: '16/9'
-}
+// Mixed-grid views (overview, "tous les jeux") need a single aspect so portrait
+// covers (PSN icons 1:1, IGDB poster 264×374) don't inflate row height. Steam
+// header.jpg is the most common shape so we standardize on 460/215; non-Steam
+// covers get center-cropped via object-cover.
+const TILE_ASPECT = '460/215'
 
 function formatPlaytime(minutes: number): string {
   if (minutes < 60) return `${minutes}min`
@@ -48,13 +47,13 @@ function formatPlaytime(minutes: number): string {
   >
     <div
       class="relative bg-elevated"
-      :style="{ aspectRatio: PLATFORM_ASPECT[game.platform] ?? '460/215' }"
+      :style="{ aspectRatio: TILE_ASPECT }"
     >
       <img
         v-if="game.coverUrl"
         :src="game.coverUrl"
         :alt="game.name"
-        class="w-full h-full object-cover"
+        class="w-full h-full object-contain"
         loading="lazy"
       >
       <div

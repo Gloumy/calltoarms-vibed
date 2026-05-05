@@ -36,7 +36,7 @@ interface GameDetailResponse {
     completedAt: string | null
     account: {
       id: string
-      platform: 'steam' | 'playstation' | 'xbox'
+      platform: 'steam' | 'playstation' | 'xbox' | 'manual'
       platformId: string
       username: string | null
       displayName: string | null
@@ -61,12 +61,15 @@ interface GameDetailResponse {
 }
 
 const route = useRoute()
+const router = useRouter()
 const toast = useToast()
 const data = ref<GameDetailResponse | null>(null)
 const loading = ref(true)
 const updatingCompletion = ref(false)
 const showLocked = ref(true)
 const filterQuery = ref('')
+const showEditModal = ref(false)
+const deleting = ref(false)
 
 const gameId = computed(() => String(route.params.id))
 const friendUserId = computed(() => typeof route.query.userId === 'string' ? route.query.userId : undefined)
@@ -83,6 +86,21 @@ async function load() {
     data.value = null
   } finally {
     loading.value = false
+  }
+}
+
+async function deleteManualGame() {
+  if (!data.value) return
+  if (!confirm(`Supprimer "${data.value.game.name}" de ta bibliothèque ?`)) return
+  deleting.value = true
+  try {
+    await $fetch(`/api/library/manual/${gameId.value}`, { method: 'DELETE' })
+    toast.add({ title: 'Jeu supprimé', color: 'success' })
+    router.push('/library')
+  } catch {
+    toast.add({ title: 'Erreur', description: 'Impossible de supprimer le jeu', color: 'error' })
+  } finally {
+    deleting.value = false
   }
 }
 
@@ -122,20 +140,27 @@ function formatDate(iso: string | null): string {
 const PLATFORM_LABEL: Record<string, string> = {
   steam: 'Steam',
   playstation: 'PlayStation',
-  xbox: 'Xbox'
+  xbox: 'Xbox',
+  manual: 'Ajout manuel'
 }
 
 const PLATFORM_ICONS: Record<string, string> = {
   steam: 'i-simple-icons-steam',
   playstation: 'i-simple-icons-playstation',
-  xbox: 'i-simple-icons-xbox'
+  xbox: 'i-simple-icons-xbox',
+  manual: 'i-lucide-pencil'
 }
 
+// Manual entries match the grid (460/215 + object-contain) so a custom banner
+// shows in full instead of being cropped into a portrait frame.
 const PLATFORM_ASPECT: Record<string, string> = {
   steam: '460/215',
   playstation: '1/1',
-  xbox: '16/9'
+  xbox: '16/9',
+  manual: '460/215'
 }
+
+const isManual = computed(() => data.value?.game.account.platform === 'manual')
 
 const filteredAchievements = computed(() => {
   if (!data.value) return []
@@ -195,7 +220,7 @@ watch([gameId, friendUserId], load, { immediate: true })
             v-if="data.game.coverUrl"
             :src="data.game.coverUrl"
             :alt="data.game.name"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-contain"
           >
           <div
             v-else
@@ -283,6 +308,25 @@ watch([gameId, friendUserId], load, { immediate: true })
               variant="outline"
               color="neutral"
               size="sm"
+            />
+            <UButton
+              v-if="data.isOwnGame && isManual"
+              label="Modifier"
+              icon="i-lucide-pencil"
+              variant="outline"
+              color="neutral"
+              size="sm"
+              @click="showEditModal = true"
+            />
+            <UButton
+              v-if="data.isOwnGame && isManual"
+              label="Supprimer"
+              icon="i-lucide-trash-2"
+              variant="outline"
+              color="error"
+              size="sm"
+              :loading="deleting"
+              @click="deleteManualGame"
             />
           </div>
         </div>
@@ -389,5 +433,20 @@ watch([gameId, friendUserId], load, { immediate: true })
         Aucun succès synchronisé pour ce jeu.
       </p>
     </div>
+
+    <EditManualGameModal
+      v-if="data && isManual"
+      v-model:open="showEditModal"
+      :game="{
+        id: data.game.id,
+        name: data.game.name,
+        playtimeTotal: data.game.playtimeTotal,
+        isCompleted: data.game.isCompleted,
+        completedAt: data.game.completedAt,
+        lastPlayed: data.game.lastPlayed,
+        coverUrl: data.game.coverUrl
+      }"
+      @updated="load"
+    />
   </div>
 </template>

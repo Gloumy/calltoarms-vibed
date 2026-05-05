@@ -1,5 +1,35 @@
 import { and, asc, desc, eq, or, type SQL } from 'drizzle-orm'
-import { friendships, userPlatformGames } from '../db/schema'
+import { friendships, userPlatformAccounts, userPlatformGames } from '../db/schema'
+
+// Returns the user's "manual" platform account row, creating it on first use.
+// Manual games live on this synthetic platform so they share all the existing
+// per-account queries (sort, search, friend access, etc.) without a parallel table.
+export async function ensureManualAccount(userId: string) {
+  const db = useDB()
+  const [existing] = await db
+    .select()
+    .from(userPlatformAccounts)
+    .where(and(eq(userPlatformAccounts.userId, userId), eq(userPlatformAccounts.platform, 'manual')))
+    .limit(1)
+  if (existing) return existing
+
+  const id = crypto.randomUUID()
+  const [created] = await db
+    .insert(userPlatformAccounts)
+    .values({
+      id,
+      userId,
+      platform: 'manual',
+      platformId: userId,
+      displayName: 'Ajouts manuels',
+      isActive: true
+    })
+    .returning()
+  if (!created) {
+    throw createError({ statusCode: 500, statusMessage: 'Échec création compte manuel' })
+  }
+  return created
+}
 
 export type GameSortBy = 'playtime' | 'lastPlayed' | 'name'
 export type GameSortOrder = 'asc' | 'desc'

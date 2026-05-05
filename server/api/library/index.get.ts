@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
   return {
     success: true,
     accounts,
-    supportedPlatforms: ['steam', 'playstation', 'xbox'] as const,
+    supportedPlatforms: ['steam', 'playstation', 'xbox', 'manual'] as const,
     stats: {
       totalConnectedPlatforms: accounts.length,
       totalGames: totals?.totalGames ?? 0,

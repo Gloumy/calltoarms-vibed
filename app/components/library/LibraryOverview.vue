@@ -9,7 +9,7 @@ interface Game {
   lastPlayed: string | null
   completedAt?: string | null
   isCompleted: boolean
-  platform: 'steam' | 'playstation' | 'xbox'
+  platform: 'steam' | 'playstation' | 'xbox' | 'manual'
 }
 
 interface OverviewResponse {
