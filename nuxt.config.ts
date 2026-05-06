@@ -8,6 +8,30 @@ export default defineNuxtConfig({
 
   ssr: false,
 
+  // Tags injectés dans le HTML statique (avant hydratation). Avec ssr: false,
+  // useHead() dans app.vue ne s'exécute qu'après hydration — trop tard pour
+  // que le navigateur découvre le manifest et propose l'install PWA.
+  app: {
+    head: {
+      htmlAttrs: { lang: 'fr' },
+      meta: [
+        { name: 'viewport', content: 'width=device-width, initial-scale=1, viewport-fit=cover' },
+        { name: 'theme-color', content: '#534AB7' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' },
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-title', content: 'Call to Arms' }
+      ],
+      link: [
+        { rel: 'manifest', href: '/manifest.webmanifest' },
+        { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+        { rel: 'icon', type: 'image/png', sizes: '192x192', href: '/icon-192.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' }
+      ]
+    }
+  },
+
   components: [
     { path: '~/components', pathPrefix: false }
   ],
@@ -74,10 +98,9 @@ export default defineNuxtConfig({
       id: '/',
       lang: 'fr',
       icons: [
-        // TODO: générer icon-192.png et icon-512.png carrés (et un variant maskable)
-        // pour une icône d'install propre. logo.png (1408x768) est utilisé en
-        // attendant — Chrome l'accepte avec sizes: 'any' mais le rendu n'est pas optimal.
-        { src: '/logo.png', sizes: 'any', type: 'image/png', purpose: 'any' }
+        { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+        { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+        { src: '/icon-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
       ]
     },
     devOptions: {
