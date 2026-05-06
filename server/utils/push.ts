@@ -21,11 +21,19 @@ function ensureVapid() {
   vapidConfigured = true
 }
 
-export async function sendPushNotification(userId: string, payload: {
+export type PushPayload = {
   title: string
   body: string
+  icon?: string
+  badge?: string
   url?: string
-}) {
+  tag?: string
+  requireInteraction?: boolean
+  actions?: { action: string, title: string, icon?: string }[]
+  data?: Record<string, unknown>
+}
+
+export async function sendPushNotification(userId: string, payload: PushPayload) {
   ensureVapid()
   if (!vapidConfigured) return
 
@@ -62,11 +70,7 @@ export async function createNotification(userId: string, type: string, payload: 
   })
 }
 
-export async function notifyUser(userId: string, type: string, push: {
-  title: string
-  body: string
-  url?: string
-}, payload?: any) {
+export async function notifyUser(userId: string, type: string, push: PushPayload, payload?: any) {
   await Promise.all([
     createNotification(userId, type, payload ?? push),
     sendPushNotification(userId, push)

@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm'
 import { pushSubscriptions } from '../../db/schema'
 
 export default defineEventHandler(async (event) => {
@@ -8,6 +9,12 @@ export default defineEventHandler(async (event) => {
   if (!subscription?.endpoint) {
     throw createError({ statusCode: 400, statusMessage: 'Subscription invalide' })
   }
+
+  // Dedup: une subscription est unique par endpoint navigateur. Si un autre
+  // user (ou le même) avait déjà cet endpoint enregistré, on le remplace.
+  await db
+    .delete(pushSubscriptions)
+    .where(sql`${pushSubscriptions.subscription}->>'endpoint' = ${subscription.endpoint}`)
 
   await db.insert(pushSubscriptions).values({
     id: crypto.randomUUID(),

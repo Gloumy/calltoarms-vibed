@@ -57,7 +57,14 @@ export default defineEventHandler(async (event) => {
       notifyUser(friendId, 'session_started', {
         title: 'Nouvelle session',
         body: `${username} lance une session !`,
-        url: '/'
+        url: `/sessions/${id}`,
+        tag: `session-invite-${id}`,
+        requireInteraction: true,
+        actions: [
+          { action: 'join', title: 'Rejoindre' },
+          { action: 'decline', title: 'Refuser' }
+        ],
+        data: { type: 'session_invite', sessionId: id, creatorId: me, gameId }
       }, { sessionId: id, creatorId: me, creatorName: username, gameId })
     )
   )

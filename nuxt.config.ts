@@ -55,6 +55,12 @@ export default defineNuxtConfig({
   // PWA config
   pwa: {
     registerType: 'autoUpdate',
+    strategies: 'injectManifest',
+    srcDir: 'service-worker',
+    filename: 'sw.ts',
+    injectManifest: {
+      globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+    },
     manifest: {
       name: 'Call to Arms',
       short_name: 'CallToArms',
@@ -62,26 +68,22 @@ export default defineNuxtConfig({
       theme_color: '#534AB7',
       background_color: '#0a0a0a',
       display: 'standalone',
+      orientation: 'portrait',
+      start_url: '/',
+      scope: '/',
+      id: '/',
+      lang: 'fr',
       icons: [
-        {
-          src: '/icon-192.png',
-          sizes: '192x192',
-          type: 'image/png'
-        },
-        {
-          src: '/icon-512.png',
-          sizes: '512x512',
-          type: 'image/png'
-        }
+        // TODO: générer icon-192.png et icon-512.png carrés (et un variant maskable)
+        // pour une icône d'install propre. logo.png (1408x768) est utilisé en
+        // attendant — Chrome l'accepte avec sizes: 'any' mais le rendu n'est pas optimal.
+        { src: '/logo.png', sizes: 'any', type: 'image/png', purpose: 'any' }
       ]
-    },
-    workbox: {
-      navigateFallback: '/',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}']
     },
     devOptions: {
       enabled: true,
-      type: 'module'
+      type: 'module',
+      navigateFallback: '/'
     }
   }
 })
