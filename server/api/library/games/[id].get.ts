@@ -23,6 +23,7 @@ export default defineEventHandler(async (event) => {
     .select({
       id: userPlatformGames.id,
       platformGameId: userPlatformGames.platformGameId,
+      gameId: userPlatformGames.gameId,
       name: userPlatformGames.name,
       playtimeTotal: userPlatformGames.playtimeTotal,
       playtimeRecent: userPlatformGames.playtimeRecent,

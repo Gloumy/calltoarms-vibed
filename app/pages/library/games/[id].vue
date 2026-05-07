@@ -25,6 +25,7 @@ interface GameDetailResponse {
   game: {
     id: string
     platformGameId: string
+    gameId: number | null
     name: string
     playtimeTotal: number
     playtimeRecent: number | null
@@ -70,6 +71,7 @@ const showLocked = ref(true)
 const filterQuery = ref('')
 const showEditModal = ref(false)
 const deleting = ref(false)
+const showCompareModal = ref(false)
 
 const gameId = computed(() => String(route.params.id))
 const friendUserId = computed(() => typeof route.query.userId === 'string' ? route.query.userId : undefined)
@@ -299,6 +301,15 @@ watch([gameId, friendUserId], load, { immediate: true })
               icon="i-lucide-trophy"
             />
             <UButton
+              v-if="friendUserId && data.game.gameId"
+              label="Comparer mes stats"
+              icon="i-lucide-bar-chart-3"
+              variant="soft"
+              color="primary"
+              size="sm"
+              @click="showCompareModal = true"
+            />
+            <UButton
               v-if="data.game.account.profileUrl"
               :to="data.game.account.profileUrl"
               external
@@ -447,6 +458,12 @@ watch([gameId, friendUserId], load, { immediate: true })
         coverUrl: data.game.coverUrl
       }"
       @updated="load"
+    />
+
+    <GameComparisonModal
+      v-model:open="showCompareModal"
+      :game-id="data?.game.gameId ?? null"
+      :friend-id="friendUserId ?? null"
     />
   </div>
 </template>

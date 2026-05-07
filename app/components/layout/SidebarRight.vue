@@ -5,54 +5,20 @@ const props = withDefaults(defineProps<{
   variant: 'sidebar'
 })
 
-const { user } = useAuth()
-const { connect, on } = useWebSocket()
+// State partagé via useFriendsList — l'init (fetch initial, WS, polling) est
+// faite par le layout, le composant lit juste le state et n'a aucun fetch
+// au mount. Donc rouvrir le drawer mobile n'entraîne aucun rechargement.
+const {
+  friends,
+  mySessionId,
+  pendingRequests,
+  respondToRequest,
+  toggleNotif,
+  fetchPending
+} = useFriendsList()
 
-const friends = ref<any[]>([])
-const mySessionId = ref<string | null>(null)
-const pendingRequests = ref<any[]>([])
 const showAddFriend = ref(false)
 
-// Fetch friends list
-async function fetchFriends() {
-  try {
-    const data = await $fetch<{ friends: any[], mySessionId: string | null }>('/api/friends')
-    friends.value = data.friends
-    mySessionId.value = data.mySessionId
-  } catch {
-    friends.value = []
-  }
-}
-
-// Fetch pending requests
-async function fetchPending() {
-  try {
-    pendingRequests.value = await $fetch<unknown[]>('/api/friends/pending') as typeof pendingRequests.value
-  } catch {
-    pendingRequests.value = []
-  }
-}
-
-// Respond to friend request
-async function respondToRequest(senderId: string, action: 'accept' | 'reject') {
-  await $fetch(`/api/friends/${senderId}/respond`, {
-    method: 'POST',
-    body: { action }
-  })
-  await Promise.all([fetchFriends(), fetchPending()])
-}
-
-// Toggle notification for a friend
-async function toggleNotif(friendId: string, disabled: boolean) {
-  await $fetch(`/api/friends/${friendId}/notif`, {
-    method: 'PATCH',
-    body: { disabled }
-  })
-  const friend = friends.value.find(f => f.id === friendId)
-  if (friend) friend.notifDisabled = disabled
-}
-
-// Categorize friends
 const inSessionFriends = computed(() =>
   friends.value.filter(f => f.inSession)
 )
@@ -72,34 +38,6 @@ const onlineFriends = computed(() =>
 const offlineFriends = computed(() =>
   friends.value.filter(f => !f.inSession && !f.isAvailable && !f.isOnline)
 )
-
-// Poll friends every 30s to catch online status changes
-let pollInterval: ReturnType<typeof setInterval> | null = null
-
-// Init
-onMounted(async () => {
-  if (user.value) {
-    connect(user.value.id)
-    // Small delay to let WS connections establish
-    setTimeout(() => Promise.all([fetchFriends(), fetchPending()]), 1000)
-
-    on('availability:update', () => fetchFriends())
-    on('session:update', () => fetchFriends())
-
-    pollInterval = setInterval(fetchFriends, 30000)
-  }
-})
-
-onUnmounted(() => {
-  if (pollInterval) clearInterval(pollInterval)
-})
-
-watch(() => user.value, async (newUser) => {
-  if (newUser) {
-    connect(newUser.id)
-    setTimeout(() => Promise.all([fetchFriends(), fetchPending()]), 1000)
-  }
-})
 
 const rootClass = computed(() =>
   props.variant === 'drawer'

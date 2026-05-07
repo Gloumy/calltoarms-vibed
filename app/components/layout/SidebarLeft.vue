@@ -20,6 +20,8 @@ const navigation = [
   { label: 'Événements', icon: 'i-lucide-calendar', to: '/events' },
   { label: 'Communautés', icon: 'i-lucide-users', to: '/communities' },
   { label: 'Amis', icon: 'i-lucide-user-round', to: '/friends' },
+  { label: 'Activité', icon: 'i-lucide-activity', to: '/activity' },
+  { label: 'Notifications', icon: 'i-lucide-bell', to: '/notifications' },
   { label: 'Profil', icon: 'i-lucide-user', to: '/profile' }
 ]
 

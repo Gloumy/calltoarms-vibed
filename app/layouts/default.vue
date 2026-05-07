@@ -4,6 +4,11 @@ import { useMediaQuery } from '@vueuse/core'
 const isDesktop = useMediaQuery('(min-width: 1024px)')
 const openLeft = ref(false)
 const openRight = ref(false)
+
+// Initialise une seule fois la liste d'amis (state partagé, fetchs, WS, polling).
+// Le layout reste monté tant que l'utilisateur est connecté → pas de refetch
+// quand le drawer mobile s'ouvre/ferme.
+useFriendsList().init()
 </script>
 
 <template>
