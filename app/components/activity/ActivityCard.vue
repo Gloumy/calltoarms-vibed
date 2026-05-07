@@ -145,70 +145,75 @@ function onActionClick() {
 </script>
 
 <template>
-  <div class="rounded-lg border border-default p-3 sm:p-4 flex items-start gap-3 hover:bg-elevated/50 transition-colors">
-    <!-- Left anchor: game cover (with actor avatar overlay) when game-related, else just the actor avatar. -->
-    <div class="relative shrink-0">
-      <template v-if="item.game?.coverUrl">
-        <img
-          :src="item.game.coverUrl"
-          :alt="item.game.name"
-          class="size-12 rounded-md object-cover bg-elevated"
-        >
-        <UAvatar
-          :src="item.actor.image ?? undefined"
-          :alt="item.actor.username"
-          size="2xs"
-          class="absolute -bottom-1 -right-1 ring-2 ring-default"
-        />
-      </template>
+  <div class="rounded-lg border border-default overflow-hidden flex items-stretch hover:bg-elevated/50 transition-colors">
+    <!-- Game cover: flush-left, full card height (matches SessionCard pattern) -->
+    <div
+      v-if="item.game?.coverUrl"
+      class="relative shrink-0 w-20 bg-elevated"
+    >
+      <img
+        :src="item.game.coverUrl"
+        :alt="item.game.name"
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="lazy"
+      >
       <UAvatar
-        v-else
         :src="item.actor.image ?? undefined"
         :alt="item.actor.username"
-        size="lg"
+        size="2xs"
+        class="absolute bottom-1 right-1 ring-2 ring-default"
       />
     </div>
 
-    <div class="flex-1 min-w-0">
-      <div class="flex items-center gap-2 flex-wrap">
-        <UIcon
-          :name="descriptor.icon"
-          :class="['size-4 shrink-0', descriptor.color]"
-        />
-        <p class="text-sm">
-          {{ descriptor.body }}
-        </p>
-      </div>
-      <div class="flex items-center gap-2 mt-1 flex-wrap">
-        <p class="text-xs text-muted">
-          {{ formatRelative(item.timestamp) }}
-        </p>
-        <UBadge
-          v-if="descriptor.badge"
-          :color="descriptor.badge.color"
-          variant="subtle"
-          size="xs"
-        >
+    <div class="flex-1 min-w-0 flex items-start gap-3 p-3 sm:p-4">
+      <UAvatar
+        v-if="!item.game?.coverUrl"
+        :src="item.actor.image ?? undefined"
+        :alt="item.actor.username"
+        size="md"
+        class="shrink-0"
+      />
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
           <UIcon
-            :name="descriptor.badge.icon"
-            class="size-3 mr-1"
+            :name="descriptor.icon"
+            :class="['size-4 shrink-0', descriptor.color]"
           />
-          {{ descriptor.badge.label }}
-        </UBadge>
+          <p class="text-sm">
+            {{ descriptor.body }}
+          </p>
+        </div>
+        <div class="flex items-center gap-2 mt-1 flex-wrap">
+          <p class="text-xs text-muted">
+            {{ formatRelative(item.timestamp) }}
+          </p>
+          <UBadge
+            v-if="descriptor.badge"
+            :color="descriptor.badge.color"
+            variant="subtle"
+            size="xs"
+          >
+            <UIcon
+              :name="descriptor.badge.icon"
+              class="size-3 mr-1"
+            />
+            {{ descriptor.badge.label }}
+          </UBadge>
+        </div>
       </div>
-    </div>
 
-    <UButton
-      v-if="descriptor.action"
-      :label="descriptor.action.label"
-      :icon="descriptor.action.icon"
-      :variant="descriptor.action.disabled ? 'ghost' : (descriptor.action.kind === 'compare' ? 'soft' : 'outline')"
-      :color="descriptor.action.kind === 'compare' ? 'primary' : 'neutral'"
-      :disabled="descriptor.action.disabled"
-      size="xs"
-      class="shrink-0 self-center"
-      :class="{ 'opacity-40': descriptor.action.disabled }"
-      @click="onActionClick"
-    />
+      <UButton
+        v-if="descriptor.action"
+        :label="descriptor.action.label"
+        :icon="descriptor.action.icon"
+        :variant="descriptor.action.disabled ? 'ghost' : (descriptor.action.kind === 'compare' ? 'soft' : 'outline')"
+        :color="descriptor.action.kind === 'compare' ? 'primary' : 'neutral'"
+        :disabled="descriptor.action.disabled"
+        size="xs"
+        class="shrink-0 self-center"
+        :class="{ 'opacity-40': descriptor.action.disabled }"
+        @click="onActionClick"
+      />
+    </div>
   </div>
 </template>

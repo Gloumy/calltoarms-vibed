@@ -280,35 +280,77 @@ async function computeStats(db: ReturnType<typeof useDB>, me: string, friendIds:
     ...sessionActive.map(r => r.userId)
   ])
 
-  const [gamesRow] = await db
-    .select({ count: sql<number>`count(distinct ${userPlatformGames.gameId})::int` })
+  // ─── Jeux dans le cercle / en commun ──────────────────────
+  // Match strategy: each owned-game row contributes potentially 2 keys:
+  //   - igdb:<gameId>            (when IGDB match succeeded during sync)
+  //   - <platform>:<platformId>  (always available)
+  // Two rows are "the same game" if they share ANY key. This catches:
+  //   - same Steam account on two users (platform key identical)
+  //   - cross-platform via IGDB (igdb key identical)
+  //   - one side has IGDB match and the other doesn't, same platform (platform key still matches)
+  // Without the platform key, sync coverage to IGDB caps the stats artificially.
+  const allRows = await db
+    .select({
+      userId: userPlatformAccounts.userId,
+      platform: userPlatformAccounts.platform,
+      platformGameId: userPlatformGames.platformGameId,
+      gameId: userPlatformGames.gameId
+    })
     .from(userPlatformGames)
     .innerJoin(userPlatformAccounts, eq(userPlatformGames.platformAccountId, userPlatformAccounts.id))
-    .where(and(
-      inArray(userPlatformAccounts.userId, friendIds),
-      isNotNull(userPlatformGames.gameId)
-    ))
+    .where(inArray(userPlatformAccounts.userId, [me, ...friendIds]))
 
-  // Jeux en commun = intersection des gameIds que je possède et que possède au moins un ami.
-  const [myGamesRows, friendGamesRows] = await Promise.all([
-    db
-      .selectDistinct({ gameId: userPlatformGames.gameId })
-      .from(userPlatformGames)
-      .innerJoin(userPlatformAccounts, eq(userPlatformGames.platformAccountId, userPlatformAccounts.id))
-      .where(and(eq(userPlatformAccounts.userId, me), isNotNull(userPlatformGames.gameId))),
-    db
-      .selectDistinct({ gameId: userPlatformGames.gameId })
-      .from(userPlatformGames)
-      .innerJoin(userPlatformAccounts, eq(userPlatformGames.platformAccountId, userPlatformAccounts.id))
-      .where(and(inArray(userPlatformAccounts.userId, friendIds), isNotNull(userPlatformGames.gameId)))
-  ])
-  const friendGameSet = new Set(friendGamesRows.map(r => r.gameId).filter((id): id is number => id != null))
-  const commonGames = myGamesRows.reduce((n, r) => (r.gameId != null && friendGameSet.has(r.gameId) ? n + 1 : n), 0)
+  function keysFor(row: { platform: string, platformGameId: string, gameId: number | null }): string[] {
+    const ks: string[] = [`${row.platform}:${row.platformGameId}`]
+    if (row.gameId != null) ks.push(`igdb:${row.gameId}`)
+    return ks
+  }
+
+  // Per-user: collapse rows into distinct "logical games", picking a canonical key per game.
+  // Canonical key: prefer igdb when present (catches cross-platform), else platform+id.
+  // We track all keys per game so the intersection step can match flexibly.
+  function logicalGames(rows: typeof allRows) {
+    const games = new Map<string, Set<string>>() // canonicalKey → all keys
+    for (const r of rows) {
+      const ks = keysFor(r)
+      const canonical = r.gameId != null ? `igdb:${r.gameId}` : ks[0]!
+      const existing = games.get(canonical)
+      if (existing) {
+        for (const k of ks) existing.add(k)
+      } else {
+        games.set(canonical, new Set(ks))
+      }
+    }
+    return games
+  }
+
+  const myRows = allRows.filter(r => r.userId === me)
+  const friendRows = allRows.filter(r => r.userId !== me)
+
+  const myGames = logicalGames(myRows)
+  const friendGames = logicalGames(friendRows)
+
+  // Friend keyset (union of all keys that any friend's game has).
+  const friendKeyset = new Set<string>()
+  for (const [, keys] of friendGames) {
+    for (const k of keys) friendKeyset.add(k)
+  }
+
+  // Common = my games that share at least one key with any friend's game.
+  let commonGames = 0
+  for (const [, keys] of myGames) {
+    for (const k of keys) {
+      if (friendKeyset.has(k)) {
+        commonGames++
+        break
+      }
+    }
+  }
 
   return {
     totalFriends: friendIds.length,
     activeThisWeek: activeUserIds.size,
-    totalGamesInCircle: gamesRow?.count ?? 0,
+    totalGamesInCircle: friendGames.size,
     commonGames
   }
 }
