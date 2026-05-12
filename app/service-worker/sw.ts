@@ -18,8 +18,13 @@ type PushPayload = {
 cleanupOutdatedCaches()
 precacheAndRoute(self.__WB_MANIFEST)
 
-self.addEventListener('install', () => {
-  self.skipWaiting()
+// Pas de skipWaiting() automatique : le nouveau SW reste en `waiting`
+// jusqu'à ce que la bannière côté client envoie SKIP_WAITING (déclenché
+// par $pwa.updateServiceWorker(true) → workbox-window).
+self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SKIP_WAITING') {
+    self.skipWaiting()
+  }
 })
 
 self.addEventListener('activate', (event) => {

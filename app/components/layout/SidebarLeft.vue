@@ -10,6 +10,7 @@ const emit = defineEmits<{
 }>()
 
 const { user, signOut } = useAuth()
+const { public: publicConfig } = useRuntimeConfig()
 
 const isAdmin = ref(false)
 
@@ -111,6 +112,9 @@ onMounted(async () => {
         class="mt-2 w-full"
         @click="signOut"
       />
+      <p class="mt-2 text-[10px] text-muted text-center font-mono">
+        v{{ publicConfig.appVersion }}
+      </p>
     </div>
   </aside>
 </template>

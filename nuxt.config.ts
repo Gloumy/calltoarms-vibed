@@ -1,4 +1,18 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+import { execSync } from 'node:child_process'
+
+// Identifiant de build figé au moment de `nuxt build` (ou `nuxt dev`).
+// Affiché en pied de sidebar pour vérifier qu'une mise à jour PWA a bien
+// remplacé les assets après acceptation de la bannière.
+function resolveAppVersion(): string {
+  try {
+    const sha = execSync('git rev-parse --short HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+    return sha || 'dev'
+  } catch {
+    return 'dev'
+  }
+}
+
 export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
@@ -54,7 +68,8 @@ export default defineNuxtConfig({
     steamApiKey: '',
     microsoftClientId: '',
     public: {
-      vapidPublicKey: ''
+      vapidPublicKey: '',
+      appVersion: resolveAppVersion()
     }
   },
 
@@ -78,7 +93,10 @@ export default defineNuxtConfig({
 
   // PWA config
   pwa: {
-    registerType: 'autoUpdate',
+    // 'prompt' au lieu de 'autoUpdate' : on attend que l'utilisateur clique
+    // sur la bannière (PwaUpdatePrompt) avant d'activer le nouveau SW et
+    // recharger, sinon on risque de l'interrompre en pleine action.
+    registerType: 'prompt',
     strategies: 'injectManifest',
     srcDir: 'service-worker',
     filename: 'sw.ts',

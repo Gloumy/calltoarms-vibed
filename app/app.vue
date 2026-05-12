@@ -20,5 +20,6 @@ onMounted(() => {
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
+    <PwaUpdatePrompt />
   </UApp>
 </template>
