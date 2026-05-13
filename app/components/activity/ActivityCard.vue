@@ -146,33 +146,34 @@ function onActionClick() {
 
 <template>
   <div class="rounded-lg border border-default overflow-hidden flex items-stretch hover:bg-elevated/50 transition-colors">
-    <!-- Game cover: flush-left, full card height (matches SessionCard pattern) -->
+    <!-- Left media slot: game cover or actor avatar, flush-left, same width -->
     <div
-      v-if="item.game?.coverUrl"
       class="relative shrink-0 w-20 bg-elevated"
+      :class="{ 'flex items-center justify-center': !item.game?.coverUrl }"
     >
-      <img
-        :src="item.game.coverUrl"
-        :alt="item.game.name"
-        class="absolute inset-0 w-full h-full object-cover"
-        loading="lazy"
-      >
+      <template v-if="item.game?.coverUrl">
+        <img
+          :src="item.game.coverUrl"
+          :alt="item.game.name"
+          class="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+        >
+        <UAvatar
+          :src="item.actor.image ?? undefined"
+          :alt="item.actor.username"
+          size="2xs"
+          class="absolute bottom-1 right-1 ring-2 ring-default"
+        />
+      </template>
       <UAvatar
+        v-else
         :src="item.actor.image ?? undefined"
         :alt="item.actor.username"
-        size="2xs"
-        class="absolute bottom-1 right-1 ring-2 ring-default"
+        size="md"
       />
     </div>
 
     <div class="flex-1 min-w-0 flex items-start gap-3 p-3 sm:p-4">
-      <UAvatar
-        v-if="!item.game?.coverUrl"
-        :src="item.actor.image ?? undefined"
-        :alt="item.actor.username"
-        size="md"
-        class="shrink-0"
-      />
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 flex-wrap">
           <UIcon
