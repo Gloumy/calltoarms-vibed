@@ -18,6 +18,7 @@ const {
 } = useFriendsList()
 
 const showAddFriend = ref(false)
+const showExpanded = ref(false)
 
 const inSessionFriends = computed(() =>
   friends.value.filter(f => f.inSession)
@@ -52,14 +53,24 @@ const rootClass = computed(() =>
       <h3 class="text-xs font-semibold uppercase text-muted tracking-wider">
         Amis
       </h3>
-      <UButton
-        icon="i-lucide-user-plus"
-        variant="ghost"
-        color="neutral"
-        size="xs"
-        title="Ajouter un ami"
-        @click="showAddFriend = true"
-      />
+      <div class="flex items-center gap-1">
+        <UButton
+          icon="i-lucide-user-plus"
+          variant="ghost"
+          color="neutral"
+          size="xs"
+          title="Ajouter un ami"
+          @click="showAddFriend = true"
+        />
+        <UButton
+          icon="i-lucide-maximize-2"
+          variant="ghost"
+          color="neutral"
+          size="xs"
+          title="Gérer mes amis"
+          @click="showExpanded = true"
+        />
+      </div>
     </div>
 
     <!-- Pending requests -->
@@ -205,5 +216,17 @@ const rootClass = computed(() =>
       v-model:open="showAddFriend"
       @sent="fetchPending()"
     />
+
+    <!-- Expanded friends manager -->
+    <USlideover
+      v-model:open="showExpanded"
+      side="right"
+      title="Amis"
+      :ui="{ content: 'w-full sm:max-w-4xl', body: 'p-4 sm:p-6' }"
+    >
+      <template #body>
+        <FriendsManager :show-header="false" />
+      </template>
+    </USlideover>
   </aside>
 </template>
